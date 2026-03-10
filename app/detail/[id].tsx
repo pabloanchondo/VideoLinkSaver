@@ -1,6 +1,7 @@
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
+import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
@@ -61,6 +62,12 @@ export default function VideoDetailScreen() {
     ]);
   };
 
+  const handleCopyLink = async () => {
+    await Clipboard.setStringAsync(video.url);
+    // Optional: provide user feedback
+    alert("Copied to Clipboard!");
+  };
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
@@ -77,9 +84,9 @@ export default function VideoDetailScreen() {
         <Text style={[styles.title, { color: colors.text }]}>
           {video.title}
         </Text>
-        <Text style={[styles.url, { color: colors.tint }]} numberOfLines={2}>
-          {video.url}
-        </Text>
+        <TouchableOpacity onPress={handleCopyLink}>
+          <Text style={[styles.url, { color: colors.tint }]}>{video.url}</Text>
+        </TouchableOpacity>
 
         <View style={styles.actions}>
           <TouchableOpacity

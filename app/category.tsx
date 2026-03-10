@@ -23,7 +23,7 @@ export default function CategoryScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-row items-center px-5 pt-4 pb-5">
+      <View className="flex-row items-center px-5 pt-4 pb-4">
         <Text className="text-2xl font-bold text-gray-900">
           {category.name}
         </Text>

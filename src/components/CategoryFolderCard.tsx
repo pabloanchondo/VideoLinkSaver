@@ -1,5 +1,5 @@
-import { Pressable, View, Text } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { Pressable, Text, View } from "react-native";
 // import * from 'nativewind';
 // NativeWind uses className prop, not tw function
 
@@ -8,7 +8,10 @@ interface CategoryFolderCardProps {
   onPress: () => void;
 }
 
-export const CategoryFolderCard = ({ name, onPress }: CategoryFolderCardProps) => (
+export const CategoryFolderCard = ({
+  name,
+  onPress,
+}: CategoryFolderCardProps) => (
   <Pressable
     onPress={onPress}
     className="flex-row items-center bg-white rounded-xl shadow-md p-4 mb-3 mr-3 flex-1"

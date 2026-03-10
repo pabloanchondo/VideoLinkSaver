@@ -3,14 +3,16 @@ import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
 import {
   Alert,
+  FlatList,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -26,7 +28,7 @@ export default function CategoriesScreen() {
     await addCategory({
       id: Date.now().toString(),
       name: newCategoryName.trim(),
-      parentId: null, // For simplicity we are only allowing flat base folders in this screen first
+      parentId: null,
       createdAt: Date.now(),
     });
     setNewCategoryName("");
@@ -89,7 +91,30 @@ export default function CategoriesScreen() {
         </View>
       ) : (
         <>
-          {categories.map((item) => (
+          <FlatList
+            data={categories}
+            renderItem={({ item }) => (
+              <View
+                key={item.id}
+                style={{
+                  marginHorizontal: 20,
+                  marginBottom: 8,
+                  position: "relative",
+                }}
+              >
+                <CategoryFolderCard name={item.name} onPress={() => {}} />
+                <TouchableOpacity
+                  onPress={() => handleDelete(item.id)}
+                  style={{ position: "absolute", right: 18, top: 18 }}
+                >
+                  <Ionicons name="trash" size={20} color="#EF4444" />
+                </TouchableOpacity>
+              </View>
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+          />
+          {/* {categories.map((item) => (
             <View
               key={item.id}
               style={{ marginHorizontal: 20, marginBottom: 8 }}
@@ -102,7 +127,7 @@ export default function CategoriesScreen() {
                 <IconSymbol name="trash.fill" size={20} color="#EF4444" />
               </TouchableOpacity>
             </View>
-          ))}
+          ))} */}
         </>
       )}
     </SafeAreaView>

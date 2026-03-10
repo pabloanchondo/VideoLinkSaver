@@ -1,26 +1,58 @@
-import { LinkPreview } from "@flyerhq/react-native-link-preview";
-import React from "react";
-import { FlatList, StyleSheet } from "react-native";
+// import { LinkPreview } from "@flyerhq/react-native-link-preview";
+import React, { useState } from "react";
+import { FlatList, StyleSheet, TextInput, View } from "react-native";
 import { VideoLink } from "../types";
+import { VideoCard } from "./VideoCard";
 
 interface VideoListProps {
   videos: VideoLink[];
 }
 
-export const VideoList = ({ videos }: VideoListProps) => (
-  <FlatList
-    data={videos}
-    renderItem={({ item }) => (
-      <LinkPreview text={item.url} containerStyle={styles.card} />
-      // <LinkPreviewCard url={item.url} />
-    )}
-    keyExtractor={(item) => item.id.toString()}
-    contentContainerStyle={{ padding: 16 }}
-    showsVerticalScrollIndicator={false}
-  />
-);
+export const VideoList = ({ videos }: VideoListProps) => {
+  const [filteredVideos, setFilteredVideos] = useState<VideoLink[]>(videos);
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (text: string) => {
+    setSearch(text);
+    const filtered = videos.filter((video) =>
+      video.title.toLowerCase().includes(text.toLowerCase()),
+    );
+    setFilteredVideos(filtered);
+  };
+
+  return (
+    <View style={{ paddingBottom: 16, marginBottom: 80 }}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          value={search}
+          onChangeText={handleSearch}
+          placeholder="Filtrar por título"
+          style={{
+            padding: 10,
+            borderRadius: 8,
+            borderWidth: 1,
+            borderColor: "#ccc",
+            marginBottom: 12,
+            width: "100%",
+          }}
+        />
+      </View>
+      <FlatList
+        data={filteredVideos}
+        renderItem={({ item }) => <VideoCard video={item} />}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={{ padding: 16, marginBottom: 16 }}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    padding: 16,
+    paddingBottom: 0,
+  },
   card: {
     backgroundColor: "#fff",
     borderRadius: 16,

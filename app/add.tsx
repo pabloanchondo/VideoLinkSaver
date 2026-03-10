@@ -1,7 +1,6 @@
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { extractMetadata } from "@/src/services/metadata";
-import { extractThumbnail } from "@/src/services/thumbnailExtractor";
 import { useStore } from "@/src/store/useStore";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -15,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import LinkPreview from "react-native-link-preview";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddVideoScreen() {
@@ -26,14 +26,63 @@ export default function AddVideoScreen() {
   const { categories, addVideo } = useStore();
 
   const [url, setUrl] = useState("");
+  const [userTitle, setUserTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  const [meta, setMeta] = useState({
+    title: "",
+    description: "",
+    thumbnailUrl: "",
+  });
 
   useEffect(() => {
     if (params.sharedUrl && typeof params.sharedUrl === "string") {
       setUrl(params.sharedUrl);
+      getMetadata(params.sharedUrl);
     }
   }, [params.sharedUrl]);
+
+  const getMetadata = async (url: string) => {
+    try {
+      const { title, description, images } = await LinkPreview.getPreview(url);
+      setUserTitle(title || "");
+    } catch (e) {
+      console.log("Metadata error", e);
+    }
+  };
+
+  const getTikTokThumbnail = async (url: string) => {
+    try {
+      const response = await fetch(
+        `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`,
+      );
+
+      const data = await response.json();
+      console.log(JSON.stringify(data, null, 5));
+      return data.thumbnail_url;
+    } catch (e) {
+      return "";
+    }
+  };
+
+  const getYoutubeThumbnail = (url: string) => {
+    const idMatch = url.match(/v=([^&]+)/) || url.match(/youtu\.be\/([^?]+)/);
+
+    const id = idMatch ? idMatch[1] : null;
+
+    if (id) {
+      return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    }
+  };
+
+  const handleAdd = async (categoryId: string | null) => {
+    try {
+      setSelectedCategory(categoryId);
+    } catch (e) {
+      Alert.alert("Error", "Failed to add video to category.");
+    }
+  };
 
   const handleSave = async () => {
     if (!url.trim()) {
@@ -41,21 +90,40 @@ export default function AddVideoScreen() {
       return;
     }
 
+    const cleanUrl = url.split("?")[0];
+
+    const { title, description, images } =
+      await LinkPreview.getPreview(cleanUrl);
+
+    const platform = (await extractMetadata(cleanUrl)).platform;
+
+    let thumbnailUrl = images && images.length > 0 ? images[0] : "";
+
+    console.log(platform);
+
+    if (platform === "tiktok" && meta.thumbnailUrl.trim() === "") {
+      thumbnailUrl = await getTikTokThumbnail(cleanUrl);
+    }
+
+    if (platform === "youtube") {
+      thumbnailUrl = getYoutubeThumbnail(url); //Aqui se manda el url completo
+      console.log("youtube", thumbnailUrl);
+    }
+
+    setMeta({
+      title: title || "",
+      description: description || "",
+      thumbnailUrl: thumbnailUrl || "",
+    });
+
     setIsSaving(true);
     try {
-      const metadata = await extractMetadata(url.trim());
-      let thumbnailUrl = metadata.thumbnailUrl;
-      // Robust thumbnail extraction
-      if (!thumbnailUrl) {
-        thumbnailUrl =
-          (await extractThumbnail(url.trim(), metadata.platform)) || null;
-      }
       await addVideo({
         id: Date.now().toString(),
         url: url.trim(),
-        title: metadata.title,
-        thumbnailUrl,
-        platform: metadata.platform,
+        title: userTitle || meta.title,
+        thumbnailUrl: thumbnailUrl,
+        platform: platform,
         categoryId: selectedCategory,
         createdAt: Date.now(),
       });
@@ -85,9 +153,30 @@ export default function AddVideoScreen() {
           placeholder="Paste YouTube, TikTok or Instagram link..."
           placeholderTextColor={colors.icon}
           value={url}
-          onChangeText={setUrl}
+          onChangeText={(text) => {
+            setUrl(text);
+            getMetadata(text);
+          }}
           autoCapitalize="none"
           keyboardType="url"
+        />
+
+        <Text style={[styles.label, { color: colors.text }]}>Titulo</Text>
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: colors.card,
+              color: colors.text,
+              borderColor: colors.border,
+            },
+          ]}
+          placeholder="Titulo del video"
+          placeholderTextColor={colors.icon}
+          value={userTitle}
+          onChangeText={setUserTitle}
+          autoCapitalize="none"
+          keyboardType="default"
         />
 
         <Text style={[styles.label, { color: colors.text, marginTop: 24 }]}>
@@ -106,7 +195,7 @@ export default function AddVideoScreen() {
                 },
               ]}
               onPress={() =>
-                setSelectedCategory(selectedCategory === cat.id ? null : cat.id)
+                handleAdd(selectedCategory === cat.id ? null : cat.id)
               }
             >
               <Text
