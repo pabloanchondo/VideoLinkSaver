@@ -27,7 +27,8 @@ export default function AddVideoScreen() {
 
   const [url, setUrl] = useState("");
   const [userTitle, setUserTitle] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("uncategorized");
   const [isSaving, setIsSaving] = useState(false);
 
   const [meta, setMeta] = useState({
@@ -76,7 +77,7 @@ export default function AddVideoScreen() {
     }
   };
 
-  const handleAdd = async (categoryId: string | null) => {
+  const handleAdd = async (categoryId: string) => {
     try {
       setSelectedCategory(categoryId);
     } catch (e) {
@@ -90,34 +91,34 @@ export default function AddVideoScreen() {
       return;
     }
 
-    const cleanUrl = url.split("?")[0];
-
-    const { title, description, images } =
-      await LinkPreview.getPreview(cleanUrl);
-
-    const platform = (await extractMetadata(cleanUrl)).platform;
-
-    let thumbnailUrl = images && images.length > 0 ? images[0] : "";
-
-    console.log(platform);
-
-    if (platform === "tiktok" && meta.thumbnailUrl.trim() === "") {
-      thumbnailUrl = await getTikTokThumbnail(cleanUrl);
-    }
-
-    if (platform === "youtube") {
-      thumbnailUrl = getYoutubeThumbnail(url); //Aqui se manda el url completo
-      console.log("youtube", thumbnailUrl);
-    }
-
-    setMeta({
-      title: title || "",
-      description: description || "",
-      thumbnailUrl: thumbnailUrl || "",
-    });
-
     setIsSaving(true);
     try {
+      const cleanUrl = url.split("?")[0];
+
+      const { title, description, images } =
+        await LinkPreview.getPreview(cleanUrl);
+
+      const platform = (await extractMetadata(cleanUrl)).platform;
+
+      let thumbnailUrl = images && images.length > 0 ? images[0] : "";
+
+      console.log(platform);
+
+      if (platform === "tiktok" && meta.thumbnailUrl.trim() === "") {
+        thumbnailUrl = await getTikTokThumbnail(cleanUrl);
+      }
+
+      if (platform === "youtube") {
+        thumbnailUrl = getYoutubeThumbnail(url); //Aqui se manda el url completo
+        console.log("youtube", thumbnailUrl);
+      }
+
+      setMeta({
+        title: title || "",
+        description: description || "",
+        thumbnailUrl: thumbnailUrl || "",
+      });
+
       await addVideo({
         id: Date.now().toString(),
         url: url.trim(),
@@ -195,7 +196,9 @@ export default function AddVideoScreen() {
                 },
               ]}
               onPress={() =>
-                handleAdd(selectedCategory === cat.id ? null : cat.id)
+                handleAdd(
+                  selectedCategory === cat.id ? "uncategorized" : cat.id,
+                )
               }
             >
               <Text

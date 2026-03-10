@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import * as db from '../services/database';
-import { Category, VideoLink } from '../types';
+import { create } from "zustand";
+import * as db from "../services/database";
+import { Category, VideoLink } from "../types";
 
 interface AppState {
   videos: VideoLink[];
@@ -29,7 +29,7 @@ export const useStore = create<AppState>((set, get) => ({
       await get().loadVideos();
       set({ isInitialized: true });
     } catch (error) {
-      console.error('Failed to initialize local database:', error);
+      console.error("Failed to initialize local database:", error);
     }
   },
 
@@ -40,6 +40,13 @@ export const useStore = create<AppState>((set, get) => ({
 
   loadCategories: async () => {
     const categories = await db.fetchCategories();
+    let uncategory: Category = {
+      id: "uncategorized",
+      name: "Uncategorized",
+      parentId: null,
+      createdAt: 0,
+    };
+    categories.unshift(uncategory);
     set({ categories });
   },
 
@@ -60,6 +67,8 @@ export const useStore = create<AppState>((set, get) => ({
 
   removeCategory: async (id) => {
     await db.removeCategory(id);
-    set((state) => ({ categories: state.categories.filter((c) => c.id !== id) }));
+    set((state) => ({
+      categories: state.categories.filter((c) => c.id !== id),
+    }));
   },
 }));

@@ -2,11 +2,7 @@ import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function SettingsScreen() {
   const theme = useColorScheme();

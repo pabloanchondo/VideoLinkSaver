@@ -8,6 +8,7 @@ import React from "react";
 import {
   Alert,
   Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -64,46 +65,48 @@ export default function VideoDetailScreen() {
 
   const handleCopyLink = async () => {
     await Clipboard.setStringAsync(video.url);
-    // Optional: provide user feedback
-    alert("Copied to Clipboard!");
   };
 
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
     >
-      {video.thumbnailUrl && (
-        <Image
-          source={{ uri: video.thumbnailUrl }}
-          style={styles.cover}
-          resizeMode="cover"
-        />
-      )}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+        {video.thumbnailUrl && (
+          <Image
+            source={{ uri: video.thumbnailUrl }}
+            style={styles.cover}
+            resizeMode="cover"
+          />
+        )}
 
-      <View style={styles.content}>
-        <Text style={[styles.title, { color: colors.text }]}>
-          {video.title}
-        </Text>
-        <TouchableOpacity onPress={handleCopyLink}>
-          <Text style={[styles.url, { color: colors.tint }]}>{video.url}</Text>
-        </TouchableOpacity>
-
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={[styles.mainBtn, { backgroundColor: colors.tint }]}
-            onPress={handleOpenLink}
-          >
-            <Text style={styles.btnText}>Open in App / Browser</Text>
+        <View style={styles.content}>
+          <Text style={[styles.title, { color: colors.text }]}>
+            {video.title}
+          </Text>
+          <TouchableOpacity onPress={handleCopyLink}>
+            <Text style={[styles.url, { color: colors.tint }]}>
+              {video.url}
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.deleteBtn, { borderColor: "#ff4444" }]}
-            onPress={handleDelete}
-          >
-            <Text style={styles.deleteText}>Delete Link</Text>
-          </TouchableOpacity>
+          <View style={styles.actions}>
+            <TouchableOpacity
+              style={[styles.mainBtn, { backgroundColor: colors.tint }]}
+              onPress={handleOpenLink}
+            >
+              <Text style={styles.btnText}>Open in App / Browser</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.deleteBtn, { borderColor: "#ff4444" }]}
+              onPress={handleDelete}
+            >
+              <Text style={styles.deleteText}>Delete Link</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
