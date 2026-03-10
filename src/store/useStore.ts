@@ -1,0 +1,65 @@
+import { create } from 'zustand';
+import * as db from '../services/database';
+import { Category, VideoLink } from '../types';
+
+interface AppState {
+  videos: VideoLink[];
+  categories: Category[];
+  isInitialized: boolean;
+
+  // Actions
+  init: () => Promise<void>;
+  loadVideos: () => Promise<void>;
+  loadCategories: () => Promise<void>;
+  addVideo: (video: VideoLink) => Promise<void>;
+  removeVideo: (id: string) => Promise<void>;
+  addCategory: (category: Category) => Promise<void>;
+  removeCategory: (id: string) => Promise<void>;
+}
+
+export const useStore = create<AppState>((set, get) => ({
+  videos: [],
+  categories: [],
+  isInitialized: false,
+
+  init: async () => {
+    try {
+      await db.initDb();
+      await get().loadCategories();
+      await get().loadVideos();
+      set({ isInitialized: true });
+    } catch (error) {
+      console.error('Failed to initialize local database:', error);
+    }
+  },
+
+  loadVideos: async () => {
+    const videos = await db.fetchVideos();
+    set({ videos });
+  },
+
+  loadCategories: async () => {
+    const categories = await db.fetchCategories();
+    set({ categories });
+  },
+
+  addVideo: async (video) => {
+    await db.insertVideo(video);
+    set((state) => ({ videos: [video, ...state.videos] }));
+  },
+
+  removeVideo: async (id) => {
+    await db.removeVideo(id);
+    set((state) => ({ videos: state.videos.filter((v) => v.id !== id) }));
+  },
+
+  addCategory: async (category) => {
+    await db.insertCategory(category);
+    set((state) => ({ categories: [category, ...state.categories] }));
+  },
+
+  removeCategory: async (id) => {
+    await db.removeCategory(id);
+    set((state) => ({ categories: state.categories.filter((c) => c.id !== id) }));
+  },
+}));
