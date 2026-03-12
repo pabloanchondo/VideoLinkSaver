@@ -1,17 +1,13 @@
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function SettingsScreen() {
-  const theme = useColorScheme();
-  const colors = Colors[theme];
+  const colors = Colors["light"];
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: "#F3F4F6" }]}>
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>
           Settings

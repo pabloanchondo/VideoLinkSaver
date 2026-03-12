@@ -4,19 +4,19 @@ import { Platform } from "react-native";
 
 import { HapticTab } from "@/src/components/HapticTab";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
-import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
         sceneStyle: {
-          backgroundColor: Colors[colorScheme ?? "light"].background,
+          backgroundColor: "#F3F4F6",
         },
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: "#0a7ea4",
+        headerBackgroundContainerStyle: {
+          backgroundColor: "#F3F4F6",
+        },
+        headerShadowVisible: false,
         headerShown: true,
         tabBarButton: HapticTab,
         tabBarStyle: Platform.select({

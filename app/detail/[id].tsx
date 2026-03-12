@@ -1,5 +1,4 @@
 import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
@@ -18,8 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VideoDetailScreen() {
   const { id } = useLocalSearchParams();
-  const theme = useColorScheme();
-  const colors = Colors[theme];
+  const colors = Colors["light"];
   const router = useRouter();
 
   const { videos, removeVideo } = useStore();

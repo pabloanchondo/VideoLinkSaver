@@ -1,7 +1,6 @@
 import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
@@ -17,8 +16,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoriesScreen() {
-  const theme = useColorScheme();
-  const colors = Colors[theme];
+  const colors = Colors["light"];
   const { categories, addCategory, removeCategory } = useStore();
   const [newCategoryName, setNewCategoryName] = useState("");
 
@@ -50,9 +48,7 @@ export default function CategoriesScreen() {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: "#F3F4F6" }]}>
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>
           Categories

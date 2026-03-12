@@ -1,5 +1,4 @@
 import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { extractMetadata } from "@/src/services/metadata";
 import { useStore } from "@/src/store/useStore";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -18,8 +17,7 @@ import LinkPreview from "react-native-link-preview";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddVideoScreen() {
-  const theme = useColorScheme();
-  const colors = Colors[theme];
+  const colors = Colors["light"];
   const router = useRouter();
   const params = useLocalSearchParams();
 

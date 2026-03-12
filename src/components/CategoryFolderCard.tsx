@@ -1,5 +1,5 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Pressable, Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 // import * from 'nativewind';
 // NativeWind uses className prop, not tw function
 
@@ -12,7 +12,7 @@ export const CategoryFolderCard = ({
   name,
   onPress,
 }: CategoryFolderCardProps) => (
-  <Pressable
+  <TouchableOpacity
     onPress={onPress}
     className="flex-row items-center bg-white rounded-xl shadow-md p-4 mb-3 mr-3 flex-1"
   >
@@ -20,5 +20,5 @@ export const CategoryFolderCard = ({
       <MaterialIcons name="folder" size={32} color="#4B5563" />
     </View>
     <Text className="text-lg font-semibold text-gray-800">{name}</Text>
-  </Pressable>
+  </TouchableOpacity>
 );

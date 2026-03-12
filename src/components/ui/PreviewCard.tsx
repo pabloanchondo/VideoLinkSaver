@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import {
-  LinkPreview,
-  getPreviewData,
-  getPreviewDataImage,
-} from "@flyerhq/react-native-link-preview";
 import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
+import {
+  getPreviewData
+} from "@flyerhq/react-native-link-preview";
+import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Props = {
   url: string;
@@ -15,8 +12,7 @@ type Props = {
 export default function LinkPreviewCard({ url }: Props) {
   const [preview, setPreview] = useState<any>(null);
 
-  const theme = useColorScheme();
-  const colors = Colors[theme];
+  const colors = Colors["light"];
 
   useEffect(() => {
     const loadPreview = async () => {

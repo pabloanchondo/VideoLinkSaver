@@ -1,6 +1,5 @@
 import { CategoryList } from "@/src/components/CategoryList";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useSharedIntent } from "@/src/services/shareIntent";
 import { useStore } from "@/src/store/useStore";
 import { useRouter } from "expo-router";
@@ -9,7 +8,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const theme = useColorScheme();
   const router = useRouter();
   const { categories, isInitialized, init } = useStore();
   const { sharedUrl, clearSharedUrl } = useSharedIntent();

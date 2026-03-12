@@ -47,7 +47,7 @@ export const useStore = create<AppState>((set, get) => ({
       createdAt: 0,
     };
     categories.unshift(uncategory);
-    set({ categories });
+    set({ categories: [...categories] });
   },
 
   addVideo: async (video) => {
