@@ -1,15 +1,10 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import {
-    BannerAd,
-    BannerAdSize,
-    TestIds,
-} from "react-native-google-mobile-ads";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 export default function AdBanner() {
-  // Usa tu ID real de banner de AdMob en producción
-  const adUnitId = TestIds.BANNER;
-  //   const adUnitId = "ca-app-pub-8421586383850459/6275001671";
+  // const adUnitId = TestIds.BANNER;
+  const adUnitId = "ca-app-pub-8421586383850459/6275001671";
 
   return (
     <View style={styles.container}>
