@@ -9,6 +9,8 @@ interface AppState {
 
   // Actions
   init: () => Promise<void>;
+  close: () => Promise<void>;
+  clean: () => Promise<void>;
   loadVideos: () => Promise<void>;
   loadCategories: () => Promise<void>;
   addVideo: (video: VideoLink) => Promise<void>;
@@ -16,6 +18,7 @@ interface AppState {
   addCategory: (category: Category) => Promise<void>;
   removeCategory: (id: string) => Promise<void>;
   updateVideo: (id: string, title: string, categoryId: string) => Promise<void>;
+  checkRestore: () => Promise<null>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -32,6 +35,21 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (error) {
       console.error("Failed to initialize local database:", error);
     }
+  },
+
+  checkRestore: async () => {
+    const categories = await db.fetchCategories();
+    console.log(categories);
+    return null;
+  },
+
+  clean: async () => {
+    await db.clearDb();
+  },
+
+  close: async () => {
+    await db.closeDatabase();
+    set({ isInitialized: false, videos: [], categories: [] });
   },
 
   loadVideos: async () => {

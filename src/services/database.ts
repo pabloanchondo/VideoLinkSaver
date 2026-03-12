@@ -3,6 +3,13 @@ import { Category, VideoLink } from "../types";
 
 let db: SQLite.SQLiteDatabase | null = null;
 
+export const closeDatabase = async () => {
+  if (db) {
+    await db.closeAsync();
+    db = null;
+  }
+};
+
 export const initDb = async () => {
   if (!db) {
     db = await SQLite.openDatabaseAsync("myvideos.db");
@@ -32,6 +39,16 @@ export const initDb = async () => {
 export const getDb = () => {
   if (!db) throw new Error("Database not initialized");
   return db;
+};
+
+export const clearDb = async () => {
+  const database = getDb();
+
+  // merge WAL into main DB
+  await database.execAsync("PRAGMA wal_checkpoint(TRUNCATE)");
+
+  // force SQLite to write everything
+  await database.execAsync("VACUUM");
 };
 
 // --- Category Methods ---
