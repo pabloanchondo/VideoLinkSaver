@@ -1,3 +1,4 @@
+import AdBanner from "@/components/Banner";
 import Colors from "@/src/constants/Colors";
 import { extractMetadata } from "@/src/services/metadata";
 import { useStore } from "@/src/store/useStore";
@@ -219,7 +220,11 @@ export default function AddVideoScreen() {
         <TouchableOpacity
           style={[
             styles.saveBtn,
-            { backgroundColor: colors.tint, opacity: isSaving ? 0.7 : 1 },
+            {
+              backgroundColor: colors.tint,
+              opacity: isSaving ? 0.7 : 1,
+              marginBottom: 15,
+            },
           ]}
           onPress={handleSave}
           disabled={isSaving}
@@ -230,6 +235,7 @@ export default function AddVideoScreen() {
             <Text style={styles.saveText}>Save Video Link</Text>
           )}
         </TouchableOpacity>
+        <AdBanner />
       </ScrollView>
     </SafeAreaView>
   );

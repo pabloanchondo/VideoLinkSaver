@@ -1,3 +1,4 @@
+import AdBanner from "@/components/Banner";
 import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import Colors from "@/src/constants/Colors";
@@ -49,6 +50,7 @@ export default function CategoriesScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: "#F3F4F6" }]}>
+      <AdBanner />
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>
           Categories

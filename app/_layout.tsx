@@ -5,6 +5,7 @@ import "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import mobileAds from "react-native-google-mobile-ads";
 import "./globals.css";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -24,6 +25,12 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  mobileAds()
+    .initialize()
+    .then((adapterStatuses) => {
+      // Initialization complete!
+    });
 
   if (!loaded) {
     return null;

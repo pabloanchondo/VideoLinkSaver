@@ -1,3 +1,4 @@
+import AdBanner from "@/components/Banner";
 import Colors from "@/src/constants/Colors";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -249,6 +250,7 @@ export default function VideoDetailScreen() {
           </>
         )}
       </View>
+      <AdBanner />
     </ScrollView>
   );
 }

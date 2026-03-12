@@ -110,7 +110,13 @@
           }
         }
       ],
-      "expo-share-intent"
+      "expo-share-intent",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-8421586383850459~1170848803"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,3 +1,4 @@
+import AdBanner from "@/components/Banner";
 import { CategoryList } from "@/src/components/CategoryList";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { useSharedIntent } from "@/src/services/shareIntent";
@@ -31,6 +32,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F3F4F6" }}>
+      <AdBanner />
       <View
         style={{
           flexDirection: "row",

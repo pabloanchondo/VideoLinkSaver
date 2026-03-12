@@ -1,3 +1,4 @@
+import AdBanner from "@/components/Banner";
 import { VideoList } from "@/src/components/VideoList";
 import { useStore } from "@/src/store/useStore";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -23,6 +24,7 @@ export default function CategoryScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
+      <AdBanner />
       <View className="flex-row items-center px-5 pt-4 pb-5">
         <TouchableOpacity onPress={() => router.back()} className="mr-2">
           <Text className="text-lg text-blue-500">Back</Text>

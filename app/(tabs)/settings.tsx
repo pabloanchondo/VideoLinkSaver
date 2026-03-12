@@ -1,3 +1,4 @@
+import AdBanner from "@/components/Banner";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import Colors from "@/src/constants/Colors";
 import { getDb } from "@/src/services/database";
@@ -133,6 +134,7 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: "#F3F4F6" }]}>
+      <AdBanner />
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>
           Settings
