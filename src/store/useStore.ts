@@ -15,6 +15,7 @@ interface AppState {
   removeVideo: (id: string) => Promise<void>;
   addCategory: (category: Category) => Promise<void>;
   removeCategory: (id: string) => Promise<void>;
+  updateVideo: (id: string, title: string, categoryId: string) => Promise<void>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -55,9 +56,18 @@ export const useStore = create<AppState>((set, get) => ({
     set((state) => ({ videos: [video, ...state.videos] }));
   },
 
+  updateVideo: async (id: string, title: string, categoryId: string) => {
+    await db.updateVideo(id, title, categoryId);
+    set((state) => ({
+      videos: state.videos.map((v) =>
+        v.id === id ? { ...v, title, categoryId } : v,
+      ),
+    }));
+  },
+
   removeVideo: async (id) => {
     await db.removeVideo(id);
-    set((state) => ({ videos: state.videos.filter((v) => v.id !== id) }));
+    await get().loadVideos();
   },
 
   addCategory: async (category) => {

@@ -12,12 +12,21 @@ export const VideoList = ({ videos }: VideoListProps) => {
   const [filteredVideos, setFilteredVideos] = useState<VideoLink[]>(videos);
   const [search, setSearch] = useState("");
 
+  React.useEffect(() => {
+    // Actualiza la lista filtrada cuando cambian los videos
+    if (search === "") {
+      setFilteredVideos(videos);
+    } else {
+      setFilteredVideos(
+        videos.filter((video) =>
+          video.title.toLowerCase().includes(search.toLowerCase()),
+        ),
+      );
+    }
+  }, [videos, search]);
+
   const handleSearch = (text: string) => {
     setSearch(text);
-    const filtered = videos.filter((video) =>
-      video.title.toLowerCase().includes(text.toLowerCase()),
-    );
-    setFilteredVideos(filtered);
   };
 
   return (
