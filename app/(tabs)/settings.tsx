@@ -186,7 +186,7 @@ export default function SettingsScreen() {
                   Backup
                 </Text>
                 <Text style={{ color: colors.icon }}>
-                  Descarga una copia de seguridad de tus datos
+                  Download a backup of your data
                 </Text>
               </View>
             </View>
@@ -206,7 +206,7 @@ export default function SettingsScreen() {
                   Restore
                 </Text>
                 <Text style={{ color: colors.icon }}>
-                  Restaura una copia de seguridad de tus datos
+                  Restore a backup of your data
                 </Text>
               </View>
             </View>
