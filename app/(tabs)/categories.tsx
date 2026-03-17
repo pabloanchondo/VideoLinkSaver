@@ -105,7 +105,9 @@ export default function CategoriesScreen() {
                   onPress={() => handleDelete(item.id)}
                   style={{ position: "absolute", right: 18, top: 18 }}
                 >
-                  <Ionicons name="trash" size={20} color="#EF4444" />
+                  {item.id !== "uncategorized" && (
+                    <Ionicons name="trash" size={20} color="#EF4444" />
+                  )}
                 </TouchableOpacity>
               </View>
             )}

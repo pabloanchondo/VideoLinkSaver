@@ -2,6 +2,7 @@ import AdBanner from "@/components/Banner";
 import Colors from "@/src/constants/Colors";
 import { extractMetadata } from "@/src/services/metadata";
 import { useStore } from "@/src/store/useStore";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -22,13 +23,33 @@ export default function AddVideoScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  const { categories, addVideo } = useStore();
+  const { categories, addVideo, addCategory } = useStore();
 
   const [url, setUrl] = useState("");
   const [userTitle, setUserTitle] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<string>("uncategorized");
   const [isSaving, setIsSaving] = useState(false);
+
+  const [newCategoryName, setNewCategoryName] = useState("");
+
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) return;
+
+    let id = Date.now().toString();
+
+    await addCategory({
+      id,
+      name: newCategoryName.trim(),
+      parentId: null,
+      createdAt: Date.now(),
+    });
+    setNewCategoryName("");
+    setIsVisible(false);
+    handleAdd(id);
+  };
 
   const [meta, setMeta] = useState({
     title: "",
@@ -135,6 +156,10 @@ export default function AddVideoScreen() {
     }
   };
 
+  const handleShowInputText = () => {
+    setIsVisible((state) => !state);
+  };
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: colors.background }]}
@@ -178,10 +203,49 @@ export default function AddVideoScreen() {
           autoCapitalize="none"
           keyboardType="default"
         />
+        <View className="flex flex-row justify-between">
+          <Text style={[styles.label, { color: colors.text, marginTop: 24 }]}>
+            Select Category (Optional)
+          </Text>
 
-        <Text style={[styles.label, { color: colors.text, marginTop: 24 }]}>
-          Select Category (Optional)
-        </Text>
+          <TouchableOpacity
+            style={[styles.addBtn, { backgroundColor: colors.tint }]}
+            onPress={handleShowInputText}
+          >
+            <Ionicons
+              name={isVisible ? "remove-circle-outline" : "add-circle-outline"}
+              size={24}
+              color="#fff"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {isVisible && (
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[
+                styles.inputCat,
+                {
+                  backgroundColor: colors.card,
+                  color: colors.text,
+                  borderColor: colors.border,
+                },
+              ]}
+              placeholder="New folder name..."
+              placeholderTextColor={colors.icon}
+              value={newCategoryName}
+              onChangeText={setNewCategoryName}
+              onSubmitEditing={handleAddCategory}
+            />
+            <TouchableOpacity
+              style={[styles.addBtn, { backgroundColor: colors.tint }]}
+              onPress={handleAddCategory}
+            >
+              <Ionicons name="add-circle-outline" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={styles.categoriesGrid}>
           {categories.map((cat) => (
             <TouchableOpacity
@@ -286,5 +350,28 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  addBtn: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+    borderRadius: 8,
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
+    gap: 12,
+    alignItems: "center",
+  },
+  inputCat: {
+    flex: 1,
+    height: 48,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    fontSize: 16,
   },
 });

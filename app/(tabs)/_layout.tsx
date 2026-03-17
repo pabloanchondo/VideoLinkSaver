@@ -4,17 +4,18 @@ import { Platform } from "react-native";
 
 import { HapticTab } from "@/src/components/HapticTab";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
+import Colors from "@/src/constants/Colors";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         sceneStyle: {
-          backgroundColor: "#F3F4F6",
+          backgroundColor: Colors["light"].background,
         },
-        tabBarActiveTintColor: "#0a7ea4",
+        tabBarActiveTintColor: Colors["light"].tint,
         headerBackgroundContainerStyle: {
-          backgroundColor: "#F3F4F6",
+          backgroundColor: Colors["light"].background,
         },
         headerShadowVisible: false,
         headerShown: true,

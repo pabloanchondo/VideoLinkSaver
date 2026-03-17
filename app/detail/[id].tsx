@@ -1,4 +1,5 @@
 import AdBanner from "@/components/Banner";
+import { PlatformIcon } from "@/src/components/PlatformIcon";
 import Colors from "@/src/constants/Colors";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -11,6 +12,7 @@ import {
   Alert,
   Image,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -93,8 +95,26 @@ export default function VideoDetailScreen() {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: `Check out this: ${video.url}`,
+      });
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    }
+  };
+
   return (
-    <ScrollView style={{ flex: 1, marginBottom: 30 }}>
+    <ScrollView
+      style={{
+        flex: 1,
+        marginBottom: 30,
+        position: "relative",
+        height: "100%",
+      }}
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
       {video.thumbnailUrl && (
         <Image
           source={{ uri: video.thumbnailUrl }}
@@ -172,7 +192,6 @@ export default function VideoDetailScreen() {
                   backgroundColor: colors.tint,
 
                   opacity: isSaving ? 0.7 : 1,
-                  flex: 1,
                   marginRight: 1,
                 },
               ]}
@@ -193,7 +212,6 @@ export default function VideoDetailScreen() {
                 styles.saveBtn,
                 {
                   borderColor: "#ff4444",
-                  flex: 1,
                   borderWidth: 1,
                   marginLeft: 1,
                   marginTop: 0,
@@ -214,54 +232,136 @@ export default function VideoDetailScreen() {
         )}
 
         {!isEditing && (
-          <>
+          <View>
             <Text style={[styles.title, { color: colors.text }]}>
               {video.title}
             </Text>
 
-            <TouchableOpacity onPress={handleCopyLink}>
+            <View className="flex-row items-center mb-1">
+              <TouchableOpacity
+                className="bg-slate-200 rounded-xl px-5 py-3 flex-row items-center"
+                onPress={handleOpenLink}
+              >
+                <PlatformIcon platform={video.platform} size={25} />
+                <Text className="text-md text-gray-700">
+                  Ver en{" "}
+                  {video.platform.charAt(0).toUpperCase() +
+                    video.platform.slice(1)}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text className="text-md text-gray-500 mt-2">
+              Date{" "}
+              {new Date(video.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </Text>
+
+            {/* <TouchableOpacity onPress={handleCopyLink}>
               <Text style={[styles.url, { color: colors.tint }]}>
                 {video.url}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            <View style={styles.actions}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 12,
+                marginTop: 20,
+              }}
+            >
               <TouchableOpacity
-                style={[styles.mainBtn, { backgroundColor: colors.tint }]}
-                onPress={handleOpenLink}
+                onPress={handleCopyLink}
+                style={styles.btnAction}
               >
-                <Text style={styles.btnText}>Open in App / Browser</Text>
+                <Ionicons
+                  name="copy-outline"
+                  size={24}
+                  color={colors.tint}
+                  style={{ bottom: 1, left: 1 }}
+                />
+                <Text style={[styles.btnText]}>Copy</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.mainBtn, { backgroundColor: colors.tint }]}
                 onPress={() => setIsEditing(true)}
+                style={styles.btnAction}
               >
-                <Text style={styles.btnText}>Edit</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.deleteBtn, { borderColor: "#ff4444" }]}
-                onPress={handleDelete}
-              >
-                <Text style={styles.deleteText}>Delete Link</Text>
+                <Ionicons
+                  name="sync-outline"
+                  size={24}
+                  color={colors.tint}
+                  style={{ bottom: 1, left: 1 }}
+                />
+                <Text style={[styles.btnText]}>Edit</Text>
               </TouchableOpacity>
             </View>
-          </>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 12,
+                marginTop: 12,
+              }}
+            >
+              <TouchableOpacity
+                onPress={handleDelete}
+                style={[styles.btnAction, { borderColor: "#ff4444" }]}
+              >
+                <Ionicons
+                  name="trash-outline"
+                  size={24}
+                  color="#ff4444"
+                  style={{ bottom: 1, left: 1 }}
+                />
+                <Text style={[styles.btnText]}>Delete</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={handleShare} style={styles.btnAction}>
+                <Ionicons
+                  name="share-social-outline"
+                  size={24}
+                  color={colors.tint}
+                  style={{ bottom: 1, left: 1 }}
+                />
+                <Text style={[styles.btnText]}>Share</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         )}
       </View>
-      <AdBanner />
+      <View
+        style={{
+          width: "100%",
+          position: "absolute",
+          bottom: 0,
+        }}
+      >
+        <AdBanner />
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  roundedBtn: {
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
   },
   cover: {
     width: "100%",
-    height: 240,
+    height: 400,
   },
   content: {
     padding: 20,
@@ -288,7 +388,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btnText: {
-    color: "#fff",
+    color: "#333",
     fontSize: 16,
     fontWeight: "600",
   },
@@ -341,5 +441,20 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  btnAction: {
+    borderColor: Colors["light"].tint,
+    backgroundColor: Colors["light"].background,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    flexGrow: 1,
+    flexBasis: "auto",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    marginVertical: 8,
   },
 });
