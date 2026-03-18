@@ -17,8 +17,9 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-
   const backgroundColor = useThemeColor({}, "background");
+  const cardColor = useThemeColor({}, "card");
+  const textColor = useThemeColor({}, "text");
 
   useEffect(() => {
     if (error) throw error;
@@ -47,9 +48,9 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerStyle: {
-            backgroundColor: useThemeColor({}, "card"),
+            backgroundColor: cardColor,
           },
-          headerTintColor: useThemeColor({}, "text"),
+          headerTintColor: textColor,
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

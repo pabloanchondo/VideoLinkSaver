@@ -269,6 +269,28 @@ export default function VideoDetailScreen() {
                     video.platform.slice(1)}
                 </Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                className=" rounded-xl px-5 py-3 flex-row items-center ml-4"
+                style={{
+                  backgroundColor:
+                    colorScheme === "dark" ? Colors.dark.card : "#E2E8F0",
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                }}
+                onPress={() => router.back()}
+              >
+                <Ionicons
+                  name="arrow-back-outline"
+                  size={20}
+                  color={colors.text}
+                  style={{ bottom: 1, left: 1, marginRight: 4 }}
+                />
+
+                <Text className="text-md" style={{ color: colors.text }}>
+                  Back
+                </Text>
+              </TouchableOpacity>
             </View>
 
             {/* <TouchableOpacity onPress={handleCopyLink}>

@@ -211,7 +211,7 @@ export default function AddVideoScreen() {
           </Text>
 
           <TouchableOpacity
-            style={[styles.addBtn, { backgroundColor: colors.tint }]}
+            style={[styles.addBtn, { backgroundColor: colors.tintSecondary }]}
             onPress={handleShowInputText}
           >
             <View className="flex flex-row gap-1 items-center">
@@ -308,7 +308,9 @@ export default function AddVideoScreen() {
                 styles.categoryChip,
                 {
                   backgroundColor:
-                    selectedCategory === cat.id ? colors.tint : colors.card,
+                    selectedCategory === cat.id
+                      ? colors.tintSecondary
+                      : colors.card,
                   borderColor: colors.border,
                 },
               ]}
