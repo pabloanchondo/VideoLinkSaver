@@ -1,3 +1,4 @@
+import { useThemeColor } from "@/hooks/use-theme-color";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Text, TouchableOpacity, View } from "react-native";
 // import * from 'nativewind';
@@ -14,11 +15,26 @@ export const CategoryFolderCard = ({
 }: CategoryFolderCardProps) => (
   <TouchableOpacity
     onPress={onPress}
-    className="flex-row items-center bg-white rounded-xl shadow-md p-4 mb-3 mr-3 flex-1"
+    style={{
+      backgroundColor: useThemeColor({}, "card"),
+    }}
+    className="flex-row items-center  rounded-xl shadow-md p-4 mb-3 mr-3 flex-1"
   >
     <View className="mr-3">
-      <MaterialIcons name="folder" size={32} color="#4B5563" />
+      <MaterialIcons
+        name="folder"
+        size={32}
+        color={useThemeColor({}, "tint")}
+      />
     </View>
-    <Text className="text-lg font-semibold text-gray-800">{name}</Text>
+    <Text
+      style={{
+        fontSize: 18,
+        fontWeight: "600",
+        color: useThemeColor({}, "text"),
+      }}
+    >
+      {name}
+    </Text>
   </TouchableOpacity>
 );

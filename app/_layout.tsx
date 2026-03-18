@@ -1,4 +1,3 @@
-import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import "expo-share-intent";
@@ -7,6 +6,8 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import mobileAds from "react-native-google-mobile-ads";
 
+import { useThemeColor } from "@/hooks/use-theme-color";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "./globals.css";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -16,6 +17,8 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
+  const backgroundColor = useThemeColor({}, "background");
 
   useEffect(() => {
     if (error) throw error;
@@ -39,8 +42,16 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <Stack>
+    // <ThemeProvider value={DefaultTheme}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: useThemeColor({}, "card"),
+          },
+          headerTintColor: useThemeColor({}, "text"),
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="add"
@@ -54,6 +65,7 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
-    </ThemeProvider>
+    </GestureHandlerRootView>
+    // </ThemeProvider>
   );
 }

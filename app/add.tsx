@@ -1,6 +1,7 @@
 import AdBanner from "@/components/Banner";
 import { Modal } from "@/components/ui/Modal";
 import Colors from "@/src/constants/Colors";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { extractMetadata } from "@/src/services/metadata";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -20,7 +21,7 @@ import LinkPreview from "react-native-link-preview";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AddVideoScreen() {
-  const colors = Colors["light"];
+  const colors = Colors[useColorScheme()];
   const router = useRouter();
   const params = useLocalSearchParams();
 
@@ -231,21 +232,20 @@ export default function AddVideoScreen() {
         <Modal isOpen={isVisible} withInput>
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: colors.card,
               padding: 25,
               borderRadius: 8,
               width: "85%",
             }}
           >
-            <Text className="text-xl mb-5 text-slate-600">
+            <Text className="text-xl mb-5" style={{ color: colors.text }}>
               Agrega una nueva categoria
             </Text>
             <View>
               <TextInput
                 style={[
-                  styles.inputCat,
+                  styles.input,
                   {
-                    width: "100%",
                     backgroundColor: colors.card,
                     color: colors.text,
                     borderColor: colors.border,
@@ -282,7 +282,7 @@ export default function AddVideoScreen() {
                   styles.saveBtn,
                   {
                     borderWidth: 1,
-                    borderColor: "#E5E7EB",
+                    borderColor: colors.border,
                     backgroundColor: colors.background,
                     flex: 1,
                     opacity: isSaving ? 0.7 : 1,
@@ -292,8 +292,8 @@ export default function AddVideoScreen() {
                 onPress={() => setIsVisible(false)}
                 disabled={isSaving}
               >
-                <Text style={[styles.saveText, { color: "#333" }]}>
-                  <Ionicons name="close" size={16} color="#333" /> Cancel
+                <Text style={[styles.saveText, { color: colors.text }]}>
+                  <Ionicons name="close" size={16} color={colors.text} /> Cancel
                 </Text>
               </TouchableOpacity>
             </View>

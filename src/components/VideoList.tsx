@@ -1,4 +1,5 @@
 // import { LinkPreview } from "@flyerhq/react-native-link-preview";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import React, { useState } from "react";
 import { FlatList, StyleSheet, TextInput, View } from "react-native";
 import { VideoLink } from "../types";
@@ -43,6 +44,7 @@ export const VideoList = ({ videos }: VideoListProps) => {
             borderColor: "#ccc",
             marginBottom: 12,
             width: "100%",
+            color: useThemeColor({}, "text"),
           }}
         />
       </View>

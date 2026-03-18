@@ -2,30 +2,42 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
 
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { HapticTab } from "@/src/components/HapticTab";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
-import Colors from "@/src/constants/Colors";
 
 export default function TabLayout() {
+  const backgroundColor = useThemeColor({}, "background");
+  const cardBg = useThemeColor({}, "card");
+
   return (
     <Tabs
       screenOptions={{
         sceneStyle: {
-          backgroundColor: Colors["light"].background,
+          backgroundColor: backgroundColor,
         },
-        tabBarActiveTintColor: Colors["light"].tint,
+        tabBarActiveTintColor: useThemeColor({}, "tint"),
+
         headerBackgroundContainerStyle: {
-          backgroundColor: Colors["light"].background,
+          backgroundColor: "red",
+          // backgroundColor: backgroundColor,
         },
-        headerShadowVisible: false,
+        headerTintColor: useThemeColor({}, "text"),
+        headerShadowVisible: true,
         headerShown: true,
         tabBarButton: HapticTab,
+        headerStyle: {
+          backgroundColor: cardBg,
+          height: 100,
+        },
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
             position: "absolute",
           },
-          default: {},
+          default: {
+            backgroundColor: cardBg,
+          },
         }),
         //Cambiar background del contenido
       }}

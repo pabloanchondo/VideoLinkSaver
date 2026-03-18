@@ -1,4 +1,5 @@
 import AdBanner from "@/components/Banner";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { VideoList } from "@/src/components/VideoList";
 import { useStore } from "@/src/store/useStore";
 import { useFocusEffect } from "@react-navigation/native";
@@ -35,10 +36,16 @@ export default function CategoryScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: useThemeColor({}, "background") }}
+    >
       <AdBanner />
       <View className="flex-row items-center px-5 pt-4 pb-4">
-        <Text className="text-2xl font-bold text-gray-900">
+        <Text
+          className="text-2xl font-bold"
+          style={{ color: useThemeColor({}, "text") }}
+        >
           {category.name}
         </Text>
       </View>

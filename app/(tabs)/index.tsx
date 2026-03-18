@@ -1,4 +1,5 @@
 import AdBanner from "@/components/Banner";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { CategoryList } from "@/src/components/CategoryList";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { useSharedIntent } from "@/src/services/shareIntent";
@@ -31,7 +32,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#F3F4F6" }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <AdBanner />
       <View
         style={{
@@ -43,14 +44,24 @@ export default function HomeScreen() {
           paddingBottom: 20,
         }}
       >
-        <Text style={{ fontSize: 28, fontWeight: "bold", color: "#1F2937" }}>
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: "bold",
+            color: useThemeColor({}, "text"),
+          }}
+        >
           My Saved Videos
         </Text>
         <TouchableOpacity
           onPress={() => router.push("/add")}
           style={{ padding: 8 }}
         >
-          <IconSymbol name="plus.circle.fill" size={28} color="#6366F1" />
+          <IconSymbol
+            name="plus.circle.fill"
+            size={28}
+            color={useThemeColor({}, "tint")}
+          />
         </TouchableOpacity>
       </View>
 

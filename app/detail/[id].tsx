@@ -1,6 +1,7 @@
 import AdBanner from "@/components/Banner";
 import { PlatformIcon } from "@/src/components/PlatformIcon";
 import Colors from "@/src/constants/Colors";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Clipboard from "expo-clipboard";
@@ -22,7 +23,8 @@ import {
 
 export default function VideoDetailScreen() {
   const { id } = useLocalSearchParams();
-  const colors = Colors["light"];
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme];
   const router = useRouter();
 
   const { videos, removeVideo, categories } = useStore();
@@ -112,6 +114,7 @@ export default function VideoDetailScreen() {
         marginBottom: 60,
         position: "relative",
         minHeight: "100%",
+        backgroundColor: colors.background,
       }}
       contentContainerStyle={{ flexGrow: 1 }}
     >
@@ -237,7 +240,10 @@ export default function VideoDetailScreen() {
               {video.title}
             </Text>
 
-            <Text className="text-md text-gray-500 mb-2">
+            <Text
+              className="text-md"
+              style={{ color: colors.text, marginBottom: 8 }}
+            >
               {new Date(video.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
@@ -247,11 +253,17 @@ export default function VideoDetailScreen() {
 
             <View className="flex-row items-center mb-1 mt-3">
               <TouchableOpacity
-                className="bg-slate-200 rounded-xl px-5 py-3 flex-row items-center"
+                className=" rounded-xl px-5 py-3 flex-row items-center"
+                style={{
+                  backgroundColor:
+                    colorScheme === "dark" ? Colors.dark.card : "#E2E8F0",
+                  borderColor: colors.border,
+                  borderWidth: 1,
+                }}
                 onPress={handleOpenLink}
               >
                 <PlatformIcon platform={video.platform} size={25} />
-                <Text className="text-md text-gray-700">
+                <Text className="text-md" style={{ color: colors.text }}>
                   View on{" "}
                   {video.platform.charAt(0).toUpperCase() +
                     video.platform.slice(1)}
@@ -275,7 +287,13 @@ export default function VideoDetailScreen() {
             >
               <TouchableOpacity
                 onPress={handleCopyLink}
-                style={styles.btnAction}
+                style={[
+                  styles.btnAction,
+                  {
+                    borderColor: colors.tint,
+                    backgroundColor: colors.card,
+                  },
+                ]}
               >
                 <Ionicons
                   name="copy-outline"
@@ -283,12 +301,20 @@ export default function VideoDetailScreen() {
                   color={colors.tint}
                   style={{ bottom: 1, left: 1 }}
                 />
-                <Text style={[styles.btnText]}>Copy</Text>
+                <Text style={[styles.btnText, { color: colors.text }]}>
+                  Copy
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => setIsEditing(true)}
-                style={styles.btnAction}
+                style={[
+                  styles.btnAction,
+                  {
+                    borderColor: colors.tint,
+                    backgroundColor: colors.card,
+                  },
+                ]}
               >
                 <Ionicons
                   name="sync-outline"
@@ -296,7 +322,9 @@ export default function VideoDetailScreen() {
                   color={colors.tint}
                   style={{ bottom: 1, left: 1 }}
                 />
-                <Text style={[styles.btnText]}>Edit</Text>
+                <Text style={[styles.btnText, { color: colors.text }]}>
+                  Edit
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -310,7 +338,13 @@ export default function VideoDetailScreen() {
             >
               <TouchableOpacity
                 onPress={handleDelete}
-                style={[styles.btnAction, { borderColor: "#ff4444" }]}
+                style={[
+                  styles.btnAction,
+                  {
+                    borderColor: "#ff4444",
+                    backgroundColor: colors.card,
+                  },
+                ]}
               >
                 <Ionicons
                   name="trash-outline"
@@ -318,17 +352,27 @@ export default function VideoDetailScreen() {
                   color="#ff4444"
                   style={{ bottom: 1, left: 1 }}
                 />
-                <Text style={[styles.btnText]}>Delete</Text>
+                <Text style={[styles.btnText, { color: colors.text }]}>
+                  Delete
+                </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={handleShare} style={styles.btnAction}>
+              <TouchableOpacity
+                onPress={handleShare}
+                style={[
+                  styles.btnAction,
+                  { borderColor: colors.tint, backgroundColor: colors.card },
+                ]}
+              >
                 <Ionicons
                   name="share-social-outline"
                   size={24}
                   color={colors.tint}
                   style={{ bottom: 1, left: 1 }}
                 />
-                <Text style={[styles.btnText]}>Share</Text>
+                <Text style={[styles.btnText, { color: colors.text }]}>
+                  Share
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -443,8 +487,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   btnAction: {
-    borderColor: Colors["light"].tint,
-    backgroundColor: Colors["light"].background,
     padding: 12,
     borderRadius: 8,
     alignItems: "center",

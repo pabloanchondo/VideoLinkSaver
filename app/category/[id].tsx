@@ -1,4 +1,5 @@
 import AdBanner from "@/components/Banner";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { VideoList } from "@/src/components/VideoList";
 import { useStore } from "@/src/store/useStore";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -16,14 +17,20 @@ export default function CategoryScreen() {
 
   if (!category) {
     return (
-      <SafeAreaView className="flex-1 bg-gray-50 justify-center items-center">
+      <SafeAreaView
+        className="flex-1 justify-center items-center"
+        style={{ backgroundColor: useThemeColor({}, "background") }}
+      >
         <Text className="text-lg text-gray-500">Category not found.</Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: useThemeColor({}, "background") }}
+    >
       <AdBanner />
       <View className="flex-row items-center px-5 pt-4 pb-5">
         <TouchableOpacity onPress={() => router.back()} className="mr-2">

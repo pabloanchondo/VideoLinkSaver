@@ -1,6 +1,7 @@
 import AdBanner from "@/components/Banner";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import Colors from "@/src/constants/Colors";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { getDb } from "@/src/services/database";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -19,7 +20,7 @@ import {
 } from "react-native";
 
 export default function SettingsScreen() {
-  const colors = Colors["light"];
+  const colors = Colors[useColorScheme()];
 
   const { init, close, clean, loadCategories, loadVideos } = useStore();
 
@@ -133,7 +134,7 @@ export default function SettingsScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "#F3F4F6" }]}>
+    <SafeAreaView style={[styles.container]}>
       <AdBanner />
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>
