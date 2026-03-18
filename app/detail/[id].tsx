@@ -109,9 +109,9 @@ export default function VideoDetailScreen() {
     <ScrollView
       style={{
         flex: 1,
-        marginBottom: 30,
+        marginBottom: 60,
         position: "relative",
-        height: "100%",
+        minHeight: "100%",
       }}
       contentContainerStyle={{ flexGrow: 1 }}
     >
@@ -237,28 +237,27 @@ export default function VideoDetailScreen() {
               {video.title}
             </Text>
 
-            <View className="flex-row items-center mb-1">
-              <TouchableOpacity
-                className="bg-slate-200 rounded-xl px-5 py-3 flex-row items-center"
-                onPress={handleOpenLink}
-              >
-                <PlatformIcon platform={video.platform} size={25} />
-                <Text className="text-md text-gray-700">
-                  Ver en{" "}
-                  {video.platform.charAt(0).toUpperCase() +
-                    video.platform.slice(1)}
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <Text className="text-md text-gray-500 mt-2">
-              Date{" "}
+            <Text className="text-md text-gray-500 mb-2">
               {new Date(video.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
               })}
             </Text>
+
+            <View className="flex-row items-center mb-1 mt-3">
+              <TouchableOpacity
+                className="bg-slate-200 rounded-xl px-5 py-3 flex-row items-center"
+                onPress={handleOpenLink}
+              >
+                <PlatformIcon platform={video.platform} size={25} />
+                <Text className="text-md text-gray-700">
+                  View on{" "}
+                  {video.platform.charAt(0).toUpperCase() +
+                    video.platform.slice(1)}
+                </Text>
+              </TouchableOpacity>
+            </View>
 
             {/* <TouchableOpacity onPress={handleCopyLink}>
               <Text style={[styles.url, { color: colors.tint }]}>
@@ -335,11 +334,13 @@ export default function VideoDetailScreen() {
           </View>
         )}
       </View>
+      <View style={{ height: 80 }}></View>
       <View
         style={{
           width: "100%",
           position: "absolute",
           bottom: 0,
+          paddingBottom: 10,
         }}
       >
         <AdBanner />
@@ -361,7 +362,7 @@ const styles = StyleSheet.create({
   },
   cover: {
     width: "100%",
-    height: 400,
+    height: 360,
   },
   content: {
     padding: 20,
@@ -370,7 +371,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 8,
   },
   url: {
     fontSize: 14,

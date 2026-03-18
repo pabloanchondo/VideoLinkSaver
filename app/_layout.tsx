@@ -46,7 +46,10 @@ export default function RootLayout() {
           name="add"
           options={{ presentation: "modal", title: "Add Video" }}
         />
-        <Stack.Screen name="detail/[id]" options={{ title: "Video Detail" }} />
+        <Stack.Screen
+          name="detail/[id]"
+          options={{ title: "Video Detail", headerShown: false }}
+        />
         <Stack.Screen name="category" options={{ title: "Category Detail" }} />
         <Stack.Screen name="+not-found" />
       </Stack>

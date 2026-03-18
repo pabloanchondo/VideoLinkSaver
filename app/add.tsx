@@ -1,4 +1,5 @@
 import AdBanner from "@/components/Banner";
+import { Modal } from "@/components/ui/Modal";
 import Colors from "@/src/constants/Colors";
 import { extractMetadata } from "@/src/services/metadata";
 import { useStore } from "@/src/store/useStore";
@@ -212,39 +213,92 @@ export default function AddVideoScreen() {
             style={[styles.addBtn, { backgroundColor: colors.tint }]}
             onPress={handleShowInputText}
           >
-            <Ionicons
-              name={isVisible ? "remove-circle-outline" : "add-circle-outline"}
-              size={24}
-              color="#fff"
-            />
+            <View className="flex flex-row gap-1 items-center">
+              <Text style={{ color: "#fff", fontSize: 14, fontWeight: "500" }}>
+                {isVisible ? "Close" : "New Category"}
+              </Text>
+              <Ionicons
+                name={
+                  isVisible ? "remove-circle-outline" : "add-circle-outline"
+                }
+                size={24}
+                color="#fff"
+              />
+            </View>
           </TouchableOpacity>
         </View>
 
-        {isVisible && (
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[
-                styles.inputCat,
-                {
-                  backgroundColor: colors.card,
-                  color: colors.text,
-                  borderColor: colors.border,
-                },
-              ]}
-              placeholder="New folder name..."
-              placeholderTextColor={colors.icon}
-              value={newCategoryName}
-              onChangeText={setNewCategoryName}
-              onSubmitEditing={handleAddCategory}
-            />
-            <TouchableOpacity
-              style={[styles.addBtn, { backgroundColor: colors.tint }]}
-              onPress={handleAddCategory}
-            >
-              <Ionicons name="add-circle-outline" size={24} color="#fff" />
-            </TouchableOpacity>
+        <Modal isOpen={isVisible} withInput>
+          <View
+            style={{
+              backgroundColor: "#fff",
+              padding: 25,
+              borderRadius: 8,
+              width: "85%",
+            }}
+          >
+            <Text className="text-xl mb-5 text-slate-600">
+              Agrega una nueva categoria
+            </Text>
+            <View>
+              <TextInput
+                style={[
+                  styles.inputCat,
+                  {
+                    width: "100%",
+                    backgroundColor: colors.card,
+                    color: colors.text,
+                    borderColor: colors.border,
+                  },
+                ]}
+                placeholder="New folder name..."
+                placeholderTextColor={colors.icon}
+                value={newCategoryName}
+                onChangeText={setNewCategoryName}
+                onSubmitEditing={handleAddCategory}
+              />
+            </View>
+            <View className="flex flex-row gap-2 justify-between items-center align-middle">
+              <TouchableOpacity
+                style={[
+                  styles.saveBtn,
+                  {
+                    backgroundColor: colors.tint,
+                    flex: 1,
+                    opacity: isSaving ? 0.7 : 1,
+                    marginRight: 1,
+                  },
+                ]}
+                onPress={handleAddCategory}
+                disabled={isSaving}
+              >
+                <Text style={styles.saveText}>
+                  <Ionicons name="save" size={16} color="#fff" /> Save
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.saveBtn,
+                  {
+                    borderWidth: 1,
+                    borderColor: "#E5E7EB",
+                    backgroundColor: colors.background,
+                    flex: 1,
+                    opacity: isSaving ? 0.7 : 1,
+                    marginRight: 1,
+                  },
+                ]}
+                onPress={() => setIsVisible(false)}
+                disabled={isSaving}
+              >
+                <Text style={[styles.saveText, { color: "#333" }]}>
+                  <Ionicons name="close" size={16} color="#333" /> Cancel
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        )}
+        </Modal>
 
         <View style={styles.categoriesGrid}>
           {categories.map((cat) => (
@@ -341,6 +395,7 @@ const styles = StyleSheet.create({
   },
   saveBtn: {
     paddingVertical: 16,
+    marginHorizontal: 2,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
@@ -348,13 +403,13 @@ const styles = StyleSheet.create({
   },
   saveText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
   },
   addBtn: {
     justifyContent: "center",
     alignItems: "center",
-    padding: 16,
+    padding: 8,
     borderRadius: 8,
     marginTop: 12,
     marginBottom: 12,
@@ -366,7 +421,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputCat: {
-    flex: 1,
     height: 48,
     borderWidth: 1,
     borderRadius: 8,
