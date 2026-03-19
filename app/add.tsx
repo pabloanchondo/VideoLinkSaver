@@ -1,5 +1,7 @@
+import { api } from "@/api/api";
 import AdBanner from "@/components/Banner";
 import { Modal } from "@/components/ui/Modal";
+import { APIVideoResponse } from "@/interfaces/video.interfaces";
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { extractMetadata } from "@/src/services/metadata";
@@ -68,10 +70,29 @@ export default function AddVideoScreen() {
 
   const getMetadata = async (url: string) => {
     try {
+      setIsSaving(true);
+      const cleanUrl = url.split("?")[0];
+
+      const platform = (await extractMetadata(cleanUrl)).platform;
+
+      //Si es facebook, no se puede obtener la metadata con link preview, por eso se hace una consulta a la api para obtenerla
+      if (platform === "facebook") {
+        const fbData = await getFacebookData(url);
+        setMeta((prev) => ({
+          ...prev,
+          title: fbData.title,
+          thumbnailUrl: fbData.thumbnailUrl,
+        }));
+        setUserTitle(fbData.title);
+        return;
+      }
+
       const { title, description, images } = await LinkPreview.getPreview(url);
       setUserTitle(title || "");
     } catch (e) {
       console.log("Metadata error", e);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -99,6 +120,24 @@ export default function AddVideoScreen() {
     }
   };
 
+  const getFacebookData = async (url: string) => {
+    try {
+      const { data } = await api.post<APIVideoResponse>("metadata", {
+        url,
+      });
+
+      return {
+        title: data.description || data.title || "",
+        thumbnailUrl: data.image || data.favicon || "",
+      };
+    } catch (e) {
+      return {
+        title: "",
+        thumbnailUrl: "",
+      };
+    }
+  };
+
   const handleAdd = async (categoryId: string) => {
     try {
       setSelectedCategory(categoryId);
@@ -117,7 +156,7 @@ export default function AddVideoScreen() {
     try {
       const cleanUrl = url.split("?")[0];
 
-      const { title, description, images } =
+      let { title, description, images } =
         await LinkPreview.getPreview(cleanUrl);
 
       const platform = (await extractMetadata(cleanUrl)).platform;
@@ -133,6 +172,14 @@ export default function AddVideoScreen() {
       if (platform === "youtube") {
         thumbnailUrl = getYoutubeThumbnail(url); //Aqui se manda el url completo
         console.log("youtube", thumbnailUrl);
+      }
+
+      if (platform == "facebook") {
+        const fbData = await getFacebookData(cleanUrl);
+        fbData.title && (title = fbData.title);
+        fbData.thumbnailUrl && (thumbnailUrl = fbData.thumbnailUrl);
+
+        console.log("La plataforma es facebook", title, thumbnailUrl);
       }
 
       setMeta({

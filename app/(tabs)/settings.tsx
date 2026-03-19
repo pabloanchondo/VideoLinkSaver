@@ -21,6 +21,7 @@ import {
 
 export default function SettingsScreen() {
   const colors = Colors[useColorScheme()];
+  let theme = useColorScheme();
 
   const { init, close, clean, loadCategories, loadVideos } = useStore();
 
@@ -212,6 +213,32 @@ export default function SettingsScreen() {
               </View>
             </View>
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+            Theme
+          </Text>
+          <View
+            style={[
+              styles.card,
+              { backgroundColor: colors.card, borderColor: colors.border },
+            ]}
+          >
+            <View style={styles.row}>
+              <IconSymbol
+                name="paintbrush.fill"
+                size={24}
+                color={colors.tint}
+              />
+              <View style={styles.rowText}>
+                <Text style={[styles.rowTitle, { color: colors.text }]}>
+                  Current theme: {theme} to change, use system settings
+                </Text>
+                <Text style={{ color: colors.icon }}>Version 1.0.0</Text>
+              </View>
+            </View>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -117,3 +117,15 @@ export const updateVideo = async (
     id,
   );
 };
+
+export const updateVideoThumbnail = async (
+  id: string,
+  thumbnailUrl: string,
+) => {
+  const database = getDb();
+  await database.runAsync(
+    "UPDATE videos SET thumbnailUrl = ? WHERE id = ?",
+    thumbnailUrl,
+    id,
+  );
+};

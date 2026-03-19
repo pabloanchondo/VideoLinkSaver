@@ -1,4 +1,6 @@
+import { api } from "@/api/api";
 import AdBanner from "@/components/Banner";
+import { APIVideoResponse } from "@/interfaces/video.interfaces";
 import { PlatformIcon } from "@/src/components/PlatformIcon";
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
@@ -27,7 +29,7 @@ export default function VideoDetailScreen() {
   const colors = Colors[colorScheme];
   const router = useRouter();
 
-  const { videos, removeVideo, categories } = useStore();
+  const { videos, removeVideo, categories, updateVideoThumbnail } = useStore();
   const video = videos.find((v) => v.id === id);
 
   const [userTitle, setUserTitle] = useState(video?.title || "");
@@ -37,6 +39,8 @@ export default function VideoDetailScreen() {
   const [isSaving, setIsSaving] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
+
+  const [isLoadingMeta, setIsLoadingMeta] = useState(false);
 
   if (!video) {
     return (
@@ -106,6 +110,28 @@ export default function VideoDetailScreen() {
       Alert.alert("Error", error.message);
     }
   };
+
+  const handleRefreshThumbnail = async () => {
+    try {
+      setIsLoadingMeta(true);
+      const { data } = await api.post<APIVideoResponse>("metadata", {
+        url: video.url,
+      });
+      if (data.image) {
+        await updateVideoThumbnail(video.id, data.image);
+      }
+    } catch (e) {
+      Alert.alert("Error", "Failed to refresh thumbnail.");
+    } finally {
+      setIsLoadingMeta(false);
+    }
+  };
+
+  if (isLoadingMeta) {
+    return (
+      <ActivityIndicator style={{ flex: 1 }} size="large" color={colors.tint} />
+    );
+  }
 
   return (
     <ScrollView
@@ -394,6 +420,33 @@ export default function VideoDetailScreen() {
                 />
                 <Text style={[styles.btnText, { color: colors.text }]}>
                   Share
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 12,
+                marginTop: 12,
+              }}
+            >
+              <TouchableOpacity
+                onPress={handleRefreshThumbnail}
+                style={[
+                  styles.btnAction,
+                  { borderColor: colors.tint, backgroundColor: colors.card },
+                ]}
+              >
+                <Ionicons
+                  name="refresh-outline"
+                  size={24}
+                  color={colors.tint}
+                  style={{ bottom: 1, left: 1 }}
+                />
+                <Text style={[styles.btnText, { color: colors.text }]}>
+                  Refresh Thumbnail
                 </Text>
               </TouchableOpacity>
             </View>

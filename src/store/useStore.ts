@@ -19,6 +19,7 @@ interface AppState {
   removeCategory: (id: string) => Promise<void>;
   updateVideo: (id: string, title: string, categoryId: string) => Promise<void>;
   checkRestore: () => Promise<null>;
+  updateVideoThumbnail: (id: string, thumbnailUrl: string) => Promise<void>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -50,6 +51,11 @@ export const useStore = create<AppState>((set, get) => ({
   close: async () => {
     await db.closeDatabase();
     set({ isInitialized: false, videos: [], categories: [] });
+  },
+
+  updateVideoThumbnail: async (id: string, thumbnailUrl: string) => {
+    await db.updateVideoThumbnail(id, thumbnailUrl);
+    get().loadVideos();
   },
 
   loadVideos: async () => {
