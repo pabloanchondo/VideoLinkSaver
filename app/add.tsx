@@ -6,6 +6,7 @@ import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { extractMetadata } from "@/src/services/metadata";
 import { useStore } from "@/src/store/useStore";
+import { PlatformType } from "@/src/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -38,6 +39,7 @@ export default function AddVideoScreen() {
   const [newCategoryName, setNewCategoryName] = useState("");
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isFetchingMeta, setIsFetchingMeta] = useState(false);
 
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) return;
@@ -57,43 +59,74 @@ export default function AddVideoScreen() {
 
   const [meta, setMeta] = useState({
     title: "",
-    description: "",
     thumbnailUrl: "",
+    platform: "" as PlatformType,
   });
 
   useEffect(() => {
     if (params.sharedUrl && typeof params.sharedUrl === "string") {
       setUrl(params.sharedUrl);
-      getMetadata(params.sharedUrl);
+      handleGetVideoData(params.sharedUrl);
     }
   }, [params.sharedUrl]);
 
-  const getMetadata = async (url: string) => {
+  const handleGetVideoData = async (url: string) => {
     try {
-      setIsSaving(true);
-      const cleanUrl = url.split("?")[0];
+      setIsFetchingMeta(true);
 
-      const platform = (await extractMetadata(cleanUrl)).platform;
+      const data = await getVideoData(url);
 
-      //Si es facebook, no se puede obtener la metadata con link preview, por eso se hace una consulta a la api para obtenerla
-      if (platform === "facebook") {
-        const fbData = await getFacebookData(url);
-        setMeta((prev) => ({
-          ...prev,
-          title: fbData.title,
-          thumbnailUrl: fbData.thumbnailUrl,
-        }));
-        setUserTitle(fbData.title);
-        return;
-      }
-
-      const { title, description, images } = await LinkPreview.getPreview(url);
-      setUserTitle(title || "");
-    } catch (e) {
-      console.log("Metadata error", e);
+      setMeta(data);
+      setUserTitle(data.title);
+    } catch {
+      Alert.alert("Error", "Failed to get video data.");
     } finally {
-      setIsSaving(false);
+      setIsFetchingMeta(false);
     }
+  };
+
+  const getVideoData = async (url: string) => {
+    const cleanUrl = url.split("?")[0];
+
+    const { platform } = await extractMetadata(cleanUrl);
+
+    let title = "";
+    let thumbnailUrl = "";
+
+    // Facebook primero (evita LinkPreview innecesario)
+    if (platform === "facebook") {
+      const fbData = await getFacebookData(cleanUrl);
+
+      return {
+        title: fbData.title || "",
+        thumbnailUrl: fbData.thumbnailUrl || "",
+        platform,
+      };
+    }
+
+    // LinkPreview (base para la mayoría)
+    try {
+      const preview = await LinkPreview.getPreview(cleanUrl);
+      title = preview.title || "";
+      thumbnailUrl = preview.images?.[0] || "";
+    } catch {
+      // fallback silencioso
+    }
+
+    // Ajustes por plataforma
+    if (platform === "tiktok" && !thumbnailUrl) {
+      thumbnailUrl = await getTikTokThumbnail(cleanUrl);
+    }
+
+    if (platform === "youtube") {
+      thumbnailUrl = getYoutubeThumbnail(url); // usar URL completa
+    }
+
+    return {
+      title,
+      thumbnailUrl,
+      platform,
+    };
   };
 
   const getTikTokThumbnail = async (url: string) => {
@@ -118,6 +151,8 @@ export default function AddVideoScreen() {
     if (id) {
       return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
     }
+
+    return "";
   };
 
   const getFacebookData = async (url: string) => {
@@ -154,49 +189,16 @@ export default function AddVideoScreen() {
 
     setIsSaving(true);
     try {
-      const cleanUrl = url.split("?")[0];
-
-      let { title, description, images } =
-        await LinkPreview.getPreview(cleanUrl);
-
-      const platform = (await extractMetadata(cleanUrl)).platform;
-
-      let thumbnailUrl = images && images.length > 0 ? images[0] : "";
-
-      console.log(platform);
-
-      if (platform === "tiktok" && meta.thumbnailUrl.trim() === "") {
-        thumbnailUrl = await getTikTokThumbnail(cleanUrl);
-      }
-
-      if (platform === "youtube") {
-        thumbnailUrl = getYoutubeThumbnail(url); //Aqui se manda el url completo
-        console.log("youtube", thumbnailUrl);
-      }
-
-      if (platform == "facebook") {
-        const fbData = await getFacebookData(cleanUrl);
-        fbData.title && (title = fbData.title);
-        fbData.thumbnailUrl && (thumbnailUrl = fbData.thumbnailUrl);
-
-        console.log("La plataforma es facebook", title, thumbnailUrl);
-      }
-
-      setMeta({
-        title: title || "",
-        description: description || "",
-        thumbnailUrl: thumbnailUrl || "",
-      });
-
       await addVideo({
         id: Date.now().toString(),
         url: url.trim(),
         title: userTitle || meta.title,
-        thumbnailUrl: thumbnailUrl,
-        platform: platform,
+        thumbnailUrl: meta.thumbnailUrl,
+        platform: meta.platform,
         categoryId: selectedCategory,
         createdAt: Date.now(),
       });
+
       router.back();
     } catch (e) {
       Alert.alert("Error", "Failed to save video.");
@@ -229,7 +231,7 @@ export default function AddVideoScreen() {
           value={url}
           onChangeText={(text) => {
             setUrl(text);
-            getMetadata(text);
+            handleGetVideoData(text);
           }}
           autoCapitalize="none"
           keyboardType="url"
@@ -394,9 +396,9 @@ export default function AddVideoScreen() {
             },
           ]}
           onPress={handleSave}
-          disabled={isSaving}
+          disabled={isSaving || isFetchingMeta}
         >
-          {isSaving ? (
+          {isSaving || isFetchingMeta ? (
             <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.saveText}>Save Video Link</Text>

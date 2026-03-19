@@ -29,7 +29,9 @@ export default function VideoDetailScreen() {
   const colors = Colors[colorScheme];
   const router = useRouter();
 
-  const { videos, removeVideo, categories, updateVideoThumbnail } = useStore();
+  const { videos, removeVideo, categories, updateVideoThumbnail, updateVideo } =
+    useStore();
+
   const video = videos.find((v) => v.id === id);
 
   const [userTitle, setUserTitle] = useState(video?.title || "");
@@ -89,9 +91,7 @@ export default function VideoDetailScreen() {
     try {
       let titleToSave = userTitle.trim() !== "" ? userTitle : video.title;
 
-      await useStore
-        .getState()
-        .updateVideo(video.id, titleToSave, selectedCategory);
+      await updateVideo(video.id, titleToSave, selectedCategory);
 
       setIsEditing(false);
     } catch (e) {
@@ -119,6 +119,11 @@ export default function VideoDetailScreen() {
       });
       if (data.image) {
         await updateVideoThumbnail(video.id, data.image);
+      } else {
+        Alert.alert(
+          "No thumbnail found",
+          "Could not retrieve a thumbnail for this video.",
+        );
       }
     } catch (e) {
       Alert.alert("Error", "Failed to refresh thumbnail.");
@@ -129,7 +134,20 @@ export default function VideoDetailScreen() {
 
   if (isLoadingMeta) {
     return (
-      <ActivityIndicator style={{ flex: 1 }} size="large" color={colors.tint} />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.background,
+        }}
+      >
+        <ActivityIndicator
+          style={{ flex: 1 }}
+          size="large"
+          color={colors.tint}
+        />
+      </View>
     );
   }
 
