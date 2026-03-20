@@ -137,11 +137,6 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={[styles.container]}>
       <AdBanner />
-      <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>
-          Settings
-        </Text>
-      </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.section}>
@@ -233,9 +228,11 @@ export default function SettingsScreen() {
               />
               <View style={styles.rowText}>
                 <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  Current theme: {theme} to change, use system settings
+                  Current theme: {theme.toUpperCase()}
                 </Text>
-                <Text style={{ color: colors.icon }}>Version 1.0.0</Text>
+                <Text style={{ color: colors.icon }}>
+                  Theme is determined by system settings
+                </Text>
               </View>
             </View>
           </View>
