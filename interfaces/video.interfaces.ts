@@ -4,3 +4,10 @@ export interface APIVideoResponse {
   image: string | null;
   favicon: string | null;
 }
+
+export interface iappVersionResponse {
+  version: string;
+  minVersion: string;
+  forceUpdate: boolean;
+  message: string;
+}
