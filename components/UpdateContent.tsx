@@ -40,7 +40,7 @@ const UpdateContent: React.FC<Props> = ({
         <Text style={[styles.message, { color: colors.text }]}>{message}</Text>
       ) : (
         <Text style={[styles.message, { color: colors.text }]}>
-          We’ve made improvements and added new features to enhance your
+          We've made improvements and added new features to enhance your
           experience.
         </Text>
       )}

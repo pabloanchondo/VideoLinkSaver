@@ -165,10 +165,13 @@ export default function VideoDetailScreen() {
     //   }}
     //   contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}
     // >
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 100 + insets.bottom }}
+        contentContainerStyle={{
+          paddingBottom: 100 + insets.bottom,
+          backgroundColor: colors.background,
+        }}
       >
         {video.thumbnailUrl && (
           <Image
