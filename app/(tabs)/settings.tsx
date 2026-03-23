@@ -9,6 +9,7 @@ import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import { StorageAccessFramework } from "expo-file-system/legacy";
 
+import * as Application from "expo-application";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -159,7 +160,9 @@ export default function SettingsScreen() {
                 <Text style={[styles.rowTitle, { color: colors.text }]}>
                   Video Link Saver
                 </Text>
-                <Text style={{ color: colors.icon }}>Version 1.0.0</Text>
+                <Text style={{ color: colors.icon }}>
+                  Version {Application.nativeApplicationVersion}
+                </Text>
               </View>
             </View>
           </View>

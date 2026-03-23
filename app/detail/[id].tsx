@@ -45,6 +45,8 @@ export default function VideoDetailScreen() {
 
   const [isLoadingMeta, setIsLoadingMeta] = useState(false);
 
+  const [hasBeenRefreshed, setHasBeenRefreshed] = useState(false);
+
   const insets = useSafeAreaInsets();
 
   if (!video) {
@@ -135,6 +137,15 @@ export default function VideoDetailScreen() {
     }
   };
 
+  const handleLoadError = () => {
+    if (hasBeenRefreshed) {
+      return;
+    }
+
+    setHasBeenRefreshed(true);
+    handleRefreshThumbnail();
+  };
+
   if (isLoadingMeta) {
     return (
       <View
@@ -175,9 +186,12 @@ export default function VideoDetailScreen() {
       >
         {video.thumbnailUrl && (
           <Image
-            source={{ uri: video.thumbnailUrl }}
+            source={{
+              uri: video.thumbnailUrl,
+            }}
             style={styles.cover}
             resizeMode="cover"
+            onError={handleLoadError}
           />
         )}
 

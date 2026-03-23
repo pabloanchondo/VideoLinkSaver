@@ -115,7 +115,9 @@ export default function AddVideoScreen() {
 
     // Ajustes por plataforma
     if (platform === "tiktok" && !thumbnailUrl) {
-      thumbnailUrl = await getTikTokThumbnail(cleanUrl);
+      const tikTokData = await getTikTokThumbnail(cleanUrl);
+      title = tikTokData.title || title;
+      thumbnailUrl = tikTokData.thumbnailUrl || thumbnailUrl;
     }
 
     if (platform === "youtube") {
@@ -137,9 +139,15 @@ export default function AddVideoScreen() {
 
       const data = await response.json();
       console.log(JSON.stringify(data, null, 5));
-      return data.thumbnail_url;
+      return {
+        title: data.title || "",
+        thumbnailUrl: data.thumbnail_url || "",
+      };
     } catch (e) {
-      return "";
+      return {
+        title: "",
+        thumbnailUrl: "",
+      };
     }
   };
 
