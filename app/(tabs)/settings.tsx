@@ -224,11 +224,12 @@ export default function SettingsScreen() {
             ]}
           >
             <View style={styles.row}>
-              <IconSymbol
-                name="paintbrush.fill"
+              <Ionicons
+                name="color-palette-outline"
                 size={24}
                 color={colors.tint}
               />
+
               <View style={styles.rowText}>
                 <Text style={[styles.rowTitle, { color: colors.text }]}>
                   Current theme: {theme.toUpperCase()}

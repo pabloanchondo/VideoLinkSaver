@@ -86,16 +86,30 @@ export default function AddVideoScreen() {
   };
 
   const getVideoData = async (url: string) => {
-    const cleanUrl = url.split("?")[0];
+    let cleanUrl = url.split("?")[0];
 
     const { platform } = await extractMetadata(cleanUrl);
 
     let title = "";
     let thumbnailUrl = "";
 
+    console.log(platform);
+
     // Facebook primero (evita LinkPreview innecesario)
     if (platform === "facebook") {
-      const fbData = await getFacebookData(cleanUrl);
+      const fbData = await getFacebookData(cleanUrl, platform);
+      console.log(fbData);
+
+      return {
+        title: fbData.title || "",
+        thumbnailUrl: fbData.thumbnailUrl || "",
+        platform,
+      };
+    }
+
+    if (platform === "youtube") {
+      //Aqui se pasa el url original porque LinkPreview no funciona bien con los shorts de youtube, y el url limpio pierde la información necesaria para obtener la miniatura
+      const fbData = await getFacebookData(url, platform);
 
       return {
         title: fbData.title || "",
@@ -120,9 +134,7 @@ export default function AddVideoScreen() {
       thumbnailUrl = tikTokData.thumbnailUrl || thumbnailUrl;
     }
 
-    if (platform === "youtube") {
-      thumbnailUrl = getYoutubeThumbnail(url); // usar URL completa
-    }
+    //Si es un short de youtube, la metadata no funciona bien, así que obtenemos la miniatura directamente
 
     return {
       title,
@@ -152,22 +164,36 @@ export default function AddVideoScreen() {
   };
 
   const getYoutubeThumbnail = (url: string) => {
+    console.log(url);
+    url = url.split("&")[0]; // Elimina parámetros adicionales
+    console.log("url no params", url);
     const idMatch = url.match(/v=([^&]+)/) || url.match(/youtu\.be\/([^?]+)/);
 
     const id = idMatch ? idMatch[1] : null;
 
     if (id) {
+      console.log(
+        "Thumbnail ID:",
+        `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+      );
       return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
     }
 
     return "";
   };
 
-  const getFacebookData = async (url: string) => {
+  const getFacebookData = async (url: string, platform: PlatformType) => {
     try {
       const { data } = await api.post<APIVideoResponse>("metadata", {
         url,
       });
+
+      if (platform === "youtube") {
+        return {
+          title: data.title || data.description || "",
+          thumbnailUrl: data.image || data.favicon || "",
+        };
+      }
 
       return {
         title: data.description || data.title || "",
