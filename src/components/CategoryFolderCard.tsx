@@ -18,7 +18,7 @@ export const CategoryFolderCard = ({
     style={{
       backgroundColor: useThemeColor({}, "card"),
     }}
-    className="flex-row items-center  rounded-xl shadow-md p-4 mb-3 mr-3 flex-1"
+    className="flex-row items-center rounded-xl shadow-md p-4 mb-3 mr-3"
   >
     <View className="mr-3">
       <MaterialIcons
