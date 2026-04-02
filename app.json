@@ -82,6 +82,19 @@
       "expo-router",
       "expo-sqlite",
       [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Link2Clip to use Face ID."
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow Link2Clip to access your Face ID biometric data."
+        }
+      ],
+      [
         "expo-document-picker",
         {
           "iCloudContainerEnvironment": "Production"
@@ -112,7 +125,8 @@
         {
           "androidAppId": "ca-app-pub-8421586383850459~1170848803"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -21,12 +21,39 @@ import {
 } from "react-native";
 
 export default function SettingsScreen() {
+  const { isEnrolled, isLogginEnabled, isSupported, toggleLogin } =
+    useLocalAuthentication();
+
   const colors = Colors[useColorScheme()];
   let theme = useColorScheme();
 
   const { init, close, clean, loadCategories, loadVideos } = useStore();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleLocalAuth = async () => {
+    if (!isSupported) {
+      Alert.alert(
+        "Not Supported",
+        "Biometric authentication is not supported on this device.",
+      );
+      return;
+    }
+    if (!isEnrolled) {
+      Alert.alert(
+        "Not Enrolled",
+        "No biometric enrollment found. Please set up biometrics on your device to use this feature.",
+      );
+      return;
+    }
+    const result = await toggleLogin(!isLogginEnabled);
+    if (!result.success) {
+      Alert.alert(
+        "Error",
+        result.message || "Failed to toggle local authentication.",
+      );
+    }
+  };
 
   const backupDatabase = async () => {
     try {
@@ -241,12 +268,56 @@ export default function SettingsScreen() {
             </View>
           </View>
         </View>
+
+        {
+          /* Local Authentication Section */
+          isSupported && isEnrolled && (
+            <TouchableOpacity
+              style={styles.section}
+              onPress={handleLocalAuth}
+              disabled={!isSupported || !isEnrolled}
+            >
+              <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+                Local Authentication
+              </Text>
+              <View
+                style={[
+                  styles.card,
+                  { backgroundColor: colors.card, borderColor: colors.border },
+                ]}
+              >
+                <View style={styles.row}>
+                  <Ionicons
+                    name="finger-print-outline"
+                    size={24}
+                    color={colors.tint}
+                  />
+
+                  <View style={styles.rowText}>
+                    <Text style={[styles.rowTitle, { color: colors.text }]}>
+                      Login with Biometrics:{" "}
+                      {isLogginEnabled ? "Enabled" : "Disabled"}
+                    </Text>
+                    <Text style={{ color: colors.icon }}>
+                      {isSupported
+                        ? isEnrolled
+                          ? "You can use biometric authentication"
+                          : "No biometric enrollment found"
+                        : "Biometric authentication not supported"}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )
+        }
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 // Minimal stub for scrollview in this screen
+import { useLocalAuthentication } from "@/hooks/useLocalAuthentication";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -254,7 +325,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { padding: 20 },
   headerTitle: { fontSize: 28, fontWeight: "bold" },
-  content: { paddingHorizontal: 20 },
+  content: { paddingHorizontal: 20, marginTop: 10 },
   section: { marginBottom: 30 },
   sectionTitle: {
     textTransform: "uppercase",

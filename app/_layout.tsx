@@ -3,12 +3,14 @@ import { Stack } from "expo-router";
 import "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import mobileAds from "react-native-google-mobile-ads";
 
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { useLocalAuthentication } from "@/hooks/useLocalAuthentication";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "./globals.css";
+import { MustLogin } from "./mustLogin";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -21,6 +23,9 @@ export default function RootLayout() {
   const cardColor = useThemeColor({}, "card");
   const textColor = useThemeColor({}, "text");
 
+  const { isLogged, authenticate, isLogginEnabled } = useLocalAuthentication();
+  const [hasTried, setHasTried] = useState(false);
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -31,15 +36,30 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  mobileAds()
-    .initialize()
-    .then((adapterStatuses) => {
-      // Initialization complete!
-      console.log(adapterStatuses);
-    });
+  useEffect(() => {
+    if (!isLogged && isLogginEnabled && !hasTried) {
+      setHasTried(true);
+      authenticate();
+    }
+  }, [isLogged, isLogginEnabled]);
+
+  useEffect(() => {
+    mobileAds().initialize().then(console.log);
+  }, []);
+
+  // mobileAds()
+  //   .initialize()
+  //   .then((adapterStatuses) => {
+  //     // Initialization complete!
+  //     console.log(adapterStatuses);
+  //   });
 
   if (!loaded) {
     return null;
+  }
+
+  if (isLogginEnabled && !isLogged) {
+    return <MustLogin onAuthenticate={authenticate} />; // Or a loading spinner, or a custom lock screen
   }
 
   return (
