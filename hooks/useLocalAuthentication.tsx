@@ -1,6 +1,7 @@
 import * as localAuthentication from "expo-local-authentication";
 import { getItemAsync, setItemAsync } from "expo-secure-store";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const useLocalAuthentication = () => {
   const [isLogginEnabled, setIsLoginEnabled] = useState(false);
@@ -8,6 +9,9 @@ export const useLocalAuthentication = () => {
   const [isEnrolled, setIsEnrolled] = useState(false);
 
   const [isLogged, setIsLogged] = useState(false);
+
+  const { t } = useTranslation("common");
+  const { t: terr } = useTranslation("errors");
 
   useEffect(() => {
     handleInit();
@@ -24,7 +28,7 @@ export const useLocalAuthentication = () => {
       const mustLogin = await getItemAsync("mustLogin");
       setIsLoginEnabled(!!mustLogin);
     } catch (e) {
-      console.log("Error checking local authentication enrollment", e);
+      console.log(terr("auth.errorChecking"), e);
       setIsLoginEnabled(false);
     }
   };
@@ -34,15 +38,14 @@ export const useLocalAuthentication = () => {
       if (!enabled) {
         const authenticated = await authenticate();
         if (!authenticated.success) {
-          return { success: false, message: "Authentication failed" };
+          return { success: false, message: terr("auth.authenticationFailed") };
         }
       }
       await setItemAsync("mustLogin", enabled ? "true" : "");
       setIsLoginEnabled(enabled);
       return { success: true };
     } catch (e) {
-      console.log("Error toggling local authentication", e);
-      return { success: false, message: "Error toggling local authentication" };
+      return { success: false, message: terr("auth.errorToggling") };
     }
   };
 
@@ -51,7 +54,6 @@ export const useLocalAuthentication = () => {
       const supported = await localAuthentication.hasHardwareAsync();
       setIsSupported(supported);
     } catch (e) {
-      console.log("Error checking local authentication support", e);
       setIsSupported(false);
     }
   };
@@ -61,7 +63,6 @@ export const useLocalAuthentication = () => {
       const enrolled = await localAuthentication.isEnrolledAsync();
       setIsEnrolled(enrolled);
     } catch (e) {
-      console.log("Error checking local authentication enrollment", e);
       setIsEnrolled(false);
     }
   };
@@ -74,26 +75,25 @@ export const useLocalAuthentication = () => {
       if (!isSupported) {
         return {
           success: false,
-          message: "Local authentication not supported",
+          message: terr("auth.errorCheckingSupport"),
         };
       }
 
       if (!isEnrolled) {
         return {
           success: false,
-          message: "No biometric methods enrolled",
+          message: terr("auth.errorCheckingEnrollment"),
         };
       }
 
       const result = await localAuthentication.authenticateAsync({
-        promptMessage: "Authenticate to access your videos",
-        fallbackLabel: "Use Passcode",
+        promptMessage: t("auth.promptMessage"),
+        fallbackLabel: t("auth.fallbackLabel"),
       });
       setIsLogged(result.success);
       return { success: result.success };
     } catch (e) {
-      console.log("Error during local authentication", e);
-      return { success: false, message: "Error during local authentication" };
+      return { success: false, message: terr("auth.errorAuth") };
     }
   };
 

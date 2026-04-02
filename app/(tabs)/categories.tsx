@@ -6,6 +6,7 @@ import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   FlatList,
@@ -22,6 +23,9 @@ export default function CategoriesScreen() {
   const { categories, addCategory, removeCategory } = useStore();
   const [newCategoryName, setNewCategoryName] = useState("");
 
+  const { t: tc } = useTranslation("categories");
+  const { t: tcom } = useTranslation("common");
+
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) return;
 
@@ -35,18 +39,14 @@ export default function CategoriesScreen() {
   };
 
   const handleDelete = (id: string) => {
-    Alert.alert(
-      "Delete Category",
-      "Are you sure? Videos in this category will become unassigned.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => removeCategory(id),
-        },
-      ],
-    );
+    Alert.alert(tc("deleteCategory"), tc("confirmDelete"), [
+      { text: tcom("cancel"), style: "cancel" },
+      {
+        text: tcom("delete"),
+        style: "destructive",
+        onPress: () => removeCategory(id),
+      },
+    ]);
   };
 
   return (
@@ -54,7 +54,7 @@ export default function CategoriesScreen() {
       <AdBanner />
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.text }]}>
-          Categories
+          {tc("myCategories")}
         </Text>
       </View>
 
@@ -68,7 +68,7 @@ export default function CategoriesScreen() {
               borderColor: colors.border,
             },
           ]}
-          placeholder="New folder name..."
+          placeholder={tc("newCategoryPlaceholder")}
           placeholderTextColor={colors.icon}
           value={newCategoryName}
           onChangeText={setNewCategoryName}
@@ -85,7 +85,7 @@ export default function CategoriesScreen() {
       {categories.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={[styles.emptyText, { color: colors.icon }]}>
-            No categories yet.
+            {tc("noCategories")}
           </Text>
         </View>
       ) : (

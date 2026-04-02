@@ -1,0 +1,15 @@
+{
+  "title": "Categorías",
+  "addCategory": "Agregar categoría",
+  "editCategory": "Editar categoría",
+  "deleteCategory": "Eliminar categoría",
+  "categoryName": "Nombre de la categoría",
+  "noCategories": "No hay categorías",
+  "confirmDelete": "¿Seguro que deseas eliminar esta categoría?",
+  "createdSuccess": "Categoría creada correctamente",
+  "updatedSuccess": "Categoría actualizada correctamente",
+  "deletedSuccess": "Categoría eliminada correctamente",
+  "detailTitle": "Detalle de la categoría",
+  "newCategoryPlaceholder": "Nueva categoría",
+  "myCategories": "Mis Categorías"
+}

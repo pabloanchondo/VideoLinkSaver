@@ -126,7 +126,8 @@
           "androidAppId": "ca-app-pub-8421586383850459~1170848803"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -8,6 +8,8 @@ import mobileAds from "react-native-google-mobile-ads";
 
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useLocalAuthentication } from "@/hooks/useLocalAuthentication";
+import "@/i18n/i18n";
+import { useTranslation } from "react-i18next";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "./globals.css";
 import { MustLogin } from "./mustLogin";
@@ -25,6 +27,9 @@ export default function RootLayout() {
 
   const { isLogged, authenticate, isLogginEnabled } = useLocalAuthentication();
   const [hasTried, setHasTried] = useState(false);
+
+  const { t: tv } = useTranslation("videos");
+  const { t: tc } = useTranslation("categories");
 
   useEffect(() => {
     if (error) throw error;
@@ -59,7 +64,7 @@ export default function RootLayout() {
   }
 
   if (isLogginEnabled && !isLogged) {
-    return <MustLogin onAuthenticate={authenticate} />; // Or a loading spinner, or a custom lock screen
+    return <MustLogin onAuthenticate={authenticate} />;
   }
 
   return (
@@ -76,13 +81,13 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="add"
-          options={{ presentation: "modal", title: "Add Video" }}
+          options={{ presentation: "modal", title: tv("addVideo") }}
         />
         <Stack.Screen
           name="detail/[id]"
-          options={{ title: "Video Detail", headerShown: false }}
+          options={{ title: tv("videoDetail"), headerShown: false }}
         />
-        <Stack.Screen name="category" options={{ title: "Category Detail" }} />
+        <Stack.Screen name="category" options={{ title: tc("detailTitle") }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

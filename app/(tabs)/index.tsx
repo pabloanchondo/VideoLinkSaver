@@ -13,6 +13,7 @@ import { useStore } from "@/src/store/useStore";
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Linking,
   StyleSheet,
@@ -31,6 +32,9 @@ export default function HomeScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newVersionInfo, setNewVersionInfo] =
     useState<iappVersionResponse | null>(null);
+
+  const { t: tv } = useTranslation("videos");
+  const { t: tcom } = useTranslation("common");
 
   useEffect(() => {
     if (!isInitialized) {
@@ -83,6 +87,7 @@ export default function HomeScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <AdBanner />
 
+      {/* <Modal isOpen={true}> */}
       <Modal isOpen={isModalVisible}>
         <View
           style={{
@@ -94,9 +99,7 @@ export default function HomeScreen() {
         >
           <UpdateContent
             version={newVersionInfo?.version || "1.0.0"}
-            message={
-              "We've made improvements and added new features to enhance your experience."
-            }
+            message={tcom("modalMessage")}
             onUpdate={() => {
               // Open app store link
               Linking.openURL(
@@ -124,7 +127,7 @@ export default function HomeScreen() {
             color: useThemeColor({}, "text"),
           }}
         >
-          My Saved Videos
+          {tv("savedVideos")}
         </Text>
 
         <TouchableOpacity
@@ -141,7 +144,7 @@ export default function HomeScreen() {
 
       <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
         <Text className="text-sm text-slate-300">
-          Version: {Application.nativeApplicationVersion}
+          {tcom("version")}: {Application.nativeApplicationVersion}
         </Text>
       </View>
 

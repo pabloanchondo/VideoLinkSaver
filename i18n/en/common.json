@@ -1,0 +1,24 @@
+{
+  "loading": "Loading...",
+  "success": "Success",
+  "error": "Error",
+  "cancel": "Cancel",
+  "continue": "Continue",
+  "save": "Save",
+  "close": "Close",
+  "version": "Version",
+  "delete": "Delete",
+  "modalMessage": "We've made improvements and added new features to enhance your experience.",
+  "updateAvailable": "Update available",
+  "updateNow": "Update now",
+  "later": "Later",
+  "auth": {
+    "title": "Authentication required",
+    "message": "To continue, you need to authenticate using your fingerprint or biometrics. This option is enabled in the app settings.",
+    "button": "Authenticate",
+    "info": "Your information remains secure on your device",
+    "promptMessage": "Authenticate to access your videos",
+    "fallbackLabel": "Use Passcode",
+    "errorAuth": "Error during local authentication"
+  }
+}

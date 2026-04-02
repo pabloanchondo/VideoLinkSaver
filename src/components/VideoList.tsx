@@ -1,6 +1,7 @@
 // import { LinkPreview } from "@flyerhq/react-native-link-preview";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FlatList, StyleSheet, TextInput, View } from "react-native";
 import { VideoLink } from "../types";
 import { VideoCard } from "./VideoCard";
@@ -12,6 +13,8 @@ interface VideoListProps {
 export const VideoList = ({ videos }: VideoListProps) => {
   const [filteredVideos, setFilteredVideos] = useState<VideoLink[]>(videos);
   const [search, setSearch] = useState("");
+
+  const { t } = useTranslation("videos");
 
   React.useEffect(() => {
     // Actualiza la lista filtrada cuando cambian los videos
@@ -36,7 +39,7 @@ export const VideoList = ({ videos }: VideoListProps) => {
         <TextInput
           value={search}
           onChangeText={handleSearch}
-          placeholder="Filtrar por título"
+          placeholder={t("filterByTitle")}
           style={{
             padding: 10,
             borderRadius: 8,

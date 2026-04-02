@@ -2,6 +2,7 @@ import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 type Props = {
   onAuthenticate: () => void;
@@ -10,6 +11,8 @@ type Props = {
 export const MustLogin = ({ onAuthenticate }: Props) => {
   const colors = Colors[useColorScheme()];
   let theme = useColorScheme();
+
+  const { t } = useTranslation("common");
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -20,25 +23,22 @@ export const MustLogin = ({ onAuthenticate }: Props) => {
 
       {/* Título */}
       <Text style={[styles.title, { color: colors.text }]}>
-        Authentication required
+        {t("auth.title")}
       </Text>
 
       {/* Descripción */}
       <Text style={[styles.description, { color: colors.text }]}>
-        To continue, you need to authenticate using your fingerprint or
-        biometrics. This option is enabled in the app settings.
+        {t("auth.message")}
       </Text>
 
       {/* Button */}
       <TouchableOpacity style={styles.button} onPress={onAuthenticate}>
         <Ionicons name="lock-open" size={20} color="#fff" />
-        <Text style={styles.buttonText}>Unlock</Text>
+        <Text style={styles.buttonText}>{t("auth.button")}</Text>
       </TouchableOpacity>
 
       {/* Footer */}
-      <Text style={styles.footer}>
-        Your information remains secure on your device
-      </Text>
+      <Text style={styles.footer}>{t("auth.info")}</Text>
     </View>
   );
 };

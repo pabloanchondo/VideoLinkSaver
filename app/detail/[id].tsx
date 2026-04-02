@@ -10,6 +10,7 @@ import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -49,6 +50,9 @@ export default function VideoDetailScreen() {
 
   const insets = useSafeAreaInsets();
 
+  const { t } = useTranslation("common");
+  const { t: tVideos } = useTranslation("videos");
+
   if (!video) {
     return (
       <View
@@ -61,7 +65,7 @@ export default function VideoDetailScreen() {
           },
         ]}
       >
-        <Text style={{ color: colors.text }}>Video not found.</Text>
+        <Text style={{ color: colors.text }}>{tVideos("videoNotFound")}</Text>
       </View>
     );
   }
@@ -69,15 +73,15 @@ export default function VideoDetailScreen() {
   const handleOpenLink = async () => {
     const oppened = await Linking.openURL(video.url);
     if (!oppened) {
-      Alert.alert("Error", "Cannot open this URL.");
+      Alert.alert(t("error"), t("cannotOpenUrl"));
     }
   };
 
   const handleDelete = () => {
-    Alert.alert("Delete", "Remove this video link?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("delete"), tVideos("removeVideoLink"), [
+      { text: t("cancel"), style: "cancel" },
       {
-        text: "Delete",
+        text: t("delete"),
         style: "destructive",
         onPress: async () => {
           await removeVideo(video.id);
@@ -100,7 +104,7 @@ export default function VideoDetailScreen() {
 
       setIsEditing(false);
     } catch (e) {
-      Alert.alert("Error", "Failed to save video.");
+      Alert.alert("Error", tVideos("failedToSaveVideo"));
     } finally {
       setIsSaving(false);
     }
@@ -126,12 +130,12 @@ export default function VideoDetailScreen() {
         await updateVideoThumbnail(video.id, data.image);
       } else {
         Alert.alert(
-          "No thumbnail found",
-          "Could not retrieve a thumbnail for this video.",
+          tVideos("noThumbnail"),
+          tVideos("couldNotRetrieveThumbnail"),
         );
       }
     } catch (e) {
-      Alert.alert("Error", "Failed to refresh thumbnail.");
+      Alert.alert("Error", t("failedToRefreshThumbnail"));
     } finally {
       setIsLoadingMeta(false);
     }
@@ -198,7 +202,9 @@ export default function VideoDetailScreen() {
         <View style={styles.content}>
           {isEditing && (
             <>
-              <Text style={[styles.label, { color: colors.text }]}>Titulo</Text>
+              <Text style={[styles.label, { color: colors.text }]}>
+                {tVideos("videoTitle")}
+              </Text>
               <TextInput
                 style={[
                   styles.input,
@@ -208,7 +214,7 @@ export default function VideoDetailScreen() {
                     borderColor: colors.border,
                   },
                 ]}
-                placeholder="Titulo del video"
+                placeholder={tVideos("videoTitle")}
                 placeholderTextColor={colors.icon}
                 value={userTitle}
                 onChangeText={setUserTitle}
@@ -219,7 +225,7 @@ export default function VideoDetailScreen() {
               <Text
                 style={[styles.label, { color: colors.text, marginTop: 24 }]}
               >
-                Select Category (Optional)
+                {tVideos("selectCategory")}
               </Text>
               <View style={styles.categoriesGrid}>
                 {categories.map((cat) => (
@@ -278,7 +284,7 @@ export default function VideoDetailScreen() {
                   <ActivityIndicator color="#fff" />
                 ) : (
                   <Text style={styles.saveText}>
-                    <Ionicons name="save" size={16} color="#fff" /> Save Changes
+                    <Ionicons name="save" size={16} color="#fff" /> {t("save")}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -301,7 +307,7 @@ export default function VideoDetailScreen() {
                     size={16}
                     color="#ff4444"
                   />{" "}
-                  Cancel
+                  {t("cancel")}
                 </Text>
               </TouchableOpacity>
             </>
@@ -337,7 +343,7 @@ export default function VideoDetailScreen() {
                 >
                   <PlatformIcon platform={video.platform} size={25} />
                   <Text className="text-md" style={{ color: colors.text }}>
-                    View on{" "}
+                    {tVideos("viewOnWeb")}{" "}
                     {video.platform.charAt(0).toUpperCase() +
                       video.platform.slice(1)}
                   </Text>
@@ -361,7 +367,7 @@ export default function VideoDetailScreen() {
                   />
 
                   <Text className="text-md" style={{ color: colors.text }}>
-                    Back
+                    {tVideos("back")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -397,7 +403,7 @@ export default function VideoDetailScreen() {
                     style={{ bottom: 1, left: 1 }}
                   />
                   <Text style={[styles.btnText, { color: colors.text }]}>
-                    Copy
+                    {tVideos("copy")}
                   </Text>
                 </TouchableOpacity>
 
@@ -418,7 +424,7 @@ export default function VideoDetailScreen() {
                     style={{ bottom: 1, left: 1 }}
                   />
                   <Text style={[styles.btnText, { color: colors.text }]}>
-                    Edit
+                    {tVideos("edit")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -448,7 +454,7 @@ export default function VideoDetailScreen() {
                     style={{ bottom: 1, left: 1 }}
                   />
                   <Text style={[styles.btnText, { color: colors.text }]}>
-                    Delete
+                    {t("delete")}
                   </Text>
                 </TouchableOpacity>
 
@@ -466,7 +472,7 @@ export default function VideoDetailScreen() {
                     style={{ bottom: 1, left: 1 }}
                   />
                   <Text style={[styles.btnText, { color: colors.text }]}>
-                    Share
+                    {tVideos("share")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -493,7 +499,7 @@ export default function VideoDetailScreen() {
                     style={{ bottom: 1, left: 1 }}
                   />
                   <Text style={[styles.btnText, { color: colors.text }]}>
-                    Refresh Thumbnail
+                    {tVideos("refreshThumbnail")}
                   </Text>
                 </TouchableOpacity>
               </View>

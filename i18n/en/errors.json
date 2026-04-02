@@ -1,0 +1,24 @@
+{
+    "general": {
+        "noSupport": "Not supported",
+        "notEnrolled": "Not enrolled"
+    },
+    "video": {
+        "failedToGetData": "Failed to get video data.",
+        "failedToAdd": "Failed to add video to category.",
+        "invalidUrl": "Please enter a valid URL.",
+        "failedToSave": "Failed to save video."
+    },
+    "settings": {
+        "noSupportedBiometric": "Biometric authentication is not supported on this device.",
+        "noEnrolledBiometric": "No biometric enrollment found. Please set up biometrics on your device to use this feature.",
+        "failedToToggleLocalAuth": "Failed to toggle local authentication."
+    },
+    "auth": {
+        "errorChecking": "Error checking local authentication enrollment",
+        "authenticationFailed": "Authentication failed",
+        "errorToggling": "Error toggling local authentication",
+        "errorCheckingSupport": "Error checking local authentication support",
+        "errorCheckingEnrollment": "No biometric methods enrolled"
+    }
+}

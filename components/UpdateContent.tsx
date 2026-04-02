@@ -1,6 +1,7 @@
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type Props = {
@@ -20,6 +21,8 @@ const UpdateContent: React.FC<Props> = ({
 }) => {
   const colors = Colors[useColorScheme()];
 
+  const { t: tcom } = useTranslation("common");
+
   return (
     <View style={styles.container}>
       {/* 🔥 Icon / Header */}
@@ -27,12 +30,12 @@ const UpdateContent: React.FC<Props> = ({
 
       {/* 🧠 Title */}
       <Text style={[styles.title, { color: colors.text }]}>
-        Update Available
+        {tcom("updateAvailable")}
       </Text>
 
       {/* 📦 Version */}
       <Text style={[styles.version, { color: colors.text }]}>
-        Version {version} is now available
+        {tcom("version")}: {version}
       </Text>
 
       {/* 📝 Message */}
@@ -40,8 +43,7 @@ const UpdateContent: React.FC<Props> = ({
         <Text style={[styles.message, { color: colors.text }]}>{message}</Text>
       ) : (
         <Text style={[styles.message, { color: colors.text }]}>
-          We've made improvements and added new features to enhance your
-          experience.
+          {tcom("modalMessage")}
         </Text>
       )}
 
@@ -53,7 +55,7 @@ const UpdateContent: React.FC<Props> = ({
             onPress={onLater}
           >
             <Text style={[styles.laterText, { color: colors.text }]}>
-              Later
+              {tcom("later")}
             </Text>
           </TouchableOpacity>
         )}
@@ -62,7 +64,7 @@ const UpdateContent: React.FC<Props> = ({
           style={[styles.updateBtn, { backgroundColor: colors.tint }]}
           onPress={onUpdate}
         >
-          <Text style={styles.updateText}>Update Now</Text>
+          <Text style={styles.updateText}>{tcom("updateNow")}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -83,6 +85,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 6,
     color: "#111",
+    textAlign: "center",
   },
   version: {
     fontSize: 14,

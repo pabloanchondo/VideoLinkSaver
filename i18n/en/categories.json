@@ -1,0 +1,15 @@
+{
+  "title": "Categories",
+  "addCategory": "Add category",
+  "editCategory": "Edit category",
+  "deleteCategory": "Delete category",
+  "categoryName": "Category name",
+  "noCategories": "No categories",
+  "confirmDelete": "Are you sure? Videos in this category will become unassigned.",
+  "createdSuccess": "Category created successfully",
+  "updatedSuccess": "Category updated successfully",
+  "deletedSuccess": "Category deleted successfully",
+  "detailTitle": "Category Detail",
+  "newCategoryPlaceholder": "New category name",
+  "myCategories": "My Categories"
+}

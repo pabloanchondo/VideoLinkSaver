@@ -1,0 +1,22 @@
+{
+  "title": "Configuración",
+  "about": "Acerca de",
+  "backup": "Respaldo",
+  "restore": "Restaurar",
+  "theme": "Tema",
+  "currentTheme": "Tema actual",
+  "systemTheme": "El tema depende del sistema",
+  "localAuth": "Autenticación local",
+  "biometricEnabled": "Inicio con biometría",
+  "supported": "Puedes usar biometría",
+  "notEnrolled": "No hay biometría configurada",
+  "backupSuccess": "Respaldo creado correctamente",
+  "restoreSuccess": "Datos restaurados correctamente",
+  "backupDescription": "Descargar un respaldo de tus datos",
+  "restoreDescription": "Restaurar un respaldo de tus datos",
+  "enabled": "Habilitado",
+  "disabled": "Deshabilitado",
+  "biometricDescription": "Puedes usar la autenticación biométrica",
+  "noEnrolled": "No hay biometría configurada",
+  "notSupported": "Autenticación biométrica no soportada"
+}

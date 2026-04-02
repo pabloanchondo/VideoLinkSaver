@@ -1,0 +1,22 @@
+{
+  "title": "Settings",
+  "about": "About",
+  "backup": "Backup",
+  "restore": "Restore",
+  "theme": "Theme",
+  "currentTheme": "Current theme",
+  "systemTheme": "Theme is based on system settings",
+  "localAuth": "Local Authentication",
+  "biometricEnabled": "Login with biometrics",
+  "supported": "Biometric authentication available",
+  "notEnrolled": "No biometric enrollment found",
+  "backupSuccess": "Backup created successfully",
+  "restoreSuccess": "Data restored successfully",
+  "backupDescription": "Download a backup of your data",
+  "restoreDescription": "Restore a backup of your data",
+  "enabled": "Enabled",
+  "disabled": "Disabled",
+  "biometricDescription": "You can use biometric authentication",
+  "noEnrolled": "No biometric enrollment found",
+  "notSupported": "Biometric authentication not supported"
+}

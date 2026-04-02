@@ -5,10 +5,15 @@ import { Platform } from "react-native";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { HapticTab } from "@/src/components/HapticTab";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
+import { useTranslation } from "react-i18next";
 
 export default function TabLayout() {
   const backgroundColor = useThemeColor({}, "background");
   const cardBg = useThemeColor({}, "card");
+
+  const { t: tc } = useTranslation("categories");
+  const { t: ts } = useTranslation("settings");
+  const { t: tv } = useTranslation("videos");
 
   return (
     <Tabs
@@ -54,7 +59,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="categories"
         options={{
-          title: "Categories",
+          title: tc("title"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="folder.fill" color={color} />
           ),
@@ -63,7 +68,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
+          title: ts("title"),
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="gearshape.fill" color={color} />
           ),

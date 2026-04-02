@@ -10,6 +10,7 @@ import { PlatformType } from "@/src/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -40,6 +41,10 @@ export default function AddVideoScreen() {
 
   const [isVisible, setIsVisible] = useState(false);
   const [isFetchingMeta, setIsFetchingMeta] = useState(false);
+
+  const { t: tv } = useTranslation("videos");
+  const { t: tc } = useTranslation("categories");
+  const { t: tcom } = useTranslation("common");
 
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) return;
@@ -260,7 +265,7 @@ export default function AddVideoScreen() {
               borderColor: colors.border,
             },
           ]}
-          placeholder="Paste YouTube, TikTok or Instagram link..."
+          placeholder={tv("urlPlaceholder")}
           placeholderTextColor={colors.icon}
           value={url}
           onChangeText={(text) => {
@@ -271,7 +276,9 @@ export default function AddVideoScreen() {
           keyboardType="url"
         />
 
-        <Text style={[styles.label, { color: colors.text }]}>Titulo</Text>
+        <Text style={[styles.label, { color: colors.text }]}>
+          {tv("title")}
+        </Text>
         <TextInput
           style={[
             styles.input,
@@ -281,7 +288,7 @@ export default function AddVideoScreen() {
               borderColor: colors.border,
             },
           ]}
-          placeholder="Titulo del video"
+          placeholder={tv("videoTitle")}
           placeholderTextColor={colors.icon}
           value={userTitle}
           onChangeText={setUserTitle}
@@ -290,7 +297,7 @@ export default function AddVideoScreen() {
         />
         <View className="flex flex-row justify-between">
           <Text style={[styles.label, { color: colors.text, marginTop: 24 }]}>
-            Select Category (Optional)
+            {tv("selectCategory")}
           </Text>
 
           <TouchableOpacity
@@ -299,7 +306,7 @@ export default function AddVideoScreen() {
           >
             <View className="flex flex-row gap-1 items-center">
               <Text style={{ color: "#fff", fontSize: 14, fontWeight: "500" }}>
-                {isVisible ? "Close" : "New Category"}
+                {isVisible ? tcom("close") : tc("newCategoryPlaceholder")}
               </Text>
               <Ionicons
                 name={
@@ -322,7 +329,7 @@ export default function AddVideoScreen() {
             }}
           >
             <Text className="text-xl mb-5" style={{ color: colors.text }}>
-              Agrega una nueva categoria
+              {tc("addCategory")}
             </Text>
             <View>
               <TextInput
@@ -334,7 +341,7 @@ export default function AddVideoScreen() {
                     borderColor: colors.border,
                   },
                 ]}
-                placeholder="New folder name..."
+                placeholder={tc("newCategoryPlaceholder")}
                 placeholderTextColor={colors.icon}
                 value={newCategoryName}
                 onChangeText={setNewCategoryName}
@@ -356,7 +363,7 @@ export default function AddVideoScreen() {
                 disabled={isSaving}
               >
                 <Text style={styles.saveText}>
-                  <Ionicons name="save" size={16} color="#fff" /> Save
+                  <Ionicons name="save" size={16} color="#fff" /> {tcom("save")}
                 </Text>
               </TouchableOpacity>
 
@@ -376,7 +383,8 @@ export default function AddVideoScreen() {
                 disabled={isSaving}
               >
                 <Text style={[styles.saveText, { color: colors.text }]}>
-                  <Ionicons name="close" size={16} color={colors.text} /> Cancel
+                  <Ionicons name="close" size={16} color={colors.text} />{" "}
+                  {tcom("close")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -414,9 +422,7 @@ export default function AddVideoScreen() {
             </TouchableOpacity>
           ))}
           {categories.length === 0 && (
-            <Text style={{ color: colors.icon }}>
-              No categories found. Create some first!
-            </Text>
+            <Text style={{ color: colors.icon }}>{tc("noCategories")}</Text>
           )}
         </View>
 
@@ -435,7 +441,7 @@ export default function AddVideoScreen() {
           {isSaving || isFetchingMeta ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.saveText}>Save Video Link</Text>
+            <Text style={styles.saveText}>{tv("saveVideoLink")}</Text>
           )}
         </TouchableOpacity>
         <AdBanner />

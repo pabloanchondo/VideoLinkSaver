@@ -1,0 +1,24 @@
+{
+    "general": {
+        "noSupport": "No soportado",
+        "notEnrolled": "No registrado"
+    },
+    "video": {
+        "failedToGetData": "No se pudo obtener los datos del video.",
+        "failedToAdd": "No se pudo agregar el video a la categoría.",
+        "invalidUrl": "Por favor, ingrese una URL válida.",
+        "failedToSave": "No se pudo guardar el video."
+    },
+    "settings": {
+        "noSupportedBiometric": "La autenticación biométrica no es compatible con este dispositivo.",
+        "noEnrolledBiometric": "No se encontró ningún registro biométrico. Por favor, configure la biometría en su dispositivo para usar esta función.",
+        "failedToToggleLocalAuth": "No se pudo cambiar la autenticación local."
+    },
+    "auth": {
+        "errorChecking": "Error al verificar el registro de autenticación local",
+        "authenticationFailed": "Autenticación fallida",
+        "errorToggling": "Error al cambiar la autenticación local",
+        "errorCheckingSupport": "Error al verificar el soporte de autenticación local",
+        "errorCheckingEnrollment": "No hay métodos biométricos registrados"
+    }
+}

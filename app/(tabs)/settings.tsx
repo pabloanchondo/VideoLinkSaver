@@ -31,18 +31,22 @@ export default function SettingsScreen() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const { t } = useTranslation("common");
+  const { t: tErrors } = useTranslation("errors");
+  const { t: tSettings } = useTranslation("settings");
+
   const handleLocalAuth = async () => {
     if (!isSupported) {
       Alert.alert(
-        "Not Supported",
-        "Biometric authentication is not supported on this device.",
+        tErrors("general.noSupport"),
+        tErrors("settings.noSupportedBiometric"),
       );
       return;
     }
     if (!isEnrolled) {
       Alert.alert(
-        "Not Enrolled",
-        "No biometric enrollment found. Please set up biometrics on your device to use this feature.",
+        tErrors("general.notEnrolled"),
+        tErrors("settings.noEnrolledBiometric"),
       );
       return;
     }
@@ -50,7 +54,7 @@ export default function SettingsScreen() {
     if (!result.success) {
       Alert.alert(
         "Error",
-        result.message || "Failed to toggle local authentication.",
+        result.message || tErrors("settings.failedToToggleLocalAuth"),
       );
     }
   };
@@ -84,7 +88,7 @@ export default function SettingsScreen() {
 
       await StorageAccessFramework.writeAsStringAsync(uri, json);
 
-      Alert.alert("Success", "Database backup created successfully.");
+      Alert.alert(t("success"), tSettings("backupSuccess"));
 
       return { success: true };
     } catch (err) {
@@ -145,7 +149,7 @@ export default function SettingsScreen() {
       await loadCategories();
       await loadVideos();
 
-      Alert.alert("Success", "Database restored successfully.");
+      Alert.alert("Success", tSettings("restoreSuccess"));
 
       return { success: true };
     } catch (err) {
@@ -169,7 +173,7 @@ export default function SettingsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-            About
+            {tSettings("about")}
           </Text>
           <View
             style={[
@@ -185,10 +189,10 @@ export default function SettingsScreen() {
               />
               <View style={styles.rowText}>
                 <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  Video Link Saver
+                  Link2Clip
                 </Text>
                 <Text style={{ color: colors.icon }}>
-                  Version {Application.nativeApplicationVersion}
+                  {t("version")} {Application.nativeApplicationVersion}
                 </Text>
               </View>
             </View>
@@ -197,7 +201,7 @@ export default function SettingsScreen() {
 
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-            Backup
+            {tSettings("backup")}
           </Text>
           <TouchableOpacity
             style={[
@@ -210,10 +214,10 @@ export default function SettingsScreen() {
               <Ionicons name="download-outline" size={24} color={colors.tint} />
               <View style={styles.rowText}>
                 <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  Backup
+                  {tSettings("backup")}
                 </Text>
                 <Text style={{ color: colors.icon }}>
-                  Download a backup of your data
+                  {tSettings("backupDescription")}
                 </Text>
               </View>
             </View>
@@ -230,10 +234,10 @@ export default function SettingsScreen() {
 
               <View style={styles.rowText}>
                 <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  Restore
+                  {tSettings("restore")}
                 </Text>
                 <Text style={{ color: colors.icon }}>
-                  Restore a backup of your data
+                  {tSettings("restoreDescription")}
                 </Text>
               </View>
             </View>
@@ -242,7 +246,7 @@ export default function SettingsScreen() {
 
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-            Theme
+            {tSettings("theme")}
           </Text>
           <View
             style={[
@@ -259,10 +263,10 @@ export default function SettingsScreen() {
 
               <View style={styles.rowText}>
                 <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  Current theme: {theme.toUpperCase()}
+                  {tSettings("currentTheme")}: {theme.toUpperCase()}
                 </Text>
                 <Text style={{ color: colors.icon }}>
-                  Theme is determined by system settings
+                  {tSettings("systemTheme")}
                 </Text>
               </View>
             </View>
@@ -278,7 +282,7 @@ export default function SettingsScreen() {
               disabled={!isSupported || !isEnrolled}
             >
               <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-                Local Authentication
+                {tSettings("localAuth")}
               </Text>
               <View
                 style={[
@@ -295,15 +299,17 @@ export default function SettingsScreen() {
 
                   <View style={styles.rowText}>
                     <Text style={[styles.rowTitle, { color: colors.text }]}>
-                      Login with Biometrics:{" "}
-                      {isLogginEnabled ? "Enabled" : "Disabled"}
+                      {tSettings("biometricEnabled")}:{" "}
+                      {isLogginEnabled
+                        ? tSettings("enabled")
+                        : tSettings("disabled")}
                     </Text>
                     <Text style={{ color: colors.icon }}>
                       {isSupported
                         ? isEnrolled
-                          ? "You can use biometric authentication"
-                          : "No biometric enrollment found"
-                        : "Biometric authentication not supported"}
+                          ? tSettings("biometricDescription")
+                          : tSettings("noEnrolled")
+                        : tSettings("notSupported")}
                     </Text>
                   </View>
                 </View>
@@ -318,6 +324,7 @@ export default function SettingsScreen() {
 
 // Minimal stub for scrollview in this screen
 import { useLocalAuthentication } from "@/hooks/useLocalAuthentication";
+import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
