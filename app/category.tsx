@@ -40,16 +40,22 @@ export default function CategoryScreen() {
       className="flex-1"
       style={{ backgroundColor: useThemeColor({}, "background") }}
     >
-      <AdBanner />
-      <View className="flex-row items-center px-5 pt-4 pb-4">
-        <Text
-          className="text-2xl font-bold"
-          style={{ color: useThemeColor({}, "text") }}
-        >
-          {category.name}
-        </Text>
+      {/* Contenido */}
+      <View className="flex-1">
+        <View className="flex-row items-center px-5 pb-4">
+          <Text
+            className="text-2xl font-bold"
+            style={{ color: useThemeColor({}, "text") }}
+          >
+            {category.name}
+          </Text>
+        </View>
+
+        <VideoList videos={categoryVideos} />
       </View>
-      <VideoList videos={categoryVideos} />
+
+      {/* Banner fijo abajo */}
+      <AdBanner />
     </SafeAreaView>
   );
 }
