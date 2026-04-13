@@ -76,6 +76,15 @@ export const removeCategory = async (id: string) => {
   await database.runAsync("DELETE FROM categories WHERE id = ?", id);
 };
 
+export const updateCategoryName = async (id: string, name: string) => {
+  const database = getDb();
+  await database.runAsync(
+    "UPDATE categories SET name = ? WHERE id = ?",
+    name,
+    id,
+  );
+};
+
 // --- Video Methods ---
 
 export const fetchVideos = async (): Promise<VideoLink[]> => {

@@ -12,6 +12,7 @@
   "updateAvailable": "Update available",
   "updateNow": "Update now",
   "later": "Later",
+  "uncategorized": "No category",
   "auth": {
     "title": "Authentication required",
     "message": "To continue, you need to authenticate using your fingerprint or biometrics. This option is enabled in the app settings.",

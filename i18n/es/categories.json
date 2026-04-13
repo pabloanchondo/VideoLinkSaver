@@ -11,5 +11,6 @@
   "deletedSuccess": "Categoría eliminada correctamente",
   "detailTitle": "Detalle de la categoría",
   "newCategoryPlaceholder": "Nueva categoría",
-  "myCategories": "Mis Categorías"
+  "myCategories": "Mis Categorías",
+  "updateCategory": "Actualizar categoría"
 }

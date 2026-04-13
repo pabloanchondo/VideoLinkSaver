@@ -12,6 +12,7 @@
   "updateAvailable": "Actualización disponible",
   "later": "Más tarde",
   "updateNow": "Actualizar ahora",
+  "uncategorized": "Sin categoría",
   "auth": {
     "title": "Autenticación requerida",
     "message": "Para continuar, necesitas autenticarte usando tu huella dactilar o biometría. Esta opción está habilitada en la configuración de la aplicación.",

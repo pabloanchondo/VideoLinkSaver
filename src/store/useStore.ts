@@ -1,3 +1,4 @@
+import { getCategoryNameByi18n } from "@/helpers/category-name.helper";
 import { create } from "zustand";
 import * as db from "../services/database";
 import { Category, VideoLink } from "../types";
@@ -20,6 +21,7 @@ interface AppState {
   updateVideo: (id: string, title: string, categoryId: string) => Promise<void>;
   checkRestore: () => Promise<null>;
   updateVideoThumbnail: (id: string, thumbnailUrl: string) => Promise<void>;
+  updateCategoryName: (id: string, name: string) => Promise<void>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -65,9 +67,10 @@ export const useStore = create<AppState>((set, get) => ({
 
   loadCategories: async () => {
     const categories = await db.fetchCategories();
+    const name = getCategoryNameByi18n();
     let uncategory: Category = {
       id: "uncategorized",
-      name: "Uncategorized",
+      name,
       parentId: null,
       createdAt: 0,
     };
@@ -103,6 +106,15 @@ export const useStore = create<AppState>((set, get) => ({
     await db.removeCategory(id);
     set((state) => ({
       categories: state.categories.filter((c) => c.id !== id),
+    }));
+  },
+
+  updateCategoryName: async (id: string, name: string) => {
+    await db.updateCategoryName(id, name);
+    set((state) => ({
+      categories: state.categories.map((c) =>
+        c.id === id ? { ...c, name } : c,
+      ),
     }));
   },
 }));
