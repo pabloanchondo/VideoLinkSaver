@@ -18,5 +18,8 @@
   "disabled": "Deshabilitado",
   "biometricDescription": "Puedes usar la autenticación biométrica",
   "noEnrolled": "No hay biometría configurada",
-  "notSupported": "Autenticación biométrica no soportada"
+  "notSupported": "Autenticación biométrica no soportada",
+  "update": "Actualizar",
+  "updateAvailable": "Actualización disponible",
+  "updateDescription": "Una nueva versión de la aplicación está disponible. Por favor, actualiza a la última versión para la mejor experiencia."
 }

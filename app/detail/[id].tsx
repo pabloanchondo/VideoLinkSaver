@@ -1,5 +1,6 @@
 import { api } from "@/api/api";
 import AdBanner from "@/components/Banner";
+import { showToast } from "@/helpers/alert.helper";
 import { APIVideoResponse } from "@/interfaces/video.interfaces";
 import { PlatformIcon } from "@/src/components/PlatformIcon";
 import Colors from "@/src/constants/Colors";
@@ -73,7 +74,7 @@ export default function VideoDetailScreen() {
   const handleOpenLink = async () => {
     const oppened = await Linking.openURL(video.url);
     if (!oppened) {
-      Alert.alert(t("error"), t("cannotOpenUrl"));
+      showToast(t("error"), t("cannotOpenUrl"), "error");
     }
   };
 
@@ -104,7 +105,7 @@ export default function VideoDetailScreen() {
 
       setIsEditing(false);
     } catch (e) {
-      Alert.alert("Error", tVideos("failedToSaveVideo"));
+      showToast(t("error"), tVideos("failedToSaveVideo"), "error");
     } finally {
       setIsSaving(false);
     }
@@ -116,7 +117,7 @@ export default function VideoDetailScreen() {
         message: `Check out this: ${video.url}`,
       });
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      showToast(t("error"), error.message, "error");
     }
   };
 
@@ -129,13 +130,14 @@ export default function VideoDetailScreen() {
       if (data.image) {
         await updateVideoThumbnail(video.id, data.image);
       } else {
-        Alert.alert(
+        showToast(
           tVideos("noThumbnail"),
           tVideos("couldNotRetrieveThumbnail"),
+          "error",
         );
       }
     } catch (e) {
-      Alert.alert("Error", t("failedToRefreshThumbnail"));
+      showToast("Error", tVideos("failedToRefreshThumbnail"), "error");
     } finally {
       setIsLoadingMeta(false);
     }

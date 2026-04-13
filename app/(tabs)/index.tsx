@@ -1,7 +1,4 @@
-import { api } from "@/api/api";
 import AdBanner from "@/components/Banner";
-import { Modal } from "@/components/ui/Modal";
-import UpdateContent from "@/components/UpdateContent";
 import { Colors } from "@/constants/theme";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { iappVersionResponse } from "@/interfaces/video.interfaces";
@@ -15,11 +12,10 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -49,28 +45,28 @@ export default function HomeScreen() {
     }
   }, [sharedUrl]);
 
-  useEffect(() => {
-    isLastVersion();
-  }, []);
+  // useEffect(() => {
+  //   isLastVersion();
+  // }, []);
 
-  const isLastVersion = async () => {
-    try {
-      const { data } = await api.get<iappVersionResponse>(
-        "http://link2clip.eaproma.com/appVersion.json",
-      );
+  // const isLastVersion = async () => {
+  //   try {
+  //     const { data } = await api.get<iappVersionResponse>(
+  //       "http://link2clip.eaproma.com/appVersion.json",
+  //     );
 
-      const currentVersion = getAppVersion();
+  //     const currentVersion = getAppVersion();
 
-      console.log(currentVersion.version, data.version);
+  //     console.log(currentVersion.version, data.version);
 
-      if (data.version !== currentVersion.version) {
-        setNewVersionInfo(data);
-        setIsModalVisible(true);
-      }
-    } catch (e) {
-      console.log("Error checking app version", e);
-    }
-  };
+  //     if (data.version !== currentVersion.version) {
+  //       setNewVersionInfo(data);
+  //       setIsModalVisible(true);
+  //     }
+  //   } catch (e) {
+  //     console.log("Error checking app version", e);
+  //   }
+  // };
 
   const getAppVersion = () => {
     return {
@@ -88,7 +84,7 @@ export default function HomeScreen() {
       <AdBanner />
 
       {/* <Modal isOpen={true}> */}
-      <Modal isOpen={isModalVisible}>
+      {/* <Modal isOpen={isModalVisible}>
         <View
           style={{
             backgroundColor: colors.card,
@@ -109,7 +105,7 @@ export default function HomeScreen() {
             onLater={() => setIsModalVisible(false)}
           />
         </View>
-      </Modal>
+      </Modal> */}
 
       <View
         style={{

@@ -18,5 +18,8 @@
   "disabled": "Disabled",
   "biometricDescription": "You can use biometric authentication",
   "noEnrolled": "No biometric enrollment found",
-  "notSupported": "Biometric authentication not supported"
+  "notSupported": "Biometric authentication not supported",
+  "update": "Update",
+  "updateAvailable": "Update available",
+  "updateDescription": "A new version of the app is available. Please update to the latest version for the best experience."
 }

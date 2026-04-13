@@ -1,3 +1,5 @@
+import { AlertNotificationRoot } from "react-native-alert-notification";
+
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import "expo-share-intent";
@@ -70,27 +72,32 @@ export default function RootLayout() {
   return (
     // <ThemeProvider value={DefaultTheme}>
     <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: cardColor,
-          },
-          headerTintColor: textColor,
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="add"
-          options={{ presentation: "modal", title: tv("addVideo") }}
-        />
-        <Stack.Screen
-          name="detail/[id]"
-          options={{ title: tv("videoDetail"), headerShown: false }}
-        />
-        <Stack.Screen name="category" options={{ title: tc("detailTitle") }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+      <AlertNotificationRoot>
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: cardColor,
+            },
+            headerTintColor: textColor,
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="add"
+            options={{ presentation: "modal", title: tv("addVideo") }}
+          />
+          <Stack.Screen
+            name="detail/[id]"
+            options={{ title: tv("videoDetail"), headerShown: false }}
+          />
+          <Stack.Screen
+            name="category"
+            options={{ title: tc("detailTitle") }}
+          />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </AlertNotificationRoot>
     </GestureHandlerRootView>
     // </ThemeProvider>
   );

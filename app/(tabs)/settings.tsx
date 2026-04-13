@@ -10,10 +10,10 @@ import * as FileSystem from "expo-file-system/legacy";
 import { StorageAccessFramework } from "expo-file-system/legacy";
 
 import * as Application from "expo-application";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
+  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -31,30 +31,60 @@ export default function SettingsScreen() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [isVisibleUpdate, setIsVisibleUpdate] = useState(false);
+  const [newVersionInfo, setNewVersionInfo] =
+    useState<iappVersionResponse | null>(null);
+
   const { t } = useTranslation("common");
   const { t: tErrors } = useTranslation("errors");
   const { t: tSettings } = useTranslation("settings");
 
+  useEffect(() => {
+    isLastVersion();
+  }, []);
+
+  const isLastVersion = async () => {
+    try {
+      const { data } = await api.get<iappVersionResponse>(
+        "http://link2clip.eaproma.com/appVersion.json",
+      );
+
+      const currentVersion = getAppVersion();
+
+      console.log(data.version, currentVersion.version);
+
+      if (data.version !== currentVersion.version) {
+        setNewVersionInfo(data);
+        setIsVisibleUpdate(true);
+      }
+    } catch (e) {
+      console.log("Error checking app version", e);
+    }
+  };
+
   const handleLocalAuth = async () => {
     if (!isSupported) {
-      Alert.alert(
+      showToast(
         tErrors("general.noSupport"),
         tErrors("settings.noSupportedBiometric"),
+        "error",
       );
       return;
     }
     if (!isEnrolled) {
-      Alert.alert(
+      showToast(
         tErrors("general.notEnrolled"),
         tErrors("settings.noEnrolledBiometric"),
+        "error",
       );
       return;
     }
     const result = await toggleLogin(!isLogginEnabled);
     if (!result.success) {
-      Alert.alert(
-        "Error",
+      showToast(
+        tErrors("general.error"),
         result.message || tErrors("settings.failedToToggleLocalAuth"),
+        "error",
       );
     }
   };
@@ -88,7 +118,7 @@ export default function SettingsScreen() {
 
       await StorageAccessFramework.writeAsStringAsync(uri, json);
 
-      Alert.alert(t("success"), tSettings("backupSuccess"));
+      showToast(t("success"), tSettings("backupSuccess"), "success");
 
       return { success: true };
     } catch (err) {
@@ -149,7 +179,7 @@ export default function SettingsScreen() {
       await loadCategories();
       await loadVideos();
 
-      Alert.alert("Success", tSettings("restoreSuccess"));
+      showToast(t("success"), tSettings("restoreSuccess"), "success");
 
       return { success: true };
     } catch (err) {
@@ -158,6 +188,13 @@ export default function SettingsScreen() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const getAppVersion = () => {
+    return {
+      version: Application.nativeApplicationVersion,
+      build: Application.nativeBuildVersion,
+    };
   };
 
   if (isLoading) {
@@ -171,6 +208,48 @@ export default function SettingsScreen() {
       <AdBanner />
 
       <ScrollView contentContainerStyle={styles.content}>
+        {
+          /* Update Available Section */
+          isVisibleUpdate && (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+                {tSettings("update")}
+              </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(
+                    "https://play.google.com/store/apps/details?id=com.anchondopablo.videos",
+                  )
+                }
+                style={[
+                  styles.card,
+                  {
+                    backgroundColor: colors.card,
+                    borderColor: colors.tint,
+                    borderWidth: 2,
+                  },
+                ]}
+              >
+                <View style={styles.row}>
+                  <IconSymbol
+                    name="play.rectangle.fill"
+                    size={24}
+                    color={colors.tint}
+                  />
+                  <View style={styles.rowText}>
+                    <Text style={[styles.rowTitle, { color: colors.text }]}>
+                      {tSettings("updateAvailable")}
+                    </Text>
+                    <Text style={{ color: colors.icon }}>
+                      {tSettings("updateDescription")}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )
+        }
+
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.icon }]}>
             {tSettings("about")}
@@ -323,7 +402,10 @@ export default function SettingsScreen() {
 }
 
 // Minimal stub for scrollview in this screen
+import { api } from "@/api/api";
+import { showToast } from "@/helpers/alert.helper";
 import { useLocalAuthentication } from "@/hooks/useLocalAuthentication";
+import { iappVersionResponse } from "@/interfaces/video.interfaces";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

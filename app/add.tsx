@@ -1,6 +1,7 @@
 import { api } from "@/api/api";
 import AdBanner from "@/components/Banner";
 import { Modal } from "@/components/ui/Modal";
+import { showToast } from "@/helpers/alert.helper";
 import { APIVideoResponse } from "@/interfaces/video.interfaces";
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
@@ -13,13 +14,12 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import LinkPreview from "react-native-link-preview";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -84,7 +84,7 @@ export default function AddVideoScreen() {
       setMeta(data);
       setUserTitle(data.title);
     } catch {
-      Alert.alert("Error", "Failed to get video data.");
+      showToast("Error", "Failed to get video data.", "error");
     } finally {
       setIsFetchingMeta(false);
     }
@@ -216,13 +216,13 @@ export default function AddVideoScreen() {
     try {
       setSelectedCategory(categoryId);
     } catch (e) {
-      Alert.alert("Error", "Failed to add video to category.");
+      showToast("Error", "Failed to add video to category.", "error");
     }
   };
 
   const handleSave = async () => {
     if (!url.trim()) {
-      Alert.alert("Error", "Please enter a valid URL.");
+      showToast("Error", "Please enter a valid URL.", "error");
       return;
     }
 
@@ -240,7 +240,7 @@ export default function AddVideoScreen() {
 
       router.back();
     } catch (e) {
-      Alert.alert("Error", "Failed to save video.");
+      showToast("Error", "Failed to save video.", "error");
     } finally {
       setIsSaving(false);
     }
