@@ -44,7 +44,7 @@ export const VideoCard = memo(({ video }: Props) => {
           </View>
           <View>
             <Text
-              className="text-xs"
+              className="text-xs text-slate-400"
               style={{ color: useThemeColor({}, "text") }}
             >
               {new Date(video.createdAt).toLocaleDateString("en-US", {

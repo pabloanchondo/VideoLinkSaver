@@ -31,6 +31,17 @@ export const Colors = {
   },
 };
 
+export const gradients = {
+  blue: "linear-gradient(to right bottom, #2088ff, #009df0, #00b4df)",
+  pink: "linear-gradient(to right bottom, #b549fa, #d248d0, #ef3aa6)",
+  orange: "linear-gradient(to right bottom, #ff6300, #ff4e19, #fc3333)",
+  green: "linear-gradient(to right bottom, #00c758, #00c26a, #00bd79)",
+  purple: "linear-gradient(to right bottom, #6e5dff, #8c55ff, #a74aff)",
+  red: "linear-gradient(to right bottom, #fe2461, #fb2d7c, #f83293)",
+  yellow: "linear-gradient(to right bottom, #fe9400, #ff8000, #ff6e00)",
+  teal: "linear-gradient(to right bottom, #00bbaf, #00bac3, #00b8d5)",
+};
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */

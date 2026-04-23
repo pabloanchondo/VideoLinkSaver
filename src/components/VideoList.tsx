@@ -1,8 +1,7 @@
 // import { LinkPreview } from "@flyerhq/react-native-link-preview";
-import { useThemeColor } from "@/hooks/use-theme-color";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, StyleSheet, TextInput, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { VideoLink } from "../types";
 import { VideoCard } from "./VideoCard";
 
@@ -34,23 +33,7 @@ export const VideoList = ({ videos }: VideoListProps) => {
   };
 
   return (
-    <View style={{ paddingBottom: 16, marginBottom: 80 }}>
-      <View style={styles.searchContainer}>
-        <TextInput
-          value={search}
-          onChangeText={handleSearch}
-          placeholder={t("filterByTitle")}
-          style={{
-            padding: 10,
-            borderRadius: 8,
-            borderWidth: 1,
-            borderColor: "#ccc",
-            marginBottom: 12,
-            width: "100%",
-            color: useThemeColor({}, "text"),
-          }}
-        />
-      </View>
+    <View style={{ paddingBottom: 16 }}>
       <FlatList
         data={filteredVideos}
         renderItem={({ item }) => <VideoCard video={item} />}

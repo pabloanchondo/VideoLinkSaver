@@ -90,7 +90,7 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="category"
-            options={{ title: tc("detailTitle") }}
+            options={{ title: tc("detailTitle"), headerShown: false }}
           />
           <Stack.Screen name="+not-found" />
         </Stack>

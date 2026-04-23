@@ -1,17 +1,28 @@
 import AdBanner from "@/components/Banner";
-import { useThemeColor } from "@/hooks/use-theme-color";
 import { VideoList } from "@/src/components/VideoList";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
+
+import { Colors, gradients } from "@/constants/theme";
+import { VideoLink } from "@/src/types";
 import { useFocusEffect } from "@react-navigation/native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
-import { Text, View } from "react-native";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoryScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { categories, videos, loadVideos } = useStore();
+
+  const [filteredVideos, setFilteredVideos] = useState<VideoLink[]>(videos);
+  const [search, setSearch] = useState("");
+
+  const { t } = useTranslation("videos");
+
+  const colors = Colors[useColorScheme()];
 
   React.useEffect(() => {
     // Opcional: recargar videos al montar
@@ -24,8 +35,25 @@ export default function CategoryScreen() {
     }, [id]),
   );
 
+  React.useEffect(() => {
+    // Actualiza la lista filtrada cuando cambian los videos
+    if (search === "") {
+      setFilteredVideos(videos);
+    } else {
+      setFilteredVideos(
+        videos.filter((video) =>
+          video.title.toLowerCase().includes(search.toLowerCase()),
+        ),
+      );
+    }
+  }, [videos, search]);
+
+  const handleSearch = (text: string) => {
+    setSearch(text);
+  };
+
   const category = categories.find((c) => c.id === id);
-  const categoryVideos = videos.filter((v) => v.categoryId === id);
+  const categoryVideos = filteredVideos.filter((v) => v.categoryId === id);
 
   if (!category) {
     return (
@@ -36,26 +64,72 @@ export default function CategoryScreen() {
   }
 
   return (
-    <SafeAreaView
-      className="flex-1"
-      style={{ backgroundColor: useThemeColor({}, "background") }}
-    >
-      {/* Contenido */}
-      <View className="flex-1">
-        <View className="flex-row items-center px-5 pb-4">
-          <Text
-            className="text-2xl font-bold"
-            style={{ color: useThemeColor({}, "text") }}
+    <>
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <View
+          style={{
+            backgroundColor: colors.card,
+            paddingTop: 25,
+            minHeight: "20%",
+            paddingHorizontal: 20,
+            alignContent: "center",
+            justifyContent: "center",
+          }}
+          className="shadow-md"
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            {category.name}
-          </Text>
+            <View>
+              <Text
+                style={{
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  color: colors.text,
+                }}
+              >
+                {category.name}
+              </Text>
+              <Text className="text-slate-400">
+                {categoryVideos.length} Videos
+              </Text>
+            </View>
+
+            <View
+              style={{
+                width: 30,
+                height: 30,
+                experimental_backgroundImage: gradients.blue,
+                borderRadius: 15,
+              }}
+            ></View>
+          </View>
+
+          <TextInput
+            placeholder={t("filterByTitle")}
+            value={search}
+            onChangeText={handleSearch}
+            style={{
+              backgroundColor: colors.background,
+              borderRadius: 8,
+              paddingHorizontal: 14,
+              paddingVertical: 12,
+              marginTop: 15,
+              fontSize: 14,
+              color: colors.text,
+            }}
+          />
         </View>
 
-        <VideoList videos={categoryVideos} />
+        <View className="flex-1">
+          <VideoList videos={categoryVideos} />
+        </View>
       </View>
-
-      {/* Banner fijo abajo */}
       <AdBanner />
-    </SafeAreaView>
+    </>
   );
 }

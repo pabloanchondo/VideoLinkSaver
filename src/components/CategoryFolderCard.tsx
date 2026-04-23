@@ -1,3 +1,4 @@
+import { gradients } from "@/constants/theme";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -25,8 +26,7 @@ export const CategoryFolderCard = ({
     <View
       className="mb-2"
       style={{
-        experimental_backgroundImage:
-          "linear-gradient(to right bottom, #2088ff, #009df0, #00b4df)",
+        experimental_backgroundImage: gradients.blue,
         padding: 13,
         borderRadius: 10,
       }}
