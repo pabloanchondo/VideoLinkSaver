@@ -14,5 +14,7 @@
   "myCategories": "My Categories",
   "updateCategory": "Update category",
   "colorSelector": "Select category color",
-  "saveCategory": "Save Category"
+  "saveCategory": "Save Category",
+  "select": "Select a category",
+  "press": "Press to select a category"
 }

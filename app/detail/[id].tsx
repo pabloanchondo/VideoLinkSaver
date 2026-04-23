@@ -1,11 +1,16 @@
 import { api } from "@/api/api";
 import AdBanner from "@/components/Banner";
+import { Modal } from "@/components/ui/Modal";
+import { gradients } from "@/constants/theme";
 import { showToast } from "@/helpers/alert.helper";
 import { APIVideoResponse } from "@/interfaces/video.interfaces";
+import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
+import { CategoryList } from "@/src/components/CategoryList";
 import { PlatformIcon } from "@/src/components/PlatformIcon";
 import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
+import { Category } from "@/src/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
@@ -49,10 +54,18 @@ export default function VideoDetailScreen() {
 
   const [hasBeenRefreshed, setHasBeenRefreshed] = useState(false);
 
+  const [isVisibleSelect, setIsVisibleSelect] = useState(false);
+
+  const [category, setCategory] = useState({
+    name: "uncategorized",
+    color: "blue",
+  });
+
   const insets = useSafeAreaInsets();
 
   const { t } = useTranslation("common");
   const { t: tVideos } = useTranslation("videos");
+  const { t: tc } = useTranslation("categories");
 
   if (!video) {
     return (
@@ -152,6 +165,15 @@ export default function VideoDetailScreen() {
     handleRefreshThumbnail();
   };
 
+  const handleSelectCategory = (category: Category) => {
+    setSelectedCategory(category.id);
+    setCategory({
+      name: category.name,
+      color: category.color,
+    });
+    setIsVisibleSelect(false);
+  };
+
   if (isLoadingMeta) {
     return (
       <View
@@ -172,16 +194,6 @@ export default function VideoDetailScreen() {
   }
 
   return (
-    // <ScrollView
-    //   style={{
-    //     flex: 1,
-    //     marginBottom: 60,
-    //     position: "relative",
-    //     minHeight: "100%",
-    //     backgroundColor: colors.background,
-    //   }}
-    //   contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}
-    // >
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView
         style={{ flex: 1 }}
@@ -201,117 +213,126 @@ export default function VideoDetailScreen() {
           />
         )}
 
+        <Modal isOpen={isVisibleSelect} withInput>
+          <View
+            style={{
+              backgroundColor: colors.background,
+              padding: 25,
+              borderRadius: 8,
+              minWidth: "99%",
+              maxHeight: "60%",
+            }}
+          >
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 20,
+                fontWeight: "500",
+                marginBottom: 15,
+              }}
+            >
+              {tc("select")}
+            </Text>
+            <CategoryList
+              categories={categories}
+              onSelect={(category: Category) => {
+                handleSelectCategory(category);
+              }}
+            />
+          </View>
+        </Modal>
+
         <View style={styles.content}>
           {isEditing && (
             <>
-              <Text style={[styles.label, { color: colors.text }]}>
-                {tVideos("videoTitle")}
-              </Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: colors.card,
-                    color: colors.text,
-                    borderColor: colors.border,
-                  },
-                ]}
-                placeholder={tVideos("videoTitle")}
-                placeholderTextColor={colors.icon}
-                value={userTitle}
-                onChangeText={setUserTitle}
-                autoCapitalize="none"
-                keyboardType="default"
-              />
-
-              <Text
-                style={[styles.label, { color: colors.text, marginTop: 24 }]}
+              <View
+                className="shadow-md mt-6"
+                style={{
+                  backgroundColor: colors.card,
+                  padding: 20,
+                  borderRadius: 10,
+                }}
               >
-                {tVideos("selectCategory")}
-              </Text>
-              <View style={styles.categoriesGrid}>
-                {categories.map((cat) => (
-                  <TouchableOpacity
-                    key={cat.id}
-                    style={[
-                      styles.categoryChip,
-                      {
-                        backgroundColor:
-                          selectedCategory === cat.id
-                            ? colors.tint
-                            : colors.card,
-                        borderColor: colors.border,
-                      },
-                    ]}
-                    onPress={() => {
-                      const newCategory =
-                        selectedCategory === cat.id ? "uncategorized" : cat.id;
-                      setSelectedCategory(newCategory);
-                    }}
-                  >
-                    <Text
-                      style={[
-                        styles.catText,
-                        {
-                          color:
-                            selectedCategory === cat.id ? "#fff" : colors.text,
-                        },
-                      ]}
-                    >
-                      {cat.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-                {categories.length === 0 && (
-                  <Text style={{ color: colors.icon }}>
-                    No categories found. Create some first!
-                  </Text>
-                )}
-              </View>
-
-              <TouchableOpacity
-                style={[
-                  styles.saveBtn,
-                  {
-                    backgroundColor: colors.tint,
-
-                    opacity: isSaving ? 0.7 : 1,
-                    marginRight: 1,
-                  },
-                ]}
-                onPress={handleSave}
-                disabled={isSaving}
-              >
-                {isSaving ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text style={styles.saveText}>
-                    <Ionicons name="save" size={16} color="#fff" /> {t("save")}
-                  </Text>
-                )}
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.saveBtn,
-                  {
-                    borderColor: "#ff4444",
-                    borderWidth: 1,
-                    marginLeft: 1,
-                    marginTop: 0,
-                  },
-                ]}
-                onPress={() => setIsEditing(false)}
-              >
-                <Text style={styles.deleteText}>
-                  <Ionicons
-                    name="close-circle-outline"
-                    size={16}
-                    color="#ff4444"
-                  />{" "}
-                  {t("cancel")}
+                <Text style={[styles.label, { color: colors.text }]}>
+                  {tVideos("videoTitle")}
                 </Text>
-              </TouchableOpacity>
+                <TextInput
+                  placeholder={tVideos("videoTitle")}
+                  placeholderTextColor={colors.icon}
+                  style={{
+                    backgroundColor: colors.background,
+                    borderRadius: 8,
+                    paddingHorizontal: 12,
+                    paddingVertical: 12,
+                    fontSize: 14,
+                    color: colors.text,
+                  }}
+                  value={userTitle}
+                  onChangeText={setUserTitle}
+                  autoCapitalize="none"
+                  keyboardType="url"
+                />
+
+                <Text
+                  style={[styles.label, { color: colors.text, marginTop: 24 }]}
+                >
+                  {tVideos("selectCategory")}
+                </Text>
+
+                <View className="flex flex-col gap-3 mt-2 justify-center items-center align-middle">
+                  <Text className="text-slate-400 text-lg">{tc("press")}</Text>
+                  <CategoryFolderCard
+                    name={category.name}
+                    color={category.color as keyof typeof gradients}
+                    onPress={() => setIsVisibleSelect(true)}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={[
+                    styles.saveBtn,
+                    {
+                      backgroundColor: colors.tint,
+
+                      opacity: isSaving ? 0.7 : 1,
+                      marginRight: 1,
+                    },
+                  ]}
+                  onPress={handleSave}
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.saveText}>
+                      <Ionicons name="save" size={16} color="#fff" />{" "}
+                      {t("save")}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.saveBtn,
+                    {
+                      borderColor: "#ff4444",
+                      borderWidth: 1,
+                      marginLeft: 1,
+                      marginTop: 0,
+                    },
+                  ]}
+                  onPress={() => setIsEditing(false)}
+                >
+                  <Text style={styles.deleteText}>
+                    <Ionicons
+                      name="close-circle-outline"
+                      size={16}
+                      color="#ff4444"
+                    />{" "}
+                    {t("cancel")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </>
           )}
 

@@ -36,7 +36,19 @@ const checkIcon = () => (
   </View>
 );
 
-export default function CreateCategoryScreen() {
+interface CreateCategoryScreenProps {
+  onCategoryCreated?: (id: string) => void;
+  showAdd?: boolean;
+  onClose?: () => void;
+  showClsoeButton?: boolean;
+}
+
+export default function CreateCategoryScreen({
+  onCategoryCreated,
+  showAdd = true,
+  onClose,
+  showClsoeButton = false,
+}: CreateCategoryScreenProps) {
   const router = useRouter();
   const colors = Colors[useColorScheme()];
   const { t: t } = useTranslation("categories");
@@ -55,8 +67,10 @@ export default function CreateCategoryScreen() {
 
     setIsSaving(true);
 
+    let newCategoryId = Date.now().toString();
+
     await addCategory({
-      id: Date.now().toString(),
+      id: newCategoryId,
       name: form.name.trim(),
       parentId: null,
       createdAt: Date.now(),
@@ -64,7 +78,10 @@ export default function CreateCategoryScreen() {
     });
     setForm({ name: "", color: "blue" });
     setIsSaving(false);
-
+    if (onCategoryCreated) {
+      onCategoryCreated(newCategoryId);
+      return;
+    }
     router.replace("/");
   };
 
@@ -79,7 +96,9 @@ export default function CreateCategoryScreen() {
             minHeight: "13%",
             paddingHorizontal: 20,
             alignContent: "center",
-            justifyContent: "center",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexDirection: "row",
           }}
           className="shadow-md"
         >
@@ -102,8 +121,20 @@ export default function CreateCategoryScreen() {
               </Text>
             </View>
           </View>
+
+          {showClsoeButton && (
+            <TouchableOpacity
+              onPress={() => {
+                if (onClose) {
+                  onClose();
+                  return;
+                }
+              }}
+            >
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+          )}
         </View>
-        {/* Header */}
 
         {/* Form */}
 
@@ -252,7 +283,7 @@ export default function CreateCategoryScreen() {
 
         {/* Form */}
       </View>
-      <AdBanner />
+      {showAdd && <AdBanner />}
     </>
   );
 }

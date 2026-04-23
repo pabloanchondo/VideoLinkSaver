@@ -93,7 +93,9 @@ export default function CategoryScreen() {
                   color: colors.text,
                 }}
               >
-                {category.name}
+                {category.name.length > 25
+                  ? category.name.slice(0, 20) + "..."
+                  : category.name}
               </Text>
               <Text className="text-slate-400">
                 {categoryVideos.length} Videos
@@ -111,7 +113,9 @@ export default function CategoryScreen() {
                 justifyContent: "center",
               }}
               onPress={() => {
-                router.push(`/category/${category.id}`);
+                if (category.id != "uncategorized") {
+                  router.push(`/category/${category.id}`);
+                }
               }}
             >
               <Ionicons name="pencil" size={18} color={"white"} />

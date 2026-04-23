@@ -14,5 +14,7 @@
   "myCategories": "Mis Categorías",
   "updateCategory": "Actualizar categoría",
   "colorSelector": "Seleccionar el color de la categoría",
-  "saveCategory": "Guardar categoría"
+  "saveCategory": "Guardar categoría",
+  "select": "Selecciona una categoría",
+  "press": "Presiona para seleccionar una categoría"
 }

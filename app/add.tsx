@@ -1,28 +1,31 @@
 import { api } from "@/api/api";
 import AdBanner from "@/components/Banner";
 import { Modal } from "@/components/ui/Modal";
+import { Colors, gradients } from "@/constants/theme";
 import { showToast } from "@/helpers/alert.helper";
 import { APIVideoResponse } from "@/interfaces/video.interfaces";
-import Colors from "@/src/constants/Colors";
+import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
+import { CategoryList } from "@/src/components/CategoryList";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { extractMetadata } from "@/src/services/metadata";
 import { useStore } from "@/src/store/useStore";
-import { PlatformType } from "@/src/types";
+import { Category, PlatformType } from "@/src/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import LinkPreview from "react-native-link-preview";
-import { SafeAreaView } from "react-native-safe-area-context";
+import CreateCategoryScreen from "./createCategory";
 
 export default function AddVideoScreen() {
   const colors = Colors[useColorScheme()];
@@ -36,8 +39,12 @@ export default function AddVideoScreen() {
   const [selectedCategory, setSelectedCategory] =
     useState<string>("uncategorized");
   const [isSaving, setIsSaving] = useState(false);
+  const [isVisibleSelect, setIsVisibleSelect] = useState(false);
 
-  const [newCategoryName, setNewCategoryName] = useState("");
+  const [category, setCategory] = useState({
+    name: "uncategorized",
+    color: "blue",
+  });
 
   const [isVisible, setIsVisible] = useState(false);
   const [isFetchingMeta, setIsFetchingMeta] = useState(false);
@@ -45,22 +52,6 @@ export default function AddVideoScreen() {
   const { t: tv } = useTranslation("videos");
   const { t: tc } = useTranslation("categories");
   const { t: tcom } = useTranslation("common");
-
-  const handleAddCategory = async () => {
-    if (!newCategoryName.trim()) return;
-
-    let id = Date.now().toString();
-
-    await addCategory({
-      id,
-      name: newCategoryName.trim(),
-      parentId: null,
-      createdAt: Date.now(),
-    });
-    setNewCategoryName("");
-    setIsVisible(false);
-    handleAdd(id);
-  };
 
   const [meta, setMeta] = useState({
     title: "",
@@ -168,25 +159,6 @@ export default function AddVideoScreen() {
     }
   };
 
-  const getYoutubeThumbnail = (url: string) => {
-    console.log(url);
-    url = url.split("&")[0]; // Elimina parámetros adicionales
-    console.log("url no params", url);
-    const idMatch = url.match(/v=([^&]+)/) || url.match(/youtu\.be\/([^?]+)/);
-
-    const id = idMatch ? idMatch[1] : null;
-
-    if (id) {
-      console.log(
-        "Thumbnail ID:",
-        `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
-      );
-      return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-    }
-
-    return "";
-  };
-
   const getFacebookData = async (url: string, platform: PlatformType) => {
     try {
       const { data } = await api.post<APIVideoResponse>("metadata", {
@@ -209,14 +181,6 @@ export default function AddVideoScreen() {
         title: "",
         thumbnailUrl: "",
       };
-    }
-  };
-
-  const handleAdd = async (categoryId: string) => {
-    try {
-      setSelectedCategory(categoryId);
-    } catch (e) {
-      showToast("Error", "Failed to add video to category.", "error");
     }
   };
 
@@ -250,203 +214,218 @@ export default function AddVideoScreen() {
     setIsVisible((state) => !state);
   };
 
+  const onCategoryCreated = (id: string) => {
+    setSelectedCategory(id);
+    setIsVisible(false);
+  };
+
+  const handleSelectCategory = (category: Category) => {
+    setSelectedCategory(category.id);
+    setCategory({
+      name: category.name,
+      color: category.color,
+    });
+    setIsVisibleSelect(false);
+  };
+
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={[styles.label, { color: colors.text }]}>Video URL</Text>
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: colors.card,
-              color: colors.text,
-              borderColor: colors.border,
-            },
-          ]}
-          placeholder={tv("urlPlaceholder")}
-          placeholderTextColor={colors.icon}
-          value={url}
-          onChangeText={(text) => {
-            setUrl(text);
-            handleGetVideoData(text);
-          }}
-          autoCapitalize="none"
-          keyboardType="url"
-        />
-
-        <Text style={[styles.label, { color: colors.text }]}>
-          {tv("title")}
-        </Text>
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: colors.card,
-              color: colors.text,
-              borderColor: colors.border,
-            },
-          ]}
-          placeholder={tv("videoTitle")}
-          placeholderTextColor={colors.icon}
-          value={userTitle}
-          onChangeText={setUserTitle}
-          autoCapitalize="none"
-          keyboardType="default"
-        />
-        <View className="flex flex-row justify-between">
-          <Text style={[styles.label, { color: colors.text, marginTop: 24 }]}>
-            {tv("selectCategory")}
-          </Text>
-
-          <TouchableOpacity
-            style={[styles.addBtn, { backgroundColor: colors.tintSecondary }]}
-            onPress={handleShowInputText}
-          >
-            <View className="flex flex-row gap-1 items-center">
-              <Text style={{ color: "#fff", fontSize: 14, fontWeight: "500" }}>
-                {isVisible ? tcom("close") : tc("newCategoryPlaceholder")}
-              </Text>
-              <Ionicons
-                name={
-                  isVisible ? "remove-circle-outline" : "add-circle-outline"
-                }
-                size={24}
-                color="#fff"
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <Modal isOpen={isVisible} withInput>
+    <>
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <ScrollView contentContainerStyle={styles.scroll}>
           <View
+            className="shadow-md mt-6"
             style={{
               backgroundColor: colors.card,
-              padding: 25,
-              borderRadius: 8,
-              width: "85%",
+              padding: 20,
+              borderRadius: 10,
             }}
           >
-            <Text className="text-xl mb-5" style={{ color: colors.text }}>
-              {tc("addCategory")}
-            </Text>
             <View>
+              <Text className=" mb-2 text-xl" style={{ color: colors.text }}>
+                Video URL
+              </Text>
+
               <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: colors.card,
-                    color: colors.text,
-                    borderColor: colors.border,
-                  },
-                ]}
-                placeholder={tc("newCategoryPlaceholder")}
+                placeholder={tv("urlPlaceholder")}
                 placeholderTextColor={colors.icon}
-                value={newCategoryName}
-                onChangeText={setNewCategoryName}
-                onSubmitEditing={handleAddCategory}
+                style={{
+                  backgroundColor: colors.background,
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  paddingVertical: 12,
+                  fontSize: 14,
+                  color: colors.text,
+                }}
+                value={url}
+                onChangeText={(text) => {
+                  setUrl(text);
+                  handleGetVideoData(text);
+                }}
+                autoCapitalize="none"
+                keyboardType="url"
               />
             </View>
-            <View className="flex flex-row gap-2 justify-between items-center align-middle">
-              <TouchableOpacity
-                style={[
-                  styles.saveBtn,
-                  {
-                    backgroundColor: colors.tint,
-                    flex: 1,
-                    opacity: isSaving ? 0.7 : 1,
-                    marginRight: 1,
-                  },
-                ]}
-                onPress={handleAddCategory}
-                disabled={isSaving}
+
+            <View className="mt-6">
+              <Text className=" mb-2 text-xl" style={{ color: colors.text }}>
+                {tv("title")}
+              </Text>
+
+              <TextInput
+                placeholder={tv("videoTitle")}
+                placeholderTextColor={colors.icon}
+                style={{
+                  backgroundColor: colors.background,
+                  borderRadius: 8,
+                  paddingHorizontal: 14,
+                  paddingVertical: 12,
+                  fontSize: 14,
+                  color: colors.text,
+                }}
+                value={userTitle}
+                onChangeText={setUserTitle}
+                autoCapitalize="none"
+                keyboardType="default"
+              />
+            </View>
+
+            <View className="flex flex-row justify-between mt-3">
+              <Text
+                style={[styles.label, { color: colors.text, marginTop: 24 }]}
               >
-                <Text style={styles.saveText}>
-                  <Ionicons name="save" size={16} color="#fff" /> {tcom("save")}
-                </Text>
-              </TouchableOpacity>
+                {tv("selectCategory")}
+              </Text>
 
               <TouchableOpacity
-                style={[
-                  styles.saveBtn,
-                  {
-                    borderWidth: 1,
-                    borderColor: colors.border,
-                    backgroundColor: colors.background,
-                    flex: 1,
-                    opacity: isSaving ? 0.7 : 1,
-                    marginRight: 1,
-                  },
-                ]}
-                onPress={() => setIsVisible(false)}
-                disabled={isSaving}
+                style={[styles.addBtn, { backgroundColor: colors.tint }]}
+                onPress={handleShowInputText}
               >
-                <Text style={[styles.saveText, { color: colors.text }]}>
-                  <Ionicons name="close" size={16} color={colors.text} />{" "}
-                  {tcom("close")}
-                </Text>
+                <View className="flex flex-row gap-1 items-center">
+                  <Text
+                    style={{ color: "#fff", fontSize: 14, fontWeight: "500" }}
+                  >
+                    {isVisible ? tcom("close") : tc("newCategoryPlaceholder")}
+                  </Text>
+                  <Ionicons
+                    name={
+                      isVisible ? "remove-circle-outline" : "add-circle-outline"
+                    }
+                    size={24}
+                    color="#fff"
+                  />
+                </View>
               </TouchableOpacity>
             </View>
-          </View>
-        </Modal>
+            <View className="flex flex-col gap-3 mt-2 justify-center items-center align-middle">
+              <Text className="text-slate-400 text-lg">{tc("press")}</Text>
+              <CategoryFolderCard
+                name={category.name}
+                color={category.color as keyof typeof gradients}
+                onPress={() => setIsVisibleSelect(true)}
+              />
+            </View>
 
-        <View style={styles.categoriesGrid}>
-          {categories.map((cat) => (
+            <Modal isOpen={isVisibleSelect} withInput>
+              <View
+                style={{
+                  backgroundColor: colors.background,
+                  padding: 25,
+                  borderRadius: 8,
+                  minWidth: "99%",
+                  maxHeight: "60%",
+                }}
+              >
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontSize: 20,
+                    fontWeight: "500",
+                    marginBottom: 15,
+                  }}
+                >
+                  {tc("select")}
+                </Text>
+                <CategoryList
+                  categories={categories}
+                  onSelect={(category: Category) => {
+                    handleSelectCategory(category);
+                  }}
+                />
+              </View>
+            </Modal>
+
+            <Modal isOpen={isVisible} withInput>
+              <View
+                style={{
+                  minWidth: "99%",
+                  maxHeight: "80%",
+                }}
+              >
+                <CreateCategoryScreen
+                  showAdd={false}
+                  showClsoeButton
+                  onCategoryCreated={onCategoryCreated}
+                  onClose={() => {
+                    setIsVisible(false);
+                  }}
+                />
+              </View>
+            </Modal>
+
             <TouchableOpacity
-              key={cat.id}
-              style={[
-                styles.categoryChip,
-                {
-                  backgroundColor:
-                    selectedCategory === cat.id
-                      ? colors.tintSecondary
-                      : colors.card,
-                  borderColor: colors.border,
-                },
-              ]}
-              onPress={() =>
-                handleAdd(
-                  selectedCategory === cat.id ? "uncategorized" : cat.id,
-                )
-              }
+              className=" py-4 rounded-xl items-center mt-10"
+              style={{
+                experimental_backgroundImage: gradients.blue,
+              }}
+              onPress={handleSave}
+            >
+              {isSaving || isFetchingMeta ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text
+                  className="font-semibold text-lg"
+                  style={{ color: "white" }}
+                >
+                  {tv("saveVideoLink")}
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {meta.thumbnailUrl && (
+            <View
+              className="shadow-md mt-6 p-6"
+              style={{
+                backgroundColor: colors.card,
+                borderRadius: 10,
+              }}
             >
               <Text
-                style={[
-                  styles.catText,
-                  { color: selectedCategory === cat.id ? "#fff" : colors.text },
-                ]}
+                style={{
+                  color: colors.text,
+                  fontSize: 18,
+                  fontWeight: "500",
+                  margin: 12,
+                }}
               >
-                {cat.name}
+                Preview
               </Text>
-            </TouchableOpacity>
-          ))}
-          {categories.length === 0 && (
-            <Text style={{ color: colors.icon }}>{tc("noCategories")}</Text>
+              <Image
+                source={{ uri: meta.thumbnailUrl || undefined }}
+                style={{
+                  width: 300,
+                  height: 250,
+                  borderRadius: 8,
+                  alignSelf: "center",
+                  resizeMode: "contain",
+                }}
+              />
+            </View>
           )}
-        </View>
-
-        <TouchableOpacity
-          style={[
-            styles.saveBtn,
-            {
-              backgroundColor: colors.tint,
-              opacity: isSaving ? 0.7 : 1,
-              marginBottom: 15,
-            },
-          ]}
-          onPress={handleSave}
-          disabled={isSaving || isFetchingMeta}
-        >
-          {isSaving || isFetchingMeta ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.saveText}>{tv("saveVideoLink")}</Text>
-          )}
-        </TouchableOpacity>
-        <AdBanner />
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </View>
+      <AdBanner />
+    </>
   );
 }
 
@@ -459,7 +438,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: "600",
     marginBottom: 8,
   },
   input: {
