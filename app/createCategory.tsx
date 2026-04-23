@@ -3,8 +3,8 @@ import { Colors, gradients } from "@/constants/theme";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -36,15 +36,13 @@ const checkIcon = () => (
   </View>
 );
 
-export default function UpdateCategory() {
-  const { id } = useLocalSearchParams();
-
+export default function CreateCategoryScreen() {
   const router = useRouter();
   const colors = Colors[useColorScheme()];
   const { t: t } = useTranslation("categories");
   const { t: tcom } = useTranslation("common");
 
-  const { updateCategoryName, getCategoryById } = useStore();
+  const { addCategory } = useStore();
 
   const [form, setForm] = useState<{ name: string; color: availableColors }>({
     name: "",
@@ -52,30 +50,22 @@ export default function UpdateCategory() {
   });
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    const category = getCategoryById(id as string);
-    if (category) {
-      setForm({
-        name: category.name,
-        color: category.color as availableColors,
-      });
-    }
-  }, [id]);
-
   const handleSaveCategory = async () => {
     if (!form.name.trim()) return;
 
     setIsSaving(true);
 
-    await updateCategoryName(id as string, form.name.trim(), form.color);
+    await addCategory({
+      id: Date.now().toString(),
+      name: form.name.trim(),
+      parentId: null,
+      createdAt: Date.now(),
+      color: form.color,
+    });
     setForm({ name: "", color: "blue" });
     setIsSaving(false);
 
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-    router.replace("/categories");
+    router.replace("/");
   };
 
   return (
@@ -108,7 +98,7 @@ export default function UpdateCategory() {
                   color: colors.text,
                 }}
               >
-                {t("editCategory")}
+                {t("addCategory")}
               </Text>
             </View>
           </View>

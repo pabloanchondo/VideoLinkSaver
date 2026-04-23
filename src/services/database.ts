@@ -34,6 +34,18 @@ export const initDb = async () => {
       createdAt INTEGER NOT NULL
     );
   `);
+  // 🔥 MIGRACIÓN SEGURA
+  const columns = await db.getAllAsync<{ name: string }>(
+    `PRAGMA table_info(categories);`,
+  );
+
+  const hasColor = columns.some((col) => col.name === "color");
+
+  if (!hasColor) {
+    await db.execAsync(`
+      ALTER TABLE categories ADD COLUMN color TEXT DEFAULT 'blue';
+    `);
+  }
 };
 
 export const getDb = () => {
@@ -63,11 +75,12 @@ export const fetchCategories = async (): Promise<Category[]> => {
 export const insertCategory = async (category: Category) => {
   const database = getDb();
   await database.runAsync(
-    "INSERT INTO categories (id, name, parentId, createdAt) VALUES (?, ?, ?, ?)",
+    "INSERT INTO categories (id, name, parentId, createdAt, color) VALUES (?, ?, ?, ?, ?)",
     category.id,
     category.name,
     category.parentId,
     category.createdAt,
+    category.color,
   );
 };
 
@@ -76,11 +89,16 @@ export const removeCategory = async (id: string) => {
   await database.runAsync("DELETE FROM categories WHERE id = ?", id);
 };
 
-export const updateCategoryName = async (id: string, name: string) => {
+export const updateCategoryName = async (
+  id: string,
+  name: string,
+  color: string,
+) => {
   const database = getDb();
   await database.runAsync(
-    "UPDATE categories SET name = ? WHERE id = ?",
+    "UPDATE categories SET name = ?, color = ? WHERE id = ?",
     name,
+    color,
     id,
   );
 };

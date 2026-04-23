@@ -12,5 +12,7 @@
   "detailTitle": "Detalle de la categoría",
   "newCategoryPlaceholder": "Nueva categoría",
   "myCategories": "Mis Categorías",
-  "updateCategory": "Actualizar categoría"
+  "updateCategory": "Actualizar categoría",
+  "colorSelector": "Seleccionar el color de la categoría",
+  "saveCategory": "Guardar categoría"
 }

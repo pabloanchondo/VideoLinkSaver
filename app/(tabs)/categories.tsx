@@ -1,6 +1,6 @@
 import AdBanner from "@/components/Banner";
 import { Modal } from "@/components/ui/Modal";
-import { Colors } from "@/constants/theme";
+import { Colors, gradients } from "@/constants/theme";
 import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
@@ -41,6 +41,7 @@ export default function CategoriesScreen() {
       name: newCategoryName.trim(),
       parentId: null,
       createdAt: Date.now(),
+      color: "blue",
     });
     setNewCategoryName("");
   };
@@ -64,7 +65,7 @@ export default function CategoriesScreen() {
     )
       return;
     setIsSaving(true);
-    await updateCategoryName(updateForm.id, updateForm.name.trim());
+    await updateCategoryName(updateForm.id, updateForm.name.trim(), "blue");
     setUpdateForm({ id: "", name: "" });
     setIsVisible(false);
     setIsSaving(false);
@@ -198,7 +199,11 @@ export default function CategoriesScreen() {
                   position: "relative",
                 }}
               >
-                <CategoryFolderCard name={item.name} onPress={() => {}} />
+                <CategoryFolderCard
+                  name={item.name}
+                  color={item.color as keyof typeof gradients}
+                  onPress={() => {}}
+                />
                 <TouchableOpacity
                   onPress={() => handleOpenModal(item.id, item.name)}
                   style={{ position: "absolute", right: 42, top: 18 }}

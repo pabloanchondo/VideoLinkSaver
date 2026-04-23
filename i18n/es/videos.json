@@ -23,5 +23,6 @@
   "refreshThumbnail": "Actualizar miniatura",
   "share": "Compartir",
   "removeVideoLink": "¿Eliminar este enlace de video?",
-  "failedToSaveVideo": "Error al guardar el video."
+  "failedToSaveVideo": "Error al guardar el video.",
+  "help": "Ayuda"
 }

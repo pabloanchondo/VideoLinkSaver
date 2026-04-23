@@ -7,11 +7,13 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 interface CategoryFolderCardProps {
   name: string;
+  color: keyof typeof gradients;
   onPress: () => void;
 }
 
 export const CategoryFolderCard = ({
   name,
+  color,
   onPress,
 }: CategoryFolderCardProps) => (
   <TouchableOpacity
@@ -26,9 +28,9 @@ export const CategoryFolderCard = ({
     <View
       className="mb-2"
       style={{
-        experimental_backgroundImage: gradients.blue,
+        experimental_backgroundImage: gradients[color],
         padding: 13,
-        borderRadius: 10,
+        borderRadius: 13,
       }}
     >
       <MaterialIcons name="folder" size={35} color={"white"} />

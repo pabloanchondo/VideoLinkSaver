@@ -16,6 +16,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "./globals.css";
 import { MustLogin } from "./mustLogin";
 
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -71,29 +73,40 @@ export default function RootLayout() {
     // <ThemeProvider value={DefaultTheme}>
     <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
       <AlertNotificationRoot>
-        <Stack
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: cardColor,
-            },
-            headerTintColor: textColor,
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="add"
-            options={{ presentation: "modal", title: tv("addVideo") }}
-          />
-          <Stack.Screen
-            name="detail/[id]"
-            options={{ title: tv("videoDetail"), headerShown: false }}
-          />
-          <Stack.Screen
-            name="category"
-            options={{ title: tc("detailTitle"), headerShown: false }}
-          />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+        <ActionSheetProvider>
+          <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: cardColor,
+              },
+              headerTintColor: textColor,
+            }}
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="add"
+              options={{ presentation: "modal", title: tv("addVideo") }}
+            />
+            <Stack.Screen
+              name="detail/[id]"
+              options={{ title: tv("videoDetail"), headerShown: false }}
+            />
+            <Stack.Screen
+              name="category"
+              options={{ title: tc("detailTitle"), headerShown: false }}
+            />
+            <Stack.Screen
+              name="category/[id]"
+              options={{ title: tc("detailTitle"), headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="createCategory"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </ActionSheetProvider>
         <StatusBar style="auto" />
       </AlertNotificationRoot>
     </GestureHandlerRootView>

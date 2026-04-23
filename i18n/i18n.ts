@@ -14,6 +14,12 @@ import esVideos from "./es/videos.json";
 import enCategories from "./en/categories.json";
 import esCategories from "./es/categories.json";
 
+import enHelp from "./en/help.json";
+import esHelp from "./es/help.json";
+
+import enBoard from "./en/board.json";
+import esBoard from "./es/board.json";
+
 i18n.use(initReactI18next).init({
   lng: Localization.getLocales()[0].languageCode || "en",
   fallbackLng: "en",
@@ -23,15 +29,28 @@ i18n.use(initReactI18next).init({
       settings: enSettings,
       videos: enVideos,
       categories: enCategories,
+      help: enHelp,
+      board: enBoard,
     },
     es: {
       common: esCommon,
       settings: esSettings,
       videos: esVideos,
       categories: esCategories,
+      help: esHelp,
+      board: esBoard,
     },
   },
-  ns: ["common", "settings", "videos", "categories", "modal", "form"],
+  ns: [
+    "common",
+    "settings",
+    "videos",
+    "categories",
+    "help",
+    "board",
+    "modal",
+    "form",
+  ],
   defaultNS: "common",
   interpolation: {
     escapeValue: false,

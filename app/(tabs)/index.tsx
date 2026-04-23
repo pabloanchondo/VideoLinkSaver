@@ -5,6 +5,7 @@ import { CategoryList } from "@/src/components/CategoryList";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useSharedIntent } from "@/src/services/shareIntent";
 import { useStore } from "@/src/store/useStore";
+import { useActionSheet } from "@expo/react-native-action-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
@@ -17,8 +18,11 @@ export default function HomeScreen() {
   const { categories, isInitialized, init } = useStore();
   const { sharedUrl, clearSharedUrl } = useSharedIntent();
 
+  const { showActionSheetWithOptions } = useActionSheet();
+
   const { t: tv } = useTranslation("videos");
   const { t: tcom } = useTranslation("common");
+  const { t: tcat } = useTranslation("categories");
 
   useEffect(() => {
     if (!isInitialized) {
@@ -33,13 +37,49 @@ export default function HomeScreen() {
     }
   }, [sharedUrl]);
 
+  const onPressAdd = () => {
+    const options = [
+      `🎬 ${tv("addVideo")}`,
+      `📁 ${tcat("addCategory")}`,
+      `❌ ${tcom("cancel")}`,
+    ];
+    const cancelButtonIndex = 2;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        textStyle: { color: colors.text, fontSize: 18 },
+        containerStyle: {
+          backgroundColor: colors.card,
+          minHeight: 200,
+          paddingVertical: 25,
+        },
+      },
+      (selectedIndex?: number) => {
+        switch (selectedIndex) {
+          case 0:
+            router.push("/add");
+            break;
+          case 1:
+            router.push("/createCategory");
+            break;
+          case cancelButtonIndex:
+            break;
+          default:
+            break;
+        }
+      },
+    );
+  };
+
   const handleSelectCategory = (category: any) => {
     router.push({ pathname: "/category", params: { id: category.id } });
   };
 
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
         <View
           style={{
             backgroundColor: colors.card,
@@ -61,7 +101,7 @@ export default function HomeScreen() {
             <View>
               <Text
                 style={{
-                  fontSize: 35,
+                  fontSize: 30,
                   fontWeight: "bold",
                   color: useThemeColor({}, "text"),
                 }}
@@ -71,15 +111,15 @@ export default function HomeScreen() {
             </View>
 
             <TouchableOpacity
-              onPress={() => router.push("/add")}
+              onPress={onPressAdd}
               style={{
-                padding: 6,
+                padding: 5,
                 borderRadius: 9999,
                 experimental_backgroundImage:
                   "linear-gradient(to right bottom, #2088ff, #009df0, #00b4df)",
               }}
             >
-              <Ionicons name="add-outline" size={35} color={"white"} />
+              <Ionicons name="add-outline" size={30} color={"white"} />
             </TouchableOpacity>
           </View>
 

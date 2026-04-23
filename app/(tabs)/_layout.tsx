@@ -5,6 +5,7 @@ import { Platform } from "react-native";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { HapticTab } from "@/src/components/HapticTab";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useTranslation } from "react-i18next";
 
 export default function TabLayout() {
@@ -60,7 +61,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="categories"
         options={{
+          href: null,
           title: tc("title"),
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="folder.fill" color={color} />
           ),
@@ -70,8 +73,35 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: ts("title"),
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="gearshape.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="help"
+        options={{
+          title: tv("help"),
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={28} name="help-circle" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="onbording"
+        options={{
+          title: tv("help"),
+          href: null,
+          headerShown: false,
+
+          tabBarIcon: ({ color }) => (
+            <IconSymbol
+              size={28}
+              name="questionmark.circle.fill"
+              color={color}
+            />
           ),
         }}
       />

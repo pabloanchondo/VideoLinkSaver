@@ -1,7 +1,10 @@
 // import { LinkPreview } from "@flyerhq/react-native-link-preview";
+import { Colors } from "@/constants/theme";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { useColorScheme } from "../hooks/useColorScheme";
 import { VideoLink } from "../types";
 import { VideoCard } from "./VideoCard";
 
@@ -12,6 +15,7 @@ interface VideoListProps {
 export const VideoList = ({ videos }: VideoListProps) => {
   const [filteredVideos, setFilteredVideos] = useState<VideoLink[]>(videos);
   const [search, setSearch] = useState("");
+  const colors = Colors[useColorScheme()];
 
   const { t } = useTranslation("videos");
 
@@ -31,6 +35,27 @@ export const VideoList = ({ videos }: VideoListProps) => {
   const handleSearch = (text: string) => {
     setSearch(text);
   };
+
+  if (filteredVideos.length === 0) {
+    return (
+      <View
+        style={{
+          padding: 16,
+          alignItems: "center",
+          justifyContent: "center",
+          flex: 1,
+        }}
+      >
+        <MaterialIcons name="video-library" size={80} color={colors.tint} />
+        <Text
+          className="text-2xl font-bold mt-4 text-center"
+          style={{ color: colors.text }}
+        >
+          {t("noVideosCat")}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ paddingBottom: 16 }}>

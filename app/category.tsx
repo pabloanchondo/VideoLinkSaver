@@ -5,11 +5,12 @@ import { useStore } from "@/src/store/useStore";
 
 import { Colors, gradients } from "@/constants/theme";
 import { VideoLink } from "@/src/types";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect } from "@react-navigation/native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoryScreen() {
@@ -99,14 +100,22 @@ export default function CategoryScreen() {
               </Text>
             </View>
 
-            <View
+            <TouchableOpacity
               style={{
-                width: 30,
-                height: 30,
-                experimental_backgroundImage: gradients.blue,
-                borderRadius: 15,
+                width: 40,
+                height: 40,
+                experimental_backgroundImage:
+                  gradients[category.color as keyof typeof gradients],
+                borderRadius: 20,
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            ></View>
+              onPress={() => {
+                router.push(`/category/${category.id}`);
+              }}
+            >
+              <Ionicons name="pencil" size={18} color={"white"} />
+            </TouchableOpacity>
           </View>
 
           <TextInput

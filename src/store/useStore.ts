@@ -1,7 +1,7 @@
-import { getCategoryNameByi18n } from "@/helpers/category-name.helper";
 import { create } from "zustand";
 import * as db from "../services/database";
 import { Category, VideoLink } from "../types";
+import { getCategoryNameByi18n } from "./../../helpers/category-name.helper";
 
 interface AppState {
   videos: VideoLink[];
@@ -21,7 +21,12 @@ interface AppState {
   updateVideo: (id: string, title: string, categoryId: string) => Promise<void>;
   checkRestore: () => Promise<null>;
   updateVideoThumbnail: (id: string, thumbnailUrl: string) => Promise<void>;
-  updateCategoryName: (id: string, name: string) => Promise<void>;
+  updateCategoryName: (
+    id: string,
+    name: string,
+    color: string,
+  ) => Promise<void>;
+  getCategoryById: (id: string) => Category | undefined;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -38,6 +43,11 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (error) {
       console.error("Failed to initialize local database:", error);
     }
+  },
+
+  getCategoryById: (id: string) => {
+    const category = get().categories.find((c) => c.id === id);
+    return category;
   },
 
   checkRestore: async () => {
@@ -73,6 +83,7 @@ export const useStore = create<AppState>((set, get) => ({
       name,
       parentId: null,
       createdAt: 0,
+      color: "blue",
     };
     categories.unshift(uncategory);
     set({ categories: [...categories] });
@@ -109,11 +120,11 @@ export const useStore = create<AppState>((set, get) => ({
     }));
   },
 
-  updateCategoryName: async (id: string, name: string) => {
-    await db.updateCategoryName(id, name);
+  updateCategoryName: async (id: string, name: string, color: string) => {
+    await db.updateCategoryName(id, name, color);
     set((state) => ({
       categories: state.categories.map((c) =>
-        c.id === id ? { ...c, name } : c,
+        c.id === id ? { ...c, name, color } : c,
       ),
     }));
   },

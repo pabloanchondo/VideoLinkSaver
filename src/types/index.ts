@@ -3,9 +3,15 @@ export interface Category {
   name: string;
   parentId: string | null;
   createdAt: number;
+  color: string;
 }
 
-export type PlatformType = 'youtube' | 'tiktok' | 'instagram' | 'facebook' | 'generic';
+export type PlatformType =
+  | "youtube"
+  | "tiktok"
+  | "instagram"
+  | "facebook"
+  | "generic";
 
 export interface VideoLink {
   id: string;

@@ -1,7 +1,6 @@
 import AdBanner from "@/components/Banner";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { getDb } from "@/src/services/database";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -25,6 +24,7 @@ export default function SettingsScreen() {
     useLocalAuthentication();
 
   const colors = Colors[useColorScheme()];
+
   let theme = useColorScheme();
 
   const { init, close, clean, loadCategories, loadVideos } = useStore();
@@ -204,211 +204,268 @@ export default function SettingsScreen() {
   }
 
   return (
-    <SafeAreaView style={[styles.container]}>
-      <AdBanner />
-
-      <ScrollView contentContainerStyle={styles.content}>
-        {
-          /* Update Available Section */
-          isVisibleUpdate && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-                {tSettings("update")}
-              </Text>
-              <TouchableOpacity
-                onPress={() =>
-                  Linking.openURL(
-                    "https://play.google.com/store/apps/details?id=com.anchondopablo.videos",
-                  )
-                }
-                style={[
-                  styles.card,
-                  {
-                    backgroundColor: colors.card,
-                    borderColor: colors.tint,
-                    borderWidth: 2,
-                  },
-                ]}
+    <>
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <View
+          style={{
+            backgroundColor: colors.card,
+            paddingTop: 25,
+            minHeight: "15%",
+            paddingHorizontal: 20,
+            alignContent: "center",
+            justifyContent: "center",
+          }}
+          className="shadow-md"
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <View>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: "bold",
+                  color: useThemeColor({}, "text"),
+                }}
               >
-                <View style={styles.row}>
-                  <IconSymbol
-                    name="play.rectangle.fill"
-                    size={24}
-                    color={colors.tint}
-                  />
-                  <View style={styles.rowText}>
-                    <Text style={[styles.rowTitle, { color: colors.text }]}>
-                      {tSettings("updateAvailable")}
-                    </Text>
-                    <Text style={{ color: colors.icon }}>
-                      {tSettings("updateDescription")}
-                    </Text>
+                {tSettings("title")}
+              </Text>
+            </View>
+          </View>
+
+          {/* <TextInput
+            placeholder="Search..."
+            style={{
+              backgroundColor: colors.background,
+              borderRadius: 8,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              marginTop: 12,
+              fontSize: 16,
+              color: useThemeColor({}, "text"),
+            }}
+          /> */}
+        </View>
+        <ScrollView contentContainerStyle={styles.content}>
+          {
+            /* Update Available Section */
+            isVisibleUpdate && (
+              <View style={styles.section}>
+                <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+                  {tSettings("update")}
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://play.google.com/store/apps/details?id=com.anchondopablo.videos",
+                    )
+                  }
+                  style={[
+                    styles.card,
+                    {
+                      backgroundColor: colors.card,
+                      borderColor: colors.tint,
+                      borderWidth: 2,
+                    },
+                  ]}
+                >
+                  <View style={styles.row}>
+                    <IconSymbol
+                      name="play.rectangle.fill"
+                      size={24}
+                      color={colors.tint}
+                    />
+                    <View style={styles.rowText}>
+                      <Text style={[styles.rowTitle, { color: colors.text }]}>
+                        {tSettings("updateAvailable")}
+                      </Text>
+                      <Text style={{ color: colors.icon }}>
+                        {tSettings("updateDescription")}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-          )
-        }
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-            {tSettings("about")}
-          </Text>
-          <View
-            style={[
-              styles.card,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
-          >
-            <View style={styles.row}>
-              <IconSymbol
-                name="play.rectangle.fill"
-                size={24}
-                color={colors.tint}
-              />
-              <View style={styles.rowText}>
-                <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  Link2Clip
-                </Text>
-                <Text style={{ color: colors.icon }}>
-                  {t("version")} {Application.nativeApplicationVersion}
-                </Text>
+                </TouchableOpacity>
               </View>
-            </View>
-          </View>
-        </View>
+            )
+          }
 
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-            {tSettings("backup")}
-          </Text>
-          <TouchableOpacity
-            style={[
-              styles.card,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
-            onPress={backupDatabase}
-          >
-            <View style={styles.row}>
-              <Ionicons name="download-outline" size={24} color={colors.tint} />
-              <View style={styles.rowText}>
-                <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  {tSettings("backup")}
-                </Text>
-                <Text style={{ color: colors.icon }}>
-                  {tSettings("backupDescription")}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={restoreDatabase}
-            style={[
-              styles.card,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
-          >
-            <View style={styles.row}>
-              <Ionicons name="refresh-outline" size={24} color={colors.tint} />
-
-              <View style={styles.rowText}>
-                <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  {tSettings("restore")}
-                </Text>
-                <Text style={{ color: colors.icon }}>
-                  {tSettings("restoreDescription")}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-            {tSettings("theme")}
-          </Text>
-          <View
-            style={[
-              styles.card,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
-          >
-            <View style={styles.row}>
-              <Ionicons
-                name="color-palette-outline"
-                size={24}
-                color={colors.tint}
-              />
-
-              <View style={styles.rowText}>
-                <Text style={[styles.rowTitle, { color: colors.text }]}>
-                  {tSettings("currentTheme")}: {theme.toUpperCase()}
-                </Text>
-                <Text style={{ color: colors.icon }}>
-                  {tSettings("systemTheme")}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        {
-          /* Local Authentication Section */
-          isSupported && isEnrolled && (
-            <TouchableOpacity
-              style={styles.section}
-              onPress={handleLocalAuth}
-              disabled={!isSupported || !isEnrolled}
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+              {tSettings("about")}
+            </Text>
+            <View
+              style={[
+                styles.card,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
             >
-              <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-                {tSettings("localAuth")}
-              </Text>
-              <View
-                style={[
-                  styles.card,
-                  { backgroundColor: colors.card, borderColor: colors.border },
-                ]}
-              >
-                <View style={styles.row}>
-                  <Ionicons
-                    name="finger-print-outline"
-                    size={24}
-                    color={colors.tint}
-                  />
+              <View style={styles.row}>
+                <IconSymbol
+                  name="play.rectangle.fill"
+                  size={24}
+                  color={colors.tint}
+                />
+                <View style={styles.rowText}>
+                  <Text style={[styles.rowTitle, { color: colors.text }]}>
+                    Link2Clip
+                  </Text>
+                  <Text style={{ color: colors.icon }}>
+                    {t("version")} {Application.nativeApplicationVersion}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
 
-                  <View style={styles.rowText}>
-                    <Text style={[styles.rowTitle, { color: colors.text }]}>
-                      {tSettings("biometricEnabled")}:{" "}
-                      {isLogginEnabled
-                        ? tSettings("enabled")
-                        : tSettings("disabled")}
-                    </Text>
-                    <Text style={{ color: colors.icon }}>
-                      {isSupported
-                        ? isEnrolled
-                          ? tSettings("biometricDescription")
-                          : tSettings("noEnrolled")
-                        : tSettings("notSupported")}
-                    </Text>
-                  </View>
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+              {tSettings("backup")}
+            </Text>
+            <TouchableOpacity
+              style={[
+                styles.card,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+              onPress={backupDatabase}
+            >
+              <View style={styles.row}>
+                <Ionicons
+                  name="download-outline"
+                  size={24}
+                  color={colors.tint}
+                />
+                <View style={styles.rowText}>
+                  <Text style={[styles.rowTitle, { color: colors.text }]}>
+                    {tSettings("backup")}
+                  </Text>
+                  <Text style={{ color: colors.icon }}>
+                    {tSettings("backupDescription")}
+                  </Text>
                 </View>
               </View>
             </TouchableOpacity>
-          )
-        }
-      </ScrollView>
-    </SafeAreaView>
+            <TouchableOpacity
+              onPress={restoreDatabase}
+              style={[
+                styles.card,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+            >
+              <View style={styles.row}>
+                <Ionicons
+                  name="refresh-outline"
+                  size={24}
+                  color={colors.tint}
+                />
+
+                <View style={styles.rowText}>
+                  <Text style={[styles.rowTitle, { color: colors.text }]}>
+                    {tSettings("restore")}
+                  </Text>
+                  <Text style={{ color: colors.icon }}>
+                    {tSettings("restoreDescription")}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+              {tSettings("theme")}
+            </Text>
+            <View
+              style={[
+                styles.card,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+            >
+              <View style={styles.row}>
+                <Ionicons
+                  name="color-palette-outline"
+                  size={24}
+                  color={colors.tint}
+                />
+
+                <View style={styles.rowText}>
+                  <Text style={[styles.rowTitle, { color: colors.text }]}>
+                    {tSettings("currentTheme")}: {theme.toUpperCase()}
+                  </Text>
+                  <Text style={{ color: colors.icon }}>
+                    {tSettings("systemTheme")}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {
+            /* Local Authentication Section */
+            isSupported && isEnrolled && (
+              <TouchableOpacity
+                style={styles.section}
+                onPress={handleLocalAuth}
+                disabled={!isSupported || !isEnrolled}
+              >
+                <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+                  {tSettings("localAuth")}
+                </Text>
+                <View
+                  style={[
+                    styles.card,
+                    {
+                      backgroundColor: colors.card,
+                      borderColor: colors.border,
+                    },
+                  ]}
+                >
+                  <View style={styles.row}>
+                    <Ionicons
+                      name="finger-print-outline"
+                      size={24}
+                      color={colors.tint}
+                    />
+
+                    <View style={styles.rowText}>
+                      <Text style={[styles.rowTitle, { color: colors.text }]}>
+                        {tSettings("biometricEnabled")}:{" "}
+                        {isLogginEnabled
+                          ? tSettings("enabled")
+                          : tSettings("disabled")}
+                      </Text>
+                      <Text style={{ color: colors.icon }}>
+                        {isSupported
+                          ? isEnrolled
+                            ? tSettings("biometricDescription")
+                            : tSettings("noEnrolled")
+                          : tSettings("notSupported")}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )
+          }
+        </ScrollView>
+      </View>
+      <AdBanner />
+    </>
   );
 }
 
 // Minimal stub for scrollview in this screen
 import { api } from "@/api/api";
 import { showToast } from "@/helpers/alert.helper";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { useLocalAuthentication } from "@/hooks/useLocalAuthentication";
 import { iappVersionResponse } from "@/interfaces/video.interfaces";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
