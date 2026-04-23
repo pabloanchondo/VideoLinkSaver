@@ -8,7 +8,14 @@ module.exports = {
   ],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'amelia-oblicua-black': ['Amelia-OblicuaBlack', 'sans-serif'],
+        'amelia-oblicua-light': ['Amelia-OblicuaLight', 'sans-serif'],
+        'montserrat-black': ['Montserrat-Black', 'sans-serif'],
+        'montserrat-medium': ['Montserrat-Medium', 'sans-serif']
+      }
+    },
   },
   plugins: [],
 }

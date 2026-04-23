@@ -21,8 +21,13 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
+    "Amelia-OblicuaBlack": require("../assets/fonts/Amelia-OblicuaBlack.otf"),
+    "Amelia-OblicuaLight": require("../assets/fonts/Amelia-OblicuaLight.otf"),
+    "Montserrat-Black": require("../assets/fonts/Montserrat-Black.ttf"),
+    "Montserrat-Medium": require("../assets/fonts/Montserrat-Medium.ttf"),
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
   const backgroundColor = useThemeColor({}, "background");
   const cardColor = useThemeColor({}, "card");
   const textColor = useThemeColor({}, "text");
@@ -53,13 +58,6 @@ export default function RootLayout() {
   useEffect(() => {
     mobileAds().initialize().then(console.log);
   }, []);
-
-  // mobileAds()
-  //   .initialize()
-  //   .then((adapterStatuses) => {
-  //     // Initialization complete!
-  //     console.log(adapterStatuses);
-  //   });
 
   if (!loaded) {
     return null;

@@ -10,6 +10,7 @@ interface CategoryListProps {
 
 export const CategoryList = ({ categories, onSelect }: CategoryListProps) => (
   <FlatList
+    numColumns={2}
     data={categories.sort((a, b) => a.name.localeCompare(b.name))}
     renderItem={({ item: t }) => (
       <CategoryFolderCard name={t.name} onPress={() => onSelect(t)} />

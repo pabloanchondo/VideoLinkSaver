@@ -1,33 +1,21 @@
 import AdBanner from "@/components/Banner";
 import { Colors } from "@/constants/theme";
 import { useThemeColor } from "@/hooks/use-theme-color";
-import { iappVersionResponse } from "@/interfaces/video.interfaces";
 import { CategoryList } from "@/src/components/CategoryList";
-import { IconSymbol } from "@/src/components/ui/IconSymbol";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useSharedIntent } from "@/src/services/shareIntent";
 import { useStore } from "@/src/store/useStore";
-import * as Application from "expo-application";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
   const router = useRouter();
   const colors = Colors[useColorScheme()];
   const { categories, isInitialized, init } = useStore();
   const { sharedUrl, clearSharedUrl } = useSharedIntent();
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [newVersionInfo, setNewVersionInfo] =
-    useState<iappVersionResponse | null>(null);
 
   const { t: tv } = useTranslation("videos");
   const { t: tcom } = useTranslation("common");
@@ -45,107 +33,74 @@ export default function HomeScreen() {
     }
   }, [sharedUrl]);
 
-  // useEffect(() => {
-  //   isLastVersion();
-  // }, []);
-
-  // const isLastVersion = async () => {
-  //   try {
-  //     const { data } = await api.get<iappVersionResponse>(
-  //       "http://link2clip.eaproma.com/appVersion.json",
-  //     );
-
-  //     const currentVersion = getAppVersion();
-
-  //     console.log(currentVersion.version, data.version);
-
-  //     if (data.version !== currentVersion.version) {
-  //       setNewVersionInfo(data);
-  //       setIsModalVisible(true);
-  //     }
-  //   } catch (e) {
-  //     console.log("Error checking app version", e);
-  //   }
-  // };
-
-  const getAppVersion = () => {
-    return {
-      version: Application.nativeApplicationVersion,
-      build: Application.nativeBuildVersion,
-    };
-  };
-
   const handleSelectCategory = (category: any) => {
     router.push({ pathname: "/category", params: { id: category.id } });
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <AdBanner />
-
-      {/* <Modal isOpen={true}> */}
-      {/* <Modal isOpen={isModalVisible}>
+    <>
+      <View style={{ flex: 1 }}>
         <View
           style={{
             backgroundColor: colors.card,
-            padding: 25,
-            borderRadius: 8,
-            width: "85%",
+            paddingTop: 25,
+            minHeight: "15%",
+            paddingHorizontal: 20,
+            alignContent: "center",
+            justifyContent: "center",
           }}
+          className="shadow-md"
         >
-          <UpdateContent
-            version={newVersionInfo?.version || "1.0.0"}
-            message={tcom("modalMessage")}
-            onUpdate={() => {
-              // Open app store link
-              Linking.openURL(
-                "https://play.google.com/store/apps/details?id=com.anchondopablo.videos",
-              );
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
-            onLater={() => setIsModalVisible(false)}
-          />
+          >
+            <View>
+              <Text
+                style={{
+                  fontSize: 35,
+                  fontWeight: "bold",
+                  color: useThemeColor({}, "text"),
+                }}
+              >
+                {tv("savedVideos")}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => router.push("/add")}
+              style={{
+                padding: 6,
+                borderRadius: 9999,
+                experimental_backgroundImage:
+                  "linear-gradient(to right bottom, #2088ff, #009df0, #00b4df)",
+              }}
+            >
+              <Ionicons name="add-outline" size={35} color={"white"} />
+            </TouchableOpacity>
+          </View>
+
+          {/* <TextInput
+            placeholder="Search..."
+            style={{
+              backgroundColor: colors.background,
+              borderRadius: 8,
+              paddingHorizontal: 16,
+              paddingVertical: 14,
+              marginTop: 12,
+              fontSize: 16,
+              color: useThemeColor({}, "text"),
+            }}
+          /> */}
         </View>
-      </Modal> */}
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          paddingTop: 10,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 28,
-            fontWeight: "bold",
-            color: useThemeColor({}, "text"),
-          }}
-        >
-          {tv("savedVideos")}
-        </Text>
-
-        <TouchableOpacity
-          onPress={() => router.push("/add")}
-          style={{ padding: 8 }}
-        >
-          <IconSymbol
-            name="plus.circle.fill"
-            size={28}
-            color={useThemeColor({}, "tint")}
-          />
-        </TouchableOpacity>
+        <CategoryList categories={categories} onSelect={handleSelectCategory} />
       </View>
-
-      <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
-        <Text className="text-sm text-slate-300">
-          {tcom("version")}: {Application.nativeApplicationVersion}
-        </Text>
-      </View>
-
-      <CategoryList categories={categories} onSelect={handleSelectCategory} />
-    </SafeAreaView>
+      <AdBanner />
+    </>
   );
 }
 

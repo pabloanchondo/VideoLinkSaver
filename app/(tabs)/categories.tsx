@@ -1,8 +1,8 @@
 import AdBanner from "@/components/Banner";
 import { Modal } from "@/components/ui/Modal";
+import { Colors } from "@/constants/theme";
 import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
 import { IconSymbol } from "@/src/components/ui/IconSymbol";
-import Colors from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -21,6 +21,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoriesScreen() {
   const colors = Colors[useColorScheme()];
+
   const { categories, addCategory, removeCategory, updateCategoryName } =
     useStore();
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -99,8 +100,6 @@ export default function CategoriesScreen() {
           <View>
             <TextInput
               style={{
-                borderWidth: 1,
-                borderColor: colors.border,
                 borderRadius: 8,
                 paddingHorizontal: 16,
                 paddingVertical: 12,
@@ -139,8 +138,6 @@ export default function CategoriesScreen() {
               style={[
                 styles.saveBtn,
                 {
-                  borderWidth: 1,
-                  borderColor: colors.border,
                   backgroundColor: colors.background,
                   flex: 1,
                   opacity: isSaving ? 0.7 : 1,
@@ -166,7 +163,6 @@ export default function CategoriesScreen() {
             {
               backgroundColor: colors.card,
               color: colors.text,
-              borderColor: colors.border,
             },
           ]}
           placeholder={tc("newCategoryPlaceholder")}
@@ -229,20 +225,6 @@ export default function CategoriesScreen() {
             keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
           />
-          {/* {categories.map((item) => (
-            <View
-              key={item.id}
-              style={{ marginHorizontal: 20, marginBottom: 8 }}
-            >
-              <CategoryFolderCard name={item.name} onPress={() => {}} />
-              <TouchableOpacity
-                onPress={() => handleDelete(item.id)}
-                style={{ position: "absolute", right: 8, top: 8 }}
-              >
-                <IconSymbol name="trash.fill" size={20} color="#EF4444" />
-              </TouchableOpacity>
-            </View>
-          ))} */}
         </>
       )}
     </SafeAreaView>
@@ -270,7 +252,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
