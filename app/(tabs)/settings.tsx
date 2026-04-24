@@ -153,11 +153,12 @@ export default function SettingsScreen() {
 
       for (const c of data.categories) {
         await db.runAsync(
-          "INSERT INTO categories (id,name,parentId,createdAt) VALUES (?,?,?,?)",
+          "INSERT INTO categories (id,name,parentId,createdAt,color) VALUES (?,?,?,?,?)",
           c.id,
           c.name,
           c.parentId,
           c.createdAt,
+          c.color ?? "blue",
         );
       }
 

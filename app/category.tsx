@@ -10,18 +10,20 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoryScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  const { categories, videos, loadVideos } = useStore();
+  const { categories, videos, loadVideos, removeCategory } = useStore();
 
   const [filteredVideos, setFilteredVideos] = useState<VideoLink[]>(videos);
   const [search, setSearch] = useState("");
 
   const { t } = useTranslation("videos");
+  const { t: tcat } = useTranslation("categories");
+  const { t: tcom } = useTranslation("common");
 
   const colors = Colors[useColorScheme()];
 
@@ -51,6 +53,24 @@ export default function CategoryScreen() {
 
   const handleSearch = (text: string) => {
     setSearch(text);
+  };
+
+  const handleDeleteCategory = () => {
+    Alert.alert(tcat("deleteCategory"), tcat("confirmDelete"), [
+      { text: tcom("cancel"), style: "cancel" },
+      {
+        text: tcom("delete"),
+        style: "destructive",
+        onPress: () => deleteCategory(),
+      },
+    ]);
+  };
+
+  const deleteCategory = async () => {
+    if (id) {
+      await removeCategory(id as string);
+      router.replace("/");
+    }
   };
 
   const category = categories.find((c) => c.id === id);
@@ -102,24 +122,43 @@ export default function CategoryScreen() {
               </Text>
             </View>
 
-            <TouchableOpacity
-              style={{
-                width: 40,
-                height: 40,
-                experimental_backgroundImage:
-                  gradients[category.color as keyof typeof gradients],
-                borderRadius: 20,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={() => {
-                if (category.id != "uncategorized") {
-                  router.push(`/category/${category.id}`);
-                }
-              }}
-            >
-              <Ionicons name="pencil" size={18} color={"white"} />
-            </TouchableOpacity>
+            <View className="flex flex-row gap-2">
+              <TouchableOpacity
+                style={{
+                  width: 40,
+                  height: 40,
+                  experimental_backgroundImage: gradients.red,
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+                  if (category.id != "uncategorized") {
+                    handleDeleteCategory();
+                  }
+                }}
+              >
+                <Ionicons name="trash" size={18} color={"white"} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: 40,
+                  height: 40,
+                  experimental_backgroundImage:
+                    gradients[category.color as keyof typeof gradients],
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onPress={() => {
+                  if (category.id != "uncategorized") {
+                    router.push(`/category/${category.id}`);
+                  }
+                }}
+              >
+                <Ionicons name="pencil" size={18} color={"white"} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <TextInput

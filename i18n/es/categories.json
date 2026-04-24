@@ -5,7 +5,7 @@
   "deleteCategory": "Eliminar categoría",
   "categoryName": "Nombre de la categoría",
   "noCategories": "No hay categorías",
-  "confirmDelete": "¿Seguro que deseas eliminar esta categoría?",
+  "confirmDelete": "¿Seguro que deseas eliminar esta categoría? Los videos en esta categoría serán eliminados.",
   "createdSuccess": "Categoría creada correctamente",
   "updatedSuccess": "Categoría actualizada correctamente",
   "deletedSuccess": "Categoría eliminada correctamente",

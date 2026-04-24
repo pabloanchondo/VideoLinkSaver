@@ -6,6 +6,7 @@ import { showToast } from "@/helpers/alert.helper";
 import { APIVideoResponse } from "@/interfaces/video.interfaces";
 import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
 import { CategoryList } from "@/src/components/CategoryList";
+import { PreviewCard } from "@/src/components/PreviewCard";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { extractMetadata } from "@/src/services/metadata";
 import { useStore } from "@/src/store/useStore";
@@ -16,7 +17,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -410,15 +410,10 @@ export default function AddVideoScreen() {
               >
                 Preview
               </Text>
-              <Image
-                source={{ uri: meta.thumbnailUrl || undefined }}
-                style={{
-                  width: 300,
-                  height: 250,
-                  borderRadius: 8,
-                  alignSelf: "center",
-                  resizeMode: "contain",
-                }}
+              <PreviewCard
+                platform={meta.platform}
+                thumbnailUrl={meta.thumbnailUrl}
+                title={userTitle || meta.title || "Unknown Title"}
               />
             </View>
           )}

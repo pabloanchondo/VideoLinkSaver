@@ -87,6 +87,7 @@ export const insertCategory = async (category: Category) => {
 export const removeCategory = async (id: string) => {
   const database = getDb();
   await database.runAsync("DELETE FROM categories WHERE id = ?", id);
+  await database.runAsync("DELETE FROM videos WHERE categoryId = ?", id);
 };
 
 export const updateCategoryName = async (

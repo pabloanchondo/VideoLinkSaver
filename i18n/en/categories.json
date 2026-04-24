@@ -5,7 +5,7 @@
   "deleteCategory": "Delete category",
   "categoryName": "Category name",
   "noCategories": "No categories",
-  "confirmDelete": "Are you sure? Videos in this category will become unassigned.",
+  "confirmDelete": "Are you sure? Videos in this category will be deleted.",
   "createdSuccess": "Category created successfully",
   "updatedSuccess": "Category updated successfully",
   "deletedSuccess": "Category deleted successfully",
