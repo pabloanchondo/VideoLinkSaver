@@ -1,4 +1,4 @@
-import { getItemAsync } from "expo-secure-store";
+import { getItemAsync, setItemAsync } from "expo-secure-store";
 import { create } from "zustand";
 import * as db from "../services/database";
 import { Category, VideoLink } from "../types";
@@ -9,7 +9,9 @@ interface AppState {
   categories: Category[];
   isInitialized: boolean;
   sortBy: "title" | "color";
+  theme: "light" | "dark" | "system";
   setSortBy: (sortBy: "title" | "color") => void;
+  setTheme: (theme: "light" | "dark" | "system") => Promise<void>;
 
   // Actions
   init: () => Promise<void>;
@@ -37,6 +39,7 @@ export const useStore = create<AppState>((set, get) => ({
   categories: [],
   isInitialized: false,
   sortBy: "title",
+  theme: "system",
 
   init: async () => {
     try {
@@ -45,6 +48,11 @@ export const useStore = create<AppState>((set, get) => ({
       const stored = await getItemAsync("sortBy");
       if (stored) {
         get().setSortBy(stored as "title" | "color");
+      }
+
+      const storedTheme = await getItemAsync("theme");
+      if (storedTheme) {
+        set({ theme: storedTheme as "light" | "dark" | "system" });
       }
 
       await get().loadCategories();
@@ -58,6 +66,11 @@ export const useStore = create<AppState>((set, get) => ({
 
   setSortBy: (sortBy: "title" | "color") => {
     set({ sortBy });
+  },
+
+  setTheme: async (theme: "light" | "dark" | "system") => {
+    await setItemAsync("theme", theme);
+    set({ theme });
   },
 
   getCategoryById: (id: string) => {

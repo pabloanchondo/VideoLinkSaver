@@ -29,6 +29,8 @@ export default function SettingsScreen() {
 
   const { init, close, clean, loadCategories, loadVideos } = useStore();
 
+  const { theme: selectedTheme, toggleTheme, getTheme } = themeDefiner();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [isVisibleUpdate, setIsVisibleUpdate] = useState(false);
@@ -237,19 +239,6 @@ export default function SettingsScreen() {
               </Text>
             </View>
           </View>
-
-          {/* <TextInput
-            placeholder="Search..."
-            style={{
-              backgroundColor: colors.background,
-              borderRadius: 8,
-              paddingHorizontal: 16,
-              paddingVertical: 14,
-              marginTop: 12,
-              fontSize: 16,
-              color: useThemeColor({}, "text"),
-            }}
-          /> */}
         </View>
         <ScrollView contentContainerStyle={styles.content}>
           {
@@ -379,10 +368,63 @@ export default function SettingsScreen() {
             <Text style={[styles.sectionTitle, { color: colors.icon }]}>
               {tSettings("theme")}
             </Text>
-            <View
+            <TouchableOpacity
+              onPress={() => toggleTheme("light")}
               style={[
                 styles.card,
-                { backgroundColor: colors.card, borderColor: colors.border },
+                {
+                  backgroundColor: colors.card,
+                  borderColor:
+                    selectedTheme === "light" ? colors.tint : colors.border,
+                },
+              ]}
+            >
+              <View style={styles.row}>
+                <Ionicons name="sunny-outline" size={24} color={colors.tint} />
+
+                <View style={styles.rowText}>
+                  <Text style={[styles.rowTitle, { color: colors.text }]}>
+                    {tSettings("light")}
+                  </Text>
+                  <Text style={{ color: colors.icon }}>
+                    {tSettings("lightDescription")}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => toggleTheme("dark")}
+              style={[
+                styles.card,
+                {
+                  backgroundColor: colors.card,
+                  borderColor:
+                    selectedTheme === "dark" ? colors.tint : colors.border,
+                },
+              ]}
+            >
+              <View style={styles.row}>
+                <Ionicons name="moon-outline" size={24} color={colors.tint} />
+
+                <View style={styles.rowText}>
+                  <Text style={[styles.rowTitle, { color: colors.text }]}>
+                    {tSettings("dark")}
+                  </Text>
+                  <Text style={{ color: colors.icon }}>
+                    {tSettings("darkDescription")}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => toggleTheme("system")}
+              style={[
+                styles.card,
+                {
+                  backgroundColor: colors.card,
+                  borderColor:
+                    selectedTheme === "system" ? colors.tint : colors.border,
+                },
               ]}
             >
               <View style={styles.row}>
@@ -394,14 +436,14 @@ export default function SettingsScreen() {
 
                 <View style={styles.rowText}>
                   <Text style={[styles.rowTitle, { color: colors.text }]}>
-                    {tSettings("currentTheme")}: {theme.toUpperCase()}
+                    {tSettings("system")}
                   </Text>
                   <Text style={{ color: colors.icon }}>
-                    {tSettings("systemTheme")}
+                    {tSettings("systemDescription")}
                   </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
 
           {
@@ -461,6 +503,7 @@ export default function SettingsScreen() {
 // Minimal stub for scrollview in this screen
 import { api } from "@/api/api";
 import { showToast } from "@/helpers/alert.helper";
+import { themeDefiner } from "@/hooks/themeDefiner";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useLocalAuthentication } from "@/hooks/useLocalAuthentication";
 import { iappVersionResponse } from "@/interfaces/video.interfaces";

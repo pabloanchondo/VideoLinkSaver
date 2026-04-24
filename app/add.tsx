@@ -3,6 +3,7 @@ import AdBanner from "@/components/Banner";
 import { Modal } from "@/components/ui/Modal";
 import { Colors, gradients } from "@/constants/theme";
 import { showToast } from "@/helpers/alert.helper";
+import { getCategoryNameByi18n } from "@/helpers/category-name.helper";
 import { APIVideoResponse } from "@/interfaces/video.interfaces";
 import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
 import { CategoryList } from "@/src/components/CategoryList";
@@ -42,7 +43,7 @@ export default function AddVideoScreen() {
   const [isVisibleSelect, setIsVisibleSelect] = useState(false);
 
   const [category, setCategory] = useState({
-    name: "uncategorized",
+    name: getCategoryNameByi18n(),
     color: "blue",
   });
 
@@ -202,7 +203,7 @@ export default function AddVideoScreen() {
         createdAt: Date.now(),
       });
 
-      router.back();
+      router.replace("/");
     } catch (e) {
       showToast("Error", "Failed to save video.", "error");
     } finally {

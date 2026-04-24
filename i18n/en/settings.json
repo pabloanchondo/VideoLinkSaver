@@ -21,5 +21,11 @@
   "notSupported": "Biometric authentication not supported",
   "update": "Update",
   "updateAvailable": "Update available",
-  "updateDescription": "A new version of the app is available. Please update to the latest version for the best experience."
+  "updateDescription": "A new version of the app is available. Please update to the latest version for the best experience.",
+  "light": "Light",
+  "lightDescription": "Light theme is based on light colors",
+  "dark": "Dark",
+  "darkDescription": "Dark theme is based on dark colors",
+  "system": "System",
+  "systemDescription": "Theme is based on system settings"
 }

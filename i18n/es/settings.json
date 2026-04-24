@@ -21,5 +21,11 @@
   "notSupported": "Autenticación biométrica no soportada",
   "update": "Actualizar",
   "updateAvailable": "Actualización disponible",
-  "updateDescription": "Una nueva versión de la aplicación está disponible. Por favor, actualiza a la última versión para la mejor experiencia."
+  "updateDescription": "Una nueva versión de la aplicación está disponible. Por favor, actualiza a la última versión para la mejor experiencia.",
+  "light": "Claro",
+  "lightDescription": "El tema claro se basa en colores claros",
+  "dark": "Oscuro",
+  "darkDescription": "El tema oscuro se basa en colores oscuros",
+  "system": "Sistema",
+  "systemDescription": "El tema se basa en la configuración del sistema"
 }

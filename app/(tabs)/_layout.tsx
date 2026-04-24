@@ -58,17 +58,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="categories"
-        options={{
-          href: null,
-          title: tc("title"),
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="folder.fill" color={color} />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="settings"
         options={{
