@@ -1,3 +1,4 @@
+import { getItemAsync } from "expo-secure-store";
 import { create } from "zustand";
 import * as db from "../services/database";
 import { Category, VideoLink } from "../types";
@@ -7,6 +8,8 @@ interface AppState {
   videos: VideoLink[];
   categories: Category[];
   isInitialized: boolean;
+  sortBy: "title" | "color";
+  setSortBy: (sortBy: "title" | "color") => void;
 
   // Actions
   init: () => Promise<void>;
@@ -33,16 +36,28 @@ export const useStore = create<AppState>((set, get) => ({
   videos: [],
   categories: [],
   isInitialized: false,
+  sortBy: "title",
 
   init: async () => {
     try {
       await db.initDb();
+
+      const stored = await getItemAsync("sortBy");
+      if (stored) {
+        get().setSortBy(stored as "title" | "color");
+      }
+
       await get().loadCategories();
       await get().loadVideos();
+
       set({ isInitialized: true });
     } catch (error) {
       console.error("Failed to initialize local database:", error);
     }
+  },
+
+  setSortBy: (sortBy: "title" | "color") => {
+    set({ sortBy });
   },
 
   getCategoryById: (id: string) => {

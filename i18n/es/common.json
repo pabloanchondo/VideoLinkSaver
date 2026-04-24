@@ -13,6 +13,8 @@
   "later": "Más tarde",
   "updateNow": "Actualizar ahora",
   "uncategorized": "Sin categoría",
+  "sortByTitle": "Ordenar por título",
+  "sortByColor": "Ordenar por color",
   "auth": {
     "title": "Autenticación requerida",
     "message": "Para continuar, necesitas autenticarte usando tu huella dactilar o biometría. Esta opción está habilitada en la configuración de la aplicación.",

@@ -408,7 +408,7 @@ export default function AddVideoScreen() {
                   margin: 12,
                 }}
               >
-                Preview
+                {tv("preview")}
               </Text>
               <PreviewCard
                 platform={meta.platform}

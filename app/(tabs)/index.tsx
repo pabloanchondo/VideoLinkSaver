@@ -7,7 +7,9 @@ import { useSharedIntent } from "@/src/services/shareIntent";
 import { useStore } from "@/src/store/useStore";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
+import { setItemAsync } from "expo-secure-store";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -15,7 +17,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 export default function HomeScreen() {
   const router = useRouter();
   const colors = Colors[useColorScheme()];
-  const { categories, isInitialized, init } = useStore();
+  const { categories, isInitialized, init, sortBy, setSortBy } = useStore();
   const { sharedUrl, clearSharedUrl } = useSharedIntent();
 
   const { showActionSheetWithOptions } = useActionSheet();
@@ -36,6 +38,44 @@ export default function HomeScreen() {
       clearSharedUrl();
     }
   }, [sharedUrl]);
+
+  const onPressSort = () => {
+    const options = [
+      `🔼 ${tcom("sortByTitle")}`,
+      `🎨 ${tcom("sortByColor")}`,
+      `❌ ${tcom("cancel")}`,
+    ];
+    const cancelButtonIndex = 2;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        textStyle: { color: colors.text, fontSize: 18 },
+        containerStyle: {
+          backgroundColor: colors.card,
+          minHeight: 200,
+          paddingVertical: 25,
+        },
+      },
+      async (selectedIndex?: number) => {
+        switch (selectedIndex) {
+          case 0:
+            await setItemAsync("sortBy", "title");
+            setSortBy("title");
+            break;
+          case 1:
+            await setItemAsync("sortBy", "color");
+            setSortBy("color");
+            break;
+          case cancelButtonIndex:
+            break;
+          default:
+            break;
+        }
+      },
+    );
+  };
 
   const onPressAdd = () => {
     const options = [
@@ -110,17 +150,31 @@ export default function HomeScreen() {
               </Text>
             </View>
 
-            <TouchableOpacity
-              onPress={onPressAdd}
-              style={{
-                padding: 5,
-                borderRadius: 9999,
-                experimental_backgroundImage:
-                  "linear-gradient(to right bottom, #2088ff, #009df0, #00b4df)",
-              }}
-            >
-              <Ionicons name="add-outline" size={30} color={"white"} />
-            </TouchableOpacity>
+            <View className="flex flex-row gap-2">
+              <TouchableOpacity
+                onPress={onPressSort}
+                style={{
+                  padding: 6,
+                  borderRadius: 9999,
+                  experimental_backgroundImage:
+                    "linear-gradient(to right bottom, #2088ff, #009df0, #00b4df)",
+                }}
+              >
+                <MaterialIcons name="sort" size={30} color={"white"} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={onPressAdd}
+                style={{
+                  padding: 6,
+                  borderRadius: 9999,
+                  experimental_backgroundImage:
+                    "linear-gradient(to right bottom, #2088ff, #009df0, #00b4df)",
+                }}
+              >
+                <Ionicons name="add-outline" size={30} color={"white"} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* <TextInput

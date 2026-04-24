@@ -25,5 +25,6 @@
   "removeVideoLink": "Remove this video link?",
   "failedToSaveVideo": "Failed to save video.",
   "help": "Help",
-  "noVideosCat": "No videos found. Add your first video sharing from YouTube, TikTok or Instagram!"
+  "noVideosCat": "No videos found. Add your first video sharing from YouTube, TikTok or Instagram!",
+  "preview": "Preview"
 }

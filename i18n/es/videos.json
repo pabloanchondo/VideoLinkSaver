@@ -24,5 +24,6 @@
   "share": "Compartir",
   "removeVideoLink": "¿Eliminar este enlace de video?",
   "failedToSaveVideo": "Error al guardar el video.",
-  "help": "Ayuda"
+  "help": "Ayuda",
+  "preview": "Vista previa"
 }
