@@ -194,353 +194,363 @@ export default function VideoDetailScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{
-          paddingBottom: 100 + insets.bottom,
-          backgroundColor: colors.background,
-        }}
-      >
-        {video.thumbnailUrl && (
-          <Image
-            source={{
-              uri: video.thumbnailUrl,
-            }}
-            style={styles.cover}
-            resizeMode="cover"
-            onError={handleLoadError}
-          />
-        )}
-
-        <Modal isOpen={isVisibleSelect} withInput>
-          <View
-            style={{
-              backgroundColor: colors.background,
-              padding: 25,
-              borderRadius: 8,
-              minWidth: "99%",
-              maxHeight: "60%",
-            }}
-          >
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 20,
-                fontWeight: "500",
-                marginBottom: 15,
+    <>
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            backgroundColor: colors.background,
+          }}
+        >
+          {video.thumbnailUrl && (
+            <Image
+              source={{
+                uri: video.thumbnailUrl,
               }}
-            >
-              {tc("select")}
-            </Text>
-            <CategoryList
-              categories={categories}
-              onSelect={(category: Category) => {
-                handleSelectCategory(category);
-              }}
+              style={styles.cover}
+              resizeMode="cover"
+              onError={handleLoadError}
             />
-          </View>
-        </Modal>
-
-        <View style={styles.content}>
-          {isEditing && (
-            <>
-              <View
-                className="shadow-md mt-6"
-                style={{
-                  backgroundColor: colors.card,
-                  padding: 20,
-                  borderRadius: 10,
-                }}
-              >
-                <Text style={[styles.label, { color: colors.text }]}>
-                  {tVideos("videoTitle")}
-                </Text>
-                <TextInput
-                  placeholder={tVideos("videoTitle")}
-                  placeholderTextColor={colors.icon}
-                  style={{
-                    backgroundColor: colors.background,
-                    borderRadius: 8,
-                    paddingHorizontal: 12,
-                    paddingVertical: 12,
-                    fontSize: 14,
-                    color: colors.text,
-                  }}
-                  value={userTitle}
-                  onChangeText={setUserTitle}
-                  autoCapitalize="none"
-                  keyboardType="url"
-                />
-
-                <Text
-                  style={[styles.label, { color: colors.text, marginTop: 24 }]}
-                >
-                  {tVideos("selectCategory")}
-                </Text>
-
-                <View className="flex flex-col gap-3 mt-2 justify-center items-center align-middle">
-                  <Text className="text-slate-400 text-lg">{tc("press")}</Text>
-                  <CategoryFolderCard
-                    name={category.name}
-                    color={category.color as keyof typeof gradients}
-                    onPress={() => setIsVisibleSelect(true)}
-                  />
-                </View>
-
-                <TouchableOpacity
-                  style={[
-                    styles.saveBtn,
-                    {
-                      backgroundColor: colors.tint,
-
-                      opacity: isSaving ? 0.7 : 1,
-                      marginRight: 1,
-                    },
-                  ]}
-                  onPress={handleSave}
-                  disabled={isSaving}
-                >
-                  {isSaving ? (
-                    <ActivityIndicator color="#fff" />
-                  ) : (
-                    <Text style={styles.saveText}>
-                      <Ionicons name="save" size={16} color="#fff" />{" "}
-                      {t("save")}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    styles.saveBtn,
-                    {
-                      borderColor: "#ff4444",
-                      borderWidth: 1,
-                      marginLeft: 1,
-                      marginTop: 0,
-                    },
-                  ]}
-                  onPress={() => setIsEditing(false)}
-                >
-                  <Text style={styles.deleteText}>
-                    <Ionicons
-                      name="close-circle-outline"
-                      size={16}
-                      color="#ff4444"
-                    />{" "}
-                    {t("cancel")}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </>
           )}
 
-          {!isEditing && (
-            <View>
-              <Text style={[styles.title, { color: colors.text }]}>
-                {video.title}
-              </Text>
-
+          <Modal isOpen={isVisibleSelect} withInput>
+            <View
+              style={{
+                backgroundColor: colors.background,
+                padding: 25,
+                borderRadius: 8,
+                minWidth: "99%",
+                maxHeight: "60%",
+              }}
+            >
               <Text
-                className="text-md"
-                style={{ color: colors.text, marginBottom: 8 }}
+                style={{
+                  color: colors.text,
+                  fontSize: 20,
+                  fontWeight: "500",
+                  marginBottom: 15,
+                }}
               >
-                {new Date(video.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
+                {tc("select")}
               </Text>
+              <CategoryList
+                categories={categories}
+                onSelect={(category: Category) => {
+                  handleSelectCategory(category);
+                }}
+              />
+            </View>
+          </Modal>
 
-              <View className="flex-row items-center mb-1 mt-3">
-                <TouchableOpacity
-                  className=" rounded-xl px-5 py-3 flex-row items-center"
+          <View style={styles.content}>
+            {isEditing && (
+              <>
+                <View
+                  className="shadow-md mt-6"
                   style={{
-                    backgroundColor:
-                      colorScheme === "dark" ? Colors.dark.card : "#E2E8F0",
-                    borderColor: colors.border,
-                    borderWidth: 1,
+                    backgroundColor: colors.card,
+                    padding: 20,
+                    borderRadius: 10,
                   }}
-                  onPress={handleOpenLink}
                 >
-                  <PlatformIcon platform={video.platform} size={25} />
-                  <Text className="text-md" style={{ color: colors.text }}>
-                    {tVideos("viewOnWeb")}{" "}
-                    {video.platform.charAt(0).toUpperCase() +
-                      video.platform.slice(1)}
+                  <Text style={[styles.label, { color: colors.text }]}>
+                    {tVideos("videoTitle")}
                   </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  className=" rounded-xl px-5 py-3 flex-row items-center ml-4"
-                  style={{
-                    backgroundColor:
-                      colorScheme === "dark" ? Colors.dark.card : "#E2E8F0",
-                    borderColor: colors.border,
-                    borderWidth: 1,
-                  }}
-                  onPress={() => router.back()}
-                >
-                  <Ionicons
-                    name="arrow-back-outline"
-                    size={20}
-                    color={colors.text}
-                    style={{ bottom: 1, left: 1, marginRight: 4 }}
+                  <TextInput
+                    placeholder={tVideos("videoTitle")}
+                    placeholderTextColor={colors.icon}
+                    style={{
+                      backgroundColor: colors.background,
+                      borderRadius: 8,
+                      paddingHorizontal: 12,
+                      paddingVertical: 12,
+                      fontSize: 14,
+                      color: colors.text,
+                    }}
+                    value={userTitle}
+                    onChangeText={setUserTitle}
+                    autoCapitalize="none"
+                    keyboardType="url"
                   />
 
-                  <Text className="text-md" style={{ color: colors.text }}>
-                    {tVideos("back")}
+                  <Text
+                    style={[
+                      styles.label,
+                      { color: colors.text, marginTop: 24 },
+                    ]}
+                  >
+                    {tVideos("selectCategory")}
                   </Text>
-                </TouchableOpacity>
-              </View>
 
-              {/* <TouchableOpacity onPress={handleCopyLink}>
+                  <View className="flex flex-col gap-3 mt-2 justify-center items-center align-middle">
+                    <Text className="text-slate-400 text-lg">
+                      {tc("press")}
+                    </Text>
+                    <CategoryFolderCard
+                      name={category.name}
+                      color={category.color as keyof typeof gradients}
+                      onPress={() => setIsVisibleSelect(true)}
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.saveBtn,
+                      {
+                        backgroundColor: colors.tint,
+
+                        opacity: isSaving ? 0.7 : 1,
+                        marginRight: 1,
+                      },
+                    ]}
+                    onPress={handleSave}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? (
+                      <ActivityIndicator color="#fff" />
+                    ) : (
+                      <Text style={styles.saveText}>
+                        <Ionicons name="save" size={16} color="#fff" />{" "}
+                        {t("save")}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.saveBtn,
+                      {
+                        borderColor: "#ff4444",
+                        borderWidth: 1,
+                        marginLeft: 1,
+                        marginTop: 0,
+                      },
+                    ]}
+                    onPress={() => setIsEditing(false)}
+                  >
+                    <Text style={styles.deleteText}>
+                      <Ionicons
+                        name="close-circle-outline"
+                        size={16}
+                        color="#ff4444"
+                      />{" "}
+                      {t("cancel")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+
+            {!isEditing && (
+              <View>
+                <Text style={[styles.title, { color: colors.text }]}>
+                  {video.title}
+                </Text>
+
+                <Text
+                  className="text-md"
+                  style={{ color: colors.text, marginBottom: 8 }}
+                >
+                  {new Date(video.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </Text>
+
+                <View className="flex-row items-center mb-1 mt-3">
+                  <TouchableOpacity
+                    className=" rounded-xl px-5 py-3 flex-row items-center"
+                    style={{
+                      backgroundColor:
+                        colorScheme === "dark" ? Colors.dark.card : "#E2E8F0",
+                      borderColor: colors.border,
+                      borderWidth: 1,
+                    }}
+                    onPress={handleOpenLink}
+                  >
+                    <PlatformIcon platform={video.platform} size={25} />
+                    <Text className="text-md" style={{ color: colors.text }}>
+                      {tVideos("viewOnWeb")}{" "}
+                      {video.platform.charAt(0).toUpperCase() +
+                        video.platform.slice(1)}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className=" rounded-xl px-5 py-3 flex-row items-center ml-4"
+                    style={{
+                      backgroundColor:
+                        colorScheme === "dark" ? Colors.dark.card : "#E2E8F0",
+                      borderColor: colors.border,
+                      borderWidth: 1,
+                    }}
+                    onPress={() => router.back()}
+                  >
+                    <Ionicons
+                      name="arrow-back-outline"
+                      size={20}
+                      color={colors.text}
+                      style={{ bottom: 1, left: 1, marginRight: 4 }}
+                    />
+
+                    <Text className="text-md" style={{ color: colors.text }}>
+                      {tVideos("back")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* <TouchableOpacity onPress={handleCopyLink}>
               <Text style={[styles.url, { color: colors.tint }]}>
                 {video.url}
               </Text>
             </TouchableOpacity> */}
 
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 12,
-                  marginTop: 20,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={handleCopyLink}
-                  style={[
-                    styles.btnAction,
-                    {
-                      borderColor: colors.tint,
-                      backgroundColor: colors.card,
-                    },
-                  ]}
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 12,
+                    marginTop: 20,
+                  }}
                 >
-                  <Ionicons
-                    name="copy-outline"
-                    size={24}
-                    color={colors.tint}
-                    style={{ bottom: 1, left: 1 }}
-                  />
-                  <Text style={[styles.btnText, { color: colors.text }]}>
-                    {tVideos("copy")}
-                  </Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleCopyLink}
+                    style={[
+                      styles.btnAction,
+                      {
+                        borderColor: colors.tint,
+                        backgroundColor: colors.card,
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name="copy-outline"
+                      size={24}
+                      color={colors.tint}
+                      style={{ bottom: 1, left: 1 }}
+                    />
+                    <Text style={[styles.btnText, { color: colors.text }]}>
+                      {tVideos("copy")}
+                    </Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => setIsEditing(true)}
-                  style={[
-                    styles.btnAction,
-                    {
-                      borderColor: colors.tint,
-                      backgroundColor: colors.card,
-                    },
-                  ]}
+                  <TouchableOpacity
+                    onPress={() => setIsEditing(true)}
+                    style={[
+                      styles.btnAction,
+                      {
+                        borderColor: colors.tint,
+                        backgroundColor: colors.card,
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name="sync-outline"
+                      size={24}
+                      color={colors.tint}
+                      style={{ bottom: 1, left: 1 }}
+                    />
+                    <Text style={[styles.btnText, { color: colors.text }]}>
+                      {tVideos("edit")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 12,
+                    marginTop: 12,
+                  }}
                 >
-                  <Ionicons
-                    name="sync-outline"
-                    size={24}
-                    color={colors.tint}
-                    style={{ bottom: 1, left: 1 }}
-                  />
-                  <Text style={[styles.btnText, { color: colors.text }]}>
-                    {tVideos("edit")}
-                  </Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleDelete}
+                    style={[
+                      styles.btnAction,
+                      {
+                        borderColor: "#ff4444",
+                        backgroundColor: colors.card,
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name="trash-outline"
+                      size={24}
+                      color="#ff4444"
+                      style={{ bottom: 1, left: 1 }}
+                    />
+                    <Text style={[styles.btnText, { color: colors.text }]}>
+                      {t("delete")}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={handleShare}
+                    style={[
+                      styles.btnAction,
+                      {
+                        borderColor: colors.tint,
+                        backgroundColor: colors.card,
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name="share-social-outline"
+                      size={24}
+                      color={colors.tint}
+                      style={{ bottom: 1, left: 1 }}
+                    />
+                    <Text style={[styles.btnText, { color: colors.text }]}>
+                      {tVideos("share")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 12,
+                    marginTop: 12,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={handleRefreshThumbnail}
+                    style={[
+                      styles.btnAction,
+                      {
+                        borderColor: colors.tint,
+                        backgroundColor: colors.card,
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name="refresh-outline"
+                      size={24}
+                      color={colors.tint}
+                      style={{ bottom: 1, left: 1 }}
+                    />
+                    <Text style={[styles.btnText, { color: colors.text }]}>
+                      {tVideos("refreshThumbnail")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 12,
-                  marginTop: 12,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={handleDelete}
-                  style={[
-                    styles.btnAction,
-                    {
-                      borderColor: "#ff4444",
-                      backgroundColor: colors.card,
-                    },
-                  ]}
-                >
-                  <Ionicons
-                    name="trash-outline"
-                    size={24}
-                    color="#ff4444"
-                    style={{ bottom: 1, left: 1 }}
-                  />
-                  <Text style={[styles.btnText, { color: colors.text }]}>
-                    {t("delete")}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={handleShare}
-                  style={[
-                    styles.btnAction,
-                    { borderColor: colors.tint, backgroundColor: colors.card },
-                  ]}
-                >
-                  <Ionicons
-                    name="share-social-outline"
-                    size={24}
-                    color={colors.tint}
-                    style={{ bottom: 1, left: 1 }}
-                  />
-                  <Text style={[styles.btnText, { color: colors.text }]}>
-                    {tVideos("share")}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: 12,
-                  marginTop: 12,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={handleRefreshThumbnail}
-                  style={[
-                    styles.btnAction,
-                    { borderColor: colors.tint, backgroundColor: colors.card },
-                  ]}
-                >
-                  <Ionicons
-                    name="refresh-outline"
-                    size={24}
-                    color={colors.tint}
-                    style={{ bottom: 1, left: 1 }}
-                  />
-                  <Text style={[styles.btnText, { color: colors.text }]}>
-                    {tVideos("refreshThumbnail")}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+            )}
+          </View>
+        </ScrollView>
+      </View>
       <View
         style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100%",
+          backgroundColor: colors.background,
           paddingBottom: insets.bottom,
         }}
       >
         <AdBanner />
       </View>
-    </View>
+    </>
   );
 }
 

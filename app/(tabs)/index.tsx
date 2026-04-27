@@ -13,6 +13,7 @@ import { setItemAsync } from "expo-secure-store";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -21,6 +22,8 @@ export default function HomeScreen() {
   const { sharedUrl, clearSharedUrl } = useSharedIntent();
 
   const { showActionSheetWithOptions } = useActionSheet();
+
+  const { bottom } = useSafeAreaInsets();
 
   const { t: tv } = useTranslation("videos");
   const { t: tcom } = useTranslation("common");
@@ -56,6 +59,7 @@ export default function HomeScreen() {
           backgroundColor: colors.card,
           minHeight: 200,
           paddingVertical: 25,
+          paddingBottom: bottom + 50,
         },
       },
       async (selectedIndex?: number) => {
@@ -94,6 +98,7 @@ export default function HomeScreen() {
           backgroundColor: colors.card,
           minHeight: 200,
           paddingVertical: 25,
+          paddingBottom: bottom + 50,
         },
       },
       (selectedIndex?: number) => {
