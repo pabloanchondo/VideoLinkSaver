@@ -14,7 +14,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
-import { getItemAsync, setItemAsync } from "expo-secure-store";
+import { setItemAsync } from "expo-secure-store";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -64,30 +64,11 @@ export default function HomeScreen() {
 
   const isLastVersion = async () => {
     try {
-      //Valdiar no haber preguntado antes
-      let lastAskedDateString = await getItemAsync("lastAskedDate");
-
-      // Si se ha preguntado antes, validar que haya pasado al menos 1 día
-
-      if (lastAskedDateString) {
-        const lastAskedDate = new Date(lastAskedDateString);
-        const now = new Date();
-        const diffInDays =
-          (now.getTime() - lastAskedDate.getTime()) / (1000 * 3600 * 24);
-
-        if (diffInDays < 1) {
-          console.log(
-            "Ya se preguntó por una nueva versión hace menos de 1 día",
-          );
-          return;
-        }
-      }
+      const currentVersion = getAppVersion();
 
       const { data } = await api.get<iappVersionResponse>(
         "http://link2clip.eaproma.com/appVersion.json",
       );
-
-      const currentVersion = getAppVersion();
 
       console.log(currentVersion.version, data.version);
 
@@ -97,7 +78,7 @@ export default function HomeScreen() {
       }
 
       // Guardar la última versión preguntada
-      await setItemAsync("lastAskedDate", new Date().toISOString());
+      await setItemAsync("lastAskedVersion", data.version);
     } catch (e) {
       console.log("Error checking app version", e);
     }

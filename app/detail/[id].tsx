@@ -400,41 +400,50 @@ export default function VideoDetailScreen() {
                       size={25}
                       color="#FFF"
                     />
-                    <Text className="text-md" style={{ color: "#fff" }}>
+                    <Text
+                      className="text-md font-bold"
+                      style={{ color: "#fff" }}
+                    >
                       {tVideos("viewOnWeb")}{" "}
                       {video.platform.charAt(0).toUpperCase() +
                         video.platform.slice(1)}
                     </Text>
                   </TouchableOpacity>
-
-                  <View
+                </View>
+                <View className="flex-row items-center mb-1 mt-3">
+                  <TouchableOpacity
                     style={{
                       experimental_backgroundImage:
                         gradients[category.color as keyof typeof gradients],
-                      paddingHorizontal: 12,
-                      paddingVertical: 5,
-                      borderRadius: 8,
-                      marginLeft: 10,
+                      paddingHorizontal: 2,
+                      paddingVertical: 2,
+                      borderRadius: 12,
                       flexDirection: "row",
                       alignItems: "center",
                     }}
+                    className="rounded-xl px-5 py-3 flex-row items-center"
                   >
-                    <MaterialIcons name="folder" size={35} color={"white"} />
+                    <MaterialIcons
+                      name="folder"
+                      size={20}
+                      color="#fff"
+                      style={{ left: 1, bottom: 1 }}
+                    />
                     <Text
                       numberOfLines={2}
                       ellipsizeMode="tail"
-                      className="text-md font-bold"
+                      className="text-sm font-bold"
                       style={{
                         color: "white",
                         textAlign: "center",
                         marginLeft: 5,
                       }}
                     >
-                      {category.name.length > 15
-                        ? category.name.substring(0, 15) + "..."
+                      {category.name.length > 30
+                        ? category.name.substring(0, 30) + "..."
                         : category.name}
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
 
                 {/* <TouchableOpacity onPress={handleCopyLink}>
@@ -613,7 +622,7 @@ const styles = StyleSheet.create({
   },
   cover: {
     width: "100%",
-    height: 430,
+    height: 360,
   },
   overlay: {
     position: "absolute",
