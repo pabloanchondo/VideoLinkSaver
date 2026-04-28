@@ -3,6 +3,8 @@ import AdBanner from "@/components/Banner";
 import { Modal } from "@/components/ui/Modal";
 import { gradients } from "@/constants/theme";
 import { showToast } from "@/helpers/alert.helper";
+import { getCategoryNameByi18n } from "@/helpers/category-name.helper";
+import { getColorByPlatform } from "@/helpers/platformHelper";
 import { APIVideoResponse } from "@/interfaces/video.interfaces";
 import { CategoryFolderCard } from "@/src/components/CategoryFolderCard";
 import { CategoryList } from "@/src/components/CategoryList";
@@ -12,10 +14,12 @@ import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useStore } from "@/src/store/useStore";
 import { Category } from "@/src/types";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as Clipboard from "expo-clipboard";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Linking from "expo-linking";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -57,9 +61,21 @@ export default function VideoDetailScreen() {
   const [isVisibleSelect, setIsVisibleSelect] = useState(false);
 
   const [category, setCategory] = useState({
-    name: "uncategorized",
+    name: getCategoryNameByi18n(),
     color: "blue",
   });
+
+  useEffect(() => {
+    if (video) {
+      const cat = categories.find((c) => c.id === video.categoryId);
+      if (cat) {
+        setCategory({
+          name: cat.name,
+          color: cat.color as keyof typeof gradients,
+        });
+      }
+    }
+  }, [video, categories]);
 
   const insets = useSafeAreaInsets();
 
@@ -202,16 +218,42 @@ export default function VideoDetailScreen() {
             backgroundColor: colors.background,
           }}
         >
-          {video.thumbnailUrl && (
-            <Image
-              source={{
-                uri: video.thumbnailUrl,
-              }}
-              style={styles.cover}
-              resizeMode="cover"
-              onError={handleLoadError}
+          <View style={styles.imageContainer} className="shadow-md">
+            {video.thumbnailUrl && (
+              <Image
+                source={{ uri: video.thumbnailUrl }}
+                style={styles.cover}
+                resizeMode="cover"
+                onError={handleLoadError}
+              />
+            )}
+
+            <LinearGradient
+              colors={["transparent", "rgba(0,0,0,0.85)"]}
+              style={styles.gradient}
             />
-          )}
+
+            <TouchableOpacity
+              style={[styles.backBtn, { top: insets.top }]}
+              onPress={() => router.back()}
+            >
+              <Ionicons name="arrow-back" size={22} color="#fff" />
+            </TouchableOpacity>
+
+            <View style={styles.imageContent}>
+              <Text style={styles.imageTitle} numberOfLines={2}>
+                {video.title}
+              </Text>
+
+              <Text style={styles.imageDate}>
+                {new Date(video.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </Text>
+            </View>
+          </View>
 
           <Modal isOpen={isVisibleSelect} withInput>
             <View
@@ -343,61 +385,56 @@ export default function VideoDetailScreen() {
 
             {!isEditing && (
               <View>
-                <Text style={[styles.title, { color: colors.text }]}>
-                  {video.title}
-                </Text>
-
-                <Text
-                  className="text-md"
-                  style={{ color: colors.text, marginBottom: 8 }}
-                >
-                  {new Date(video.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </Text>
-
                 <View className="flex-row items-center mb-1 mt-3">
                   <TouchableOpacity
                     className=" rounded-xl px-5 py-3 flex-row items-center"
                     style={{
-                      backgroundColor:
-                        colorScheme === "dark" ? Colors.dark.card : "#E2E8F0",
+                      backgroundColor: getColorByPlatform(video.platform),
                       borderColor: colors.border,
                       borderWidth: 1,
                     }}
                     onPress={handleOpenLink}
                   >
-                    <PlatformIcon platform={video.platform} size={25} />
-                    <Text className="text-md" style={{ color: colors.text }}>
+                    <PlatformIcon
+                      platform={video.platform}
+                      size={25}
+                      color="#FFF"
+                    />
+                    <Text className="text-md" style={{ color: "#fff" }}>
                       {tVideos("viewOnWeb")}{" "}
                       {video.platform.charAt(0).toUpperCase() +
                         video.platform.slice(1)}
                     </Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity
-                    className=" rounded-xl px-5 py-3 flex-row items-center ml-4"
+                  <View
                     style={{
-                      backgroundColor:
-                        colorScheme === "dark" ? Colors.dark.card : "#E2E8F0",
-                      borderColor: colors.border,
-                      borderWidth: 1,
+                      experimental_backgroundImage:
+                        gradients[category.color as keyof typeof gradients],
+                      paddingHorizontal: 12,
+                      paddingVertical: 5,
+                      borderRadius: 8,
+                      marginLeft: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
                     }}
-                    onPress={() => router.back()}
                   >
-                    <Ionicons
-                      name="arrow-back-outline"
-                      size={20}
-                      color={colors.text}
-                      style={{ bottom: 1, left: 1, marginRight: 4 }}
-                    />
-
-                    <Text className="text-md" style={{ color: colors.text }}>
-                      {tVideos("back")}
+                    <MaterialIcons name="folder" size={35} color={"white"} />
+                    <Text
+                      numberOfLines={2}
+                      ellipsizeMode="tail"
+                      className="text-md font-bold"
+                      style={{
+                        color: "white",
+                        textAlign: "center",
+                        marginLeft: 5,
+                      }}
+                    >
+                      {category.name.length > 15
+                        ? category.name.substring(0, 15) + "..."
+                        : category.name}
                     </Text>
-                  </TouchableOpacity>
+                  </View>
                 </View>
 
                 {/* <TouchableOpacity onPress={handleCopyLink}>
@@ -410,8 +447,8 @@ export default function VideoDetailScreen() {
                   style={{
                     display: "flex",
                     flexDirection: "row",
-                    gap: 12,
-                    marginTop: 20,
+                    gap: 8,
+                    marginTop: 10,
                   }}
                 >
                   <TouchableOpacity
@@ -426,7 +463,7 @@ export default function VideoDetailScreen() {
                   >
                     <Ionicons
                       name="copy-outline"
-                      size={24}
+                      size={35}
                       color={colors.tint}
                       style={{ bottom: 1, left: 1 }}
                     />
@@ -447,7 +484,7 @@ export default function VideoDetailScreen() {
                   >
                     <Ionicons
                       name="sync-outline"
-                      size={24}
+                      size={35}
                       color={colors.tint}
                       style={{ bottom: 1, left: 1 }}
                     />
@@ -461,31 +498,10 @@ export default function VideoDetailScreen() {
                   style={{
                     display: "flex",
                     flexDirection: "row",
-                    gap: 12,
-                    marginTop: 12,
+                    gap: 8,
+                    marginTop: 5,
                   }}
                 >
-                  <TouchableOpacity
-                    onPress={handleDelete}
-                    style={[
-                      styles.btnAction,
-                      {
-                        borderColor: "#ff4444",
-                        backgroundColor: colors.card,
-                      },
-                    ]}
-                  >
-                    <Ionicons
-                      name="trash-outline"
-                      size={24}
-                      color="#ff4444"
-                      style={{ bottom: 1, left: 1 }}
-                    />
-                    <Text style={[styles.btnText, { color: colors.text }]}>
-                      {t("delete")}
-                    </Text>
-                  </TouchableOpacity>
-
                   <TouchableOpacity
                     onPress={handleShare}
                     style={[
@@ -498,7 +514,7 @@ export default function VideoDetailScreen() {
                   >
                     <Ionicons
                       name="share-social-outline"
-                      size={24}
+                      size={35}
                       color={colors.tint}
                       style={{ bottom: 1, left: 1 }}
                     />
@@ -506,34 +522,25 @@ export default function VideoDetailScreen() {
                       {tVideos("share")}
                     </Text>
                   </TouchableOpacity>
-                </View>
 
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: 12,
-                    marginTop: 12,
-                  }}
-                >
                   <TouchableOpacity
-                    onPress={handleRefreshThumbnail}
+                    onPress={handleDelete}
                     style={[
                       styles.btnAction,
                       {
-                        borderColor: colors.tint,
+                        borderColor: "#ff4444",
                         backgroundColor: colors.card,
                       },
                     ]}
                   >
                     <Ionicons
-                      name="refresh-outline"
-                      size={24}
-                      color={colors.tint}
+                      name="trash-outline"
+                      size={35}
+                      color="#ff4444"
                       style={{ bottom: 1, left: 1 }}
                     />
                     <Text style={[styles.btnText, { color: colors.text }]}>
-                      {tVideos("refreshThumbnail")}
+                      {t("delete")}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -555,6 +562,42 @@ export default function VideoDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  gradient: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 200,
+  },
+  backBtn: {
+    position: "absolute",
+    left: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    // backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageContent: {
+    position: "absolute",
+    bottom: 16,
+    left: 16,
+    right: 16,
+  },
+
+  imageTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+
+  imageDate: {
+    color: "#ccc",
+    fontSize: 12,
+    marginTop: 4,
+  },
   roundedBtn: {
     borderRadius: 50,
     width: 50,
@@ -565,9 +608,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  imageContainer: {
+    position: "relative",
+  },
   cover: {
     width: "100%",
-    height: 360,
+    height: 430,
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.4)", // ajusta intensidad
   },
   content: {
     padding: 20,
@@ -594,7 +648,7 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: "#333",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
   },
   deleteBtn: {
@@ -649,14 +703,15 @@ const styles = StyleSheet.create({
   },
   btnAction: {
     padding: 12,
+    paddingVertical: 16,
     borderRadius: 8,
     alignItems: "center",
     flexGrow: 1,
     flexBasis: "auto",
     elevation: 4,
     shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
     shadowOffset: { width: 0, height: 4 },
     marginVertical: 8,
   },

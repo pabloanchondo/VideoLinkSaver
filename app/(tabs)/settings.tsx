@@ -311,58 +311,53 @@ export default function SettingsScreen() {
             </View>
           </View>
 
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-              {tSettings("backup")}
-            </Text>
-            <TouchableOpacity
-              style={[
-                styles.card,
-                { backgroundColor: colors.card, borderColor: colors.border },
-              ]}
-              onPress={backupDatabase}
-            >
-              <View style={styles.row}>
-                <Ionicons
-                  name="download-outline"
-                  size={24}
-                  color={colors.tint}
-                />
-                <View style={styles.rowText}>
-                  <Text style={[styles.rowTitle, { color: colors.text }]}>
-                    {tSettings("backup")}
-                  </Text>
-                  <Text style={{ color: colors.icon }}>
-                    {tSettings("backupDescription")}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={restoreDatabase}
-              style={[
-                styles.card,
-                { backgroundColor: colors.card, borderColor: colors.border },
-              ]}
-            >
-              <View style={styles.row}>
-                <Ionicons
-                  name="refresh-outline"
-                  size={24}
-                  color={colors.tint}
-                />
+          {
+            /* Local Authentication Section */
+            isSupported && isEnrolled && (
+              <TouchableOpacity
+                style={styles.section}
+                onPress={handleLocalAuth}
+                disabled={!isSupported || !isEnrolled}
+              >
+                <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+                  {tSettings("localAuth")}
+                </Text>
+                <View
+                  style={[
+                    styles.card,
+                    {
+                      backgroundColor: colors.card,
+                      borderColor: colors.border,
+                    },
+                  ]}
+                >
+                  <View style={styles.row}>
+                    <Ionicons
+                      name="finger-print-outline"
+                      size={24}
+                      color={colors.tint}
+                    />
 
-                <View style={styles.rowText}>
-                  <Text style={[styles.rowTitle, { color: colors.text }]}>
-                    {tSettings("restore")}
-                  </Text>
-                  <Text style={{ color: colors.icon }}>
-                    {tSettings("restoreDescription")}
-                  </Text>
+                    <View style={styles.rowText}>
+                      <Text style={[styles.rowTitle, { color: colors.text }]}>
+                        {tSettings("biometricEnabled")}:{" "}
+                        {isLogginEnabled
+                          ? tSettings("enabled")
+                          : tSettings("disabled")}
+                      </Text>
+                      <Text style={{ color: colors.icon }}>
+                        {isSupported
+                          ? isEnrolled
+                            ? tSettings("biometricDescription")
+                            : tSettings("noEnrolled")
+                          : tSettings("notSupported")}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          </View>
+              </TouchableOpacity>
+            )
+          }
 
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.icon }]}>
@@ -446,53 +441,58 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           </View>
 
-          {
-            /* Local Authentication Section */
-            isSupported && isEnrolled && (
-              <TouchableOpacity
-                style={styles.section}
-                onPress={handleLocalAuth}
-                disabled={!isSupported || !isEnrolled}
-              >
-                <Text style={[styles.sectionTitle, { color: colors.icon }]}>
-                  {tSettings("localAuth")}
-                </Text>
-                <View
-                  style={[
-                    styles.card,
-                    {
-                      backgroundColor: colors.card,
-                      borderColor: colors.border,
-                    },
-                  ]}
-                >
-                  <View style={styles.row}>
-                    <Ionicons
-                      name="finger-print-outline"
-                      size={24}
-                      color={colors.tint}
-                    />
-
-                    <View style={styles.rowText}>
-                      <Text style={[styles.rowTitle, { color: colors.text }]}>
-                        {tSettings("biometricEnabled")}:{" "}
-                        {isLogginEnabled
-                          ? tSettings("enabled")
-                          : tSettings("disabled")}
-                      </Text>
-                      <Text style={{ color: colors.icon }}>
-                        {isSupported
-                          ? isEnrolled
-                            ? tSettings("biometricDescription")
-                            : tSettings("noEnrolled")
-                          : tSettings("notSupported")}
-                      </Text>
-                    </View>
-                  </View>
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.icon }]}>
+              {tSettings("backup")}
+            </Text>
+            <TouchableOpacity
+              style={[
+                styles.card,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+              onPress={backupDatabase}
+            >
+              <View style={styles.row}>
+                <Ionicons
+                  name="download-outline"
+                  size={24}
+                  color={colors.tint}
+                />
+                <View style={styles.rowText}>
+                  <Text style={[styles.rowTitle, { color: colors.text }]}>
+                    {tSettings("backup")}
+                  </Text>
+                  <Text style={{ color: colors.icon }}>
+                    {tSettings("backupDescription")}
+                  </Text>
                 </View>
-              </TouchableOpacity>
-            )
-          }
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={restoreDatabase}
+              style={[
+                styles.card,
+                { backgroundColor: colors.card, borderColor: colors.border },
+              ]}
+            >
+              <View style={styles.row}>
+                <Ionicons
+                  name="refresh-outline"
+                  size={24}
+                  color={colors.tint}
+                />
+
+                <View style={styles.rowText}>
+                  <Text style={[styles.rowTitle, { color: colors.text }]}>
+                    {tSettings("restore")}
+                  </Text>
+                  <Text style={{ color: colors.icon }}>
+                    {tSettings("restoreDescription")}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </View>
       <AdBanner />

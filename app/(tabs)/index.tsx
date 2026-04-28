@@ -1,6 +1,10 @@
+import { api } from "@/api/api";
 import AdBanner from "@/components/Banner";
+import { Modal } from "@/components/ui/Modal";
+import UpdateContent from "@/components/UpdateContent";
 import { Colors } from "@/constants/theme";
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { iappVersionResponse } from "@/interfaces/video.interfaces";
 import { CategoryList } from "@/src/components/CategoryList";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { useSharedIntent } from "@/src/services/shareIntent";
@@ -8,16 +12,28 @@ import { useStore } from "@/src/store/useStore";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import * as Application from "expo-application";
 import { useRouter } from "expo-router";
-import { setItemAsync } from "expo-secure-store";
-import React, { useEffect } from "react";
+import { getItemAsync, setItemAsync } from "expo-secure-store";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const router = useRouter();
   const colors = Colors[useColorScheme()];
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newVersionInfo, setNewVersionInfo] =
+    useState<iappVersionResponse | null>(null);
+
   const { categories, isInitialized, init, sortBy, setSortBy } = useStore();
   const { sharedUrl, clearSharedUrl } = useSharedIntent();
 
@@ -41,6 +57,51 @@ export default function HomeScreen() {
       clearSharedUrl();
     }
   }, [sharedUrl]);
+
+  useEffect(() => {
+    isLastVersion();
+  }, []);
+
+  const isLastVersion = async () => {
+    try {
+      //Valdiar no haber preguntado antes
+      let lastAskedDateString = await getItemAsync("lastAskedDate");
+
+      // Si se ha preguntado antes, validar que haya pasado al menos 1 día
+
+      if (lastAskedDateString) {
+        const lastAskedDate = new Date(lastAskedDateString);
+        const now = new Date();
+        const diffInDays =
+          (now.getTime() - lastAskedDate.getTime()) / (1000 * 3600 * 24);
+
+        if (diffInDays < 1) {
+          console.log(
+            "Ya se preguntó por una nueva versión hace menos de 1 día",
+          );
+          return;
+        }
+      }
+
+      const { data } = await api.get<iappVersionResponse>(
+        "http://link2clip.eaproma.com/appVersion.json",
+      );
+
+      const currentVersion = getAppVersion();
+
+      console.log(currentVersion.version, data.version);
+
+      if (data.version !== currentVersion.version) {
+        setNewVersionInfo(data);
+        setIsModalVisible(true);
+      }
+
+      // Guardar la última versión preguntada
+      await setItemAsync("lastAskedDate", new Date().toISOString());
+    } catch (e) {
+      console.log("Error checking app version", e);
+    }
+  };
 
   const onPressSort = () => {
     const options = [
@@ -118,6 +179,13 @@ export default function HomeScreen() {
     );
   };
 
+  const getAppVersion = () => {
+    return {
+      version: Application.nativeApplicationVersion,
+      build: Application.nativeBuildVersion,
+    };
+  };
+
   const handleSelectCategory = (category: any) => {
     router.push({ pathname: "/category", params: { id: category.id } });
   };
@@ -125,6 +193,29 @@ export default function HomeScreen() {
   return (
     <>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <Modal isOpen={isModalVisible}>
+          <View
+            style={{
+              backgroundColor: colors.card,
+              padding: 25,
+              borderRadius: 8,
+              width: "85%",
+            }}
+          >
+            <UpdateContent
+              version={newVersionInfo?.version || "1.0.0"}
+              message={tcom("modalMessage")}
+              onUpdate={() => {
+                // Open app store link
+                Linking.openURL(
+                  "https://play.google.com/store/apps/details?id=com.anchondopablo.videos",
+                );
+              }}
+              onLater={() => setIsModalVisible(false)}
+            />
+          </View>
+        </Modal>
+
         <View
           style={{
             backgroundColor: colors.card,

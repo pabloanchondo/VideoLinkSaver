@@ -176,7 +176,7 @@ export default function CreateCategoryScreen({
           <View className="mt-6" style={{ flexDirection: "row", gap: 12 }}>
             <TouchableOpacity
               style={{
-                height: 80,
+                height: 70,
                 flex: 1,
                 borderRadius: 10,
                 experimental_backgroundImage: gradients.blue,
@@ -188,7 +188,7 @@ export default function CreateCategoryScreen({
 
             <TouchableOpacity
               style={{
-                height: 80,
+                height: 70,
                 flex: 1,
                 borderRadius: 10,
                 experimental_backgroundImage: gradients.green,
@@ -199,7 +199,7 @@ export default function CreateCategoryScreen({
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                height: 80,
+                height: 70,
                 flex: 1,
                 borderRadius: 10,
                 experimental_backgroundImage: gradients.orange,
@@ -210,7 +210,7 @@ export default function CreateCategoryScreen({
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                height: 80,
+                height: 70,
                 flex: 1,
                 borderRadius: 10,
                 experimental_backgroundImage: gradients.pink,
@@ -224,7 +224,7 @@ export default function CreateCategoryScreen({
           <View className="mt-4" style={{ flexDirection: "row", gap: 12 }}>
             <TouchableOpacity
               style={{
-                height: 80,
+                height: 70,
                 flex: 1,
                 borderRadius: 10,
                 experimental_backgroundImage: gradients.purple,
@@ -235,7 +235,7 @@ export default function CreateCategoryScreen({
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                height: 80,
+                height: 70,
                 flex: 1,
                 borderRadius: 10,
                 experimental_backgroundImage: gradients.red,
@@ -246,7 +246,7 @@ export default function CreateCategoryScreen({
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                height: 80,
+                height: 70,
                 flex: 1,
                 borderRadius: 10,
                 experimental_backgroundImage: gradients.teal,
@@ -257,7 +257,7 @@ export default function CreateCategoryScreen({
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                height: 80,
+                height: 70,
                 flex: 1,
                 borderRadius: 10,
                 experimental_backgroundImage: gradients.yellow,

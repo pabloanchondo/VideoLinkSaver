@@ -290,13 +290,18 @@ export default function AddVideoScreen() {
               />
             </View>
 
-            <View className="flex flex-row justify-between mt-3">
-              <Text
-                style={[styles.label, { color: colors.text, marginTop: 24 }]}
-              >
+            <View className="flex flex-row justify-between mt-5">
+              <Text className=" mb-2 text-xl" style={{ color: colors.text }}>
                 {tv("selectCategory")}
               </Text>
-
+            </View>
+            <View className="flex flex-col gap-3 mt-2 justify-center items-center align-middle">
+              <Text className="text-slate-400 text-lg">{tc("press")}</Text>
+              <CategoryFolderCard
+                name={category.name}
+                color={category.color as keyof typeof gradients}
+                onPress={() => setIsVisibleSelect(true)}
+              />
               <TouchableOpacity
                 style={[styles.addBtn, { backgroundColor: colors.tint }]}
                 onPress={handleShowInputText}
@@ -316,14 +321,6 @@ export default function AddVideoScreen() {
                   />
                 </View>
               </TouchableOpacity>
-            </View>
-            <View className="flex flex-col gap-3 mt-2 justify-center items-center align-middle">
-              <Text className="text-slate-400 text-lg">{tc("press")}</Text>
-              <CategoryFolderCard
-                name={category.name}
-                color={category.color as keyof typeof gradients}
-                onPress={() => setIsVisibleSelect(true)}
-              />
             </View>
 
             <Modal isOpen={isVisibleSelect} withInput>

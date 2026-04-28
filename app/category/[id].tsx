@@ -75,7 +75,7 @@ export default function UpdateCategory() {
       router.back();
       return;
     }
-    router.replace("/categories");
+    router.replace("/");
   };
 
   return (
